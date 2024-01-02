@@ -7,6 +7,9 @@ use ieee.std_logic_1164.all;
 
 ----- Entity declarations -----
 
+
+
+
 -- FI/DI register
 entity ifidreg is
 	port (
@@ -58,3 +61,22 @@ port(
 );
 end controlunit;
 
+----- Architecture declarations -----
+architecture arch of ifidreg is
+process(clk)
+	begin
+		if (rising_edge(clk)) then
+			if (clear = '0') then
+				if (en = '1') then
+					out_pc <= in_pc;
+					out_pc4 <= in_pc4;
+					out_instruction <= in_instruction;
+				end if;
+			else 
+				out_pc, out_pc4, out_instruction <= '0'
+			end if;
+		
+	end if;
+
+
+end arch;
