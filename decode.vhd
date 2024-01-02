@@ -7,8 +7,9 @@ use ieee.std_logic_1164.all;
 
 ----- Entity declarations -----
 
-
-
+-- Overall decode stage entity
+-- TODO
+--	Declare 'external' signals (Make ports for all signals external to the stage)
 
 -- FI/DI register
 entity ifidreg is
@@ -22,9 +23,9 @@ end ifidreg;
 -- Decoder
 entity decoder is 
 	port (
-	in_intruction : in std_logic_vector (31 downto 0);						-- instruction
-	wr_reg_idx, out_r1idx, out_r2idx : out std_logic_vector (4 downto 0);	-- register numbers: destination, operand 1, operand 2
-	out_opcode: out std_logic_vector (5 downto 0)							-- opcode
+	in_instruction : in std_logic_vector (31 downto 0);							-- instruction
+	out_wr_reg_idx, out_r1idx, out_r2idx : out std_logic_vector (4 downto 0);	-- register numbers: destination, operand 1, operand 2
+	out_opcode: out std_logic_vector (5 downto 0)								-- opcode
 	);
 end decoder;
 
@@ -62,21 +63,73 @@ port(
 end controlunit;
 
 ----- Architecture declarations -----
+
+-- Overall decode stage entity
+-- TODO
+--  Declare internal signals
+
+--	Instantiate internal componens (see chu pg. 6) Connect internal units together
+-- 	Connect external signals to units
+
+
+-- IF/ID register
 architecture arch of ifidreg is
 process(clk)
 	begin
-		if (rising_edge(clk)) then
-			if (clear = '0') then
-				if (en = '1') then
+		if (rising_edge(clk)) then		-- do stuff on rising clock edge
+			if (clear = '0') then		
+				if (en = '1') then		-- do stuff if enabled
 					out_pc <= in_pc;
 					out_pc4 <= in_pc4;
 					out_instruction <= in_instruction;
 				end if;
 			else 
-				out_pc, out_pc4, out_instruction <= '0'
-			end if;
-		
+				out_pc, out_pc4, out_instruction <= '0';
+			end if;	
 	end if;
-
-
+end process;
 end arch;
+
+-- Decoder
+-- TODO
+architecture arch of decoder is
+	process(clk)
+	if (risingedge(clk)) then	
+	
+	end if;
+end process;
+end arch;
+--	Make a switch for the different types
+-- 	In the switch, sort signals depending on encoding	
+
+-- Immediate value decoder
+-- TODO
+architecture arch of immvaldecoder is
+	process(clk)
+	if (risingedge(clk)) then	
+	
+	end if;
+end process;
+end arch;
+
+-- Register file
+-- TODO
+architecture arch of registerfile is
+	process(clk)
+	if (risingedge(clk)) then	
+	
+	end if;
+end process;
+end arch;
+
+-- Control unit
+-- TODO - might need help on this
+architecture arch of controlunit is
+	process(clk)
+	if (risingedge(clk)) then	
+	
+	end if;
+end process;
+end arch;
+
+
