@@ -1,5 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use std.env.stop;
 
 entity fetcher_tb is
     -- Testbench has no ports
@@ -38,14 +40,12 @@ begin
 
     -- Instantiate the Unit Under Test (UUT)
     uut: fetcher port map (
-        clock => clock,
-        branch => branch,
-        reset => reset,
-        we => we,
-        pc_out => pc_out,
-        data_input => data_input,
-        branch_address => branch_address,
-        instruction => instruction
+        clock, branch, reset,
+        we,
+        pc_out,
+        data_input,
+        branch_address,
+        instruction
     );
 
     -- Clock process definitions
@@ -60,22 +60,43 @@ begin
     -- Stimulus process
     stim_proc: process
     begin
-        -- hold reset state for 100 ns.
-        wait for 100 ns;
-        reset <= '0';
-
-        -- Insert stimulus here 
-        wait for clock_period*10;
-        branch <= '1';
-        branch_address <= x"00000004";
-
-        wait for clock_period*10;
+        reset <= '1';
         branch <= '0';
+	we <= '1';
+        wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
 
-        -- add more test scenarios as needed
+	reset <= '0';
+        wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+        
+        wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+	
+        wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+        
+	wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+
+	wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+
+        branch <= '1';
+	branch_address <= x"00000123";
+	wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+
+	wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
+
+        branch <= '0';
+	branch_address <= x"00000123";
+	wait for clock_period*1;
+	report "The value of PC is now: " & to_string(pc_out);
 
         -- finish simulation
-        wait;
+	std.env.stop(0);
     end process;
 
 end behavior;
