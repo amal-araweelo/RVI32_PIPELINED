@@ -16,7 +16,7 @@ entity ifidreg is
 	port (
 	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
 	out_pc, out_pc4, out_instruction : out std_logic_vector (31 downto 0);	-- register outputs
-	en, clear : in std_logic												-- enable, clear
+	clk, en, clear : in std_logic												-- enable, clear
 	); 
 end ifidreg;
 
@@ -25,7 +25,8 @@ entity decoder is
 	port (
 	in_instruction : in std_logic_vector (31 downto 0);							-- instruction
 	out_wr_reg_idx, out_r1idx, out_r2idx : out std_logic_vector (4 downto 0);	-- register numbers: destination, operand 1, operand 2
-	out_opcode: out std_logic_vector (5 downto 0)								-- opcode
+	out_opcode: out std_logic_vector (5 downto 0);								-- opcode
+	clk: in std_logic
 	);
 end decoder;
 
@@ -34,7 +35,8 @@ entity immvaldecoder is
 	port(
 	in_opcode: in std_logic_vector (5 downto 0);
 	in_instruction: in std_logic_vector (31 downto 0);
-	out_imm: out std_logic_vector (31 downto 0)
+	out_imm: out std_logic_vector (31 downto 0);
+	clk: in std_logic
 	);
 end immvaldecoder;
 
@@ -45,6 +47,7 @@ port(
 	in_wridx, in_r1idx, in_r2idx: in std_logic_vector (4 downto 0); -- register numbers: destination, operand 1, operand 2
 	wr_en: in std_logic;											-- write enable
 	out_reg1, out_reg2: out std_logic_vector(31 downto 0);			-- register content outputs: operand 1, operand 2
+	clk: in std_logic
 );
 end registerfile;
 
@@ -58,7 +61,8 @@ port(
 	reg_wr_src_ctrl: out std_logic_vector (1 downto 0);
 	comp_ctrl: out std_logic_vector (2 downto 0);
 	mem_ctrl: out std_logic_vector (3 downto 0);
-	alu_ctrl: out std_logic_vector (4 downto 0)
+	alu_ctrl: out std_logic_vector (4 downto 0);
+	clk: in std_logic
 );
 end controlunit;
 
