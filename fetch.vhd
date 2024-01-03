@@ -4,6 +4,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 -- read binary file
 -- Hardcode an addi instruction
@@ -21,8 +22,9 @@ entity fetcher is
 end fetcher;
 
 architecture behavioral of fetcher is 
-signal pc : std_logic_vector (31 downto 0) := (others => '0');
+signal pc : std_logic_vector (31 downto 0) := x"00000000";
 signal my_instruction : std_logic_vector (31 downto 0) := x"00A00093"; -- addi x1, x0, 10
+signal length : std_logic_vector(31 downto 0) := x"00000004";
 
 component memory is
   port
@@ -36,23 +38,22 @@ component memory is
 end component;
 
 begin
-pc_out <= pc;
+
 instruction <= my_instruction;
 
 -- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc);
 
-process (clock, reset, branch, branch_address)
+process (clock, reset)
 begin 
-    if (reset = '0') then
-	PC <= (others => '0');
+    if (reset = '1') then
+  	pc_out <= x"00000000";
     elsif (rising_edge(clock)) then
 	if (branch = '1') then
-	    PC <= branch_address;
+	    pc_out <= branch_address;
 	else
-	    PC <= PC + 4;
+	    pc_out <= std_logic_vector(unsigned(pc_out) + unsigned(length));
 	end if;
     end if;
 end process;
 
 end behavioral;
->>>>>>> 7d89167 (add initial fetch)
