@@ -97,13 +97,19 @@ architecture behavioral of decoder is
 				decoder_out.rd <= instruction(11 downto 7);
 				decoder_out.ALUsrc1 <= '0';
 				decoder_out.ALUsrc2 <= '1';
-				decoder_out.immediate <= std_logic_vector(signed(instruction(31 downto 20))); -- typecasting to sign-extend immediate
+				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
+				if (decoder_out.immediate(11) = '1') then
+				    decoder_out.immediate(31 downto 12) <= (others => '1');
+				else
+				    decoder_out.immediate(31 downto 12) <= (others => '0');
+				end if;
 
 				--instructiontype <= "001";
 					case func3 is
 						-- addi
 						when "000" =>
-						decoder_out.ALUop <=  "0010"; -- STC
+						decoder_out.ALUop <=  "0000";
+						decoder_out.REG_we <= '1';
 
 						when others =>
 							report "Undefined func3: I-type";
