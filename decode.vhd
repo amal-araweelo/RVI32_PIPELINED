@@ -18,13 +18,13 @@ use work.records_pkg.all;
 
 -- FI/DI register
 
-entity ifidreg is
+entity reg_ifid is
 	port (
 	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
 	out_pc, out_pc4, out_instruction : out std_logic_vector (31 downto 0);	-- register outputs
 	clk, en, clear : in std_logic												-- enable, clear
 	); 
-end ifidreg;
+end reg_ifid;
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -42,7 +42,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 -- Register file with no reset
-entity registerfile is -- Kindly borrowed and adapted from FPGA prototyping by VHDL examples (Xilinx spartan(tm)-3 version) by Pong P. Chu, at University of Cleveland
+entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL examples (Xilinx spartan(tm)-3 version) by Pong P. Chu, at University of Cleveland
 	generic(
 	B: integer:= 32; 	-- no. of bits in register
 	W: integer:= 5		-- no. of address bits (5 bits=32 addresses)
@@ -54,12 +54,12 @@ entity registerfile is -- Kindly borrowed and adapted from FPGA prototyping by V
 		w_data: in std_logic_vector(B-1 downto 0);
 		rs1_out, rs2_out: out std_logic_vector(B-1 downto 0)
 	);
-end registerfile;
+end reg_file;
 
 
 
 -- IF/ID register
-architecture behavioral of ifidreg is
+architecture behavioral of reg_ifid is
 	begin
 		process(clk, clear, en)
 		begin
@@ -119,7 +119,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-architecture behavioral of registerfile is
+architecture behavioral of reg_file is
 	type registerfile_type is array (2**W-1 downto 0) of
 		std_logic_vector(B-1 downto 0);
 	signal array_register: registerfile_type;
