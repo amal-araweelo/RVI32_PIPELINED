@@ -12,8 +12,7 @@ architecture behavior of fetcher_tb is
     -- Component Declaration for the Unit Under Test (UUT)
     component fetcher
         port (
-            clock, branch, reset : in std_logic;
-            we : in std_logic; 
+            clock, branch, reset, we : in std_logic;
             pc_out : out std_logic_vector (31 downto 0);
             data_input: in std_logic_vector (31 downto 0);
             branch_address: in std_logic_vector (31 downto 0);
@@ -63,37 +62,46 @@ begin
         reset <= '1';
         branch <= '0';
 	we <= '1';
-        wait for clock_period*1;
+        wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
-
-	reset <= '0';
-        wait for clock_period*1;
-	report "The value of PC is now: " & to_string(pc_out);
-        
-        wait for clock_period*1;
-	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 	
-        wait for clock_period*1;
+	reset <= '0';
+        wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
-        
-	wait for clock_period*1;
-	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 
-	wait for clock_period*1;
+        wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
+	
+        wait for clock_period;
+	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
+        
+	wait for clock_period;
+	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
+
+	wait for clock_period;
+	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 
         branch <= '1';
 	branch_address <= x"00000123";
-	wait for clock_period*1;
+	wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 
-	wait for clock_period*1;
+	wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 
         branch <= '0';
 	branch_address <= x"00000123";
-	wait for clock_period*1;
+	wait for clock_period;
 	report "The value of PC is now: " & to_string(pc_out);
+	report "The value of Instruction is now: " & to_string(instruction);
 
         -- finish simulation
 	std.env.stop(0);

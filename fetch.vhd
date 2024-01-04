@@ -12,8 +12,7 @@ use ieee.numeric_std.all;
 
 entity fetcher is 
     port (
-     clock, branch, reset : in std_logic;
-     we : in std_logic; 
+     clock, branch, reset, we : in std_logic;
      pc_out : out std_logic_vector (31 downto 0);
      data_input: in std_logic_vector (31 downto 0);
      branch_address: in std_logic_vector (31 downto 0);
@@ -41,7 +40,7 @@ begin
 
 instruction <= my_instruction;
 
--- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc);
+-- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc); -- TODO: Add this
 
 process (clock, reset)
 begin 
