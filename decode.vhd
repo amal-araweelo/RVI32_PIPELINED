@@ -7,14 +7,9 @@ use ieee.std_logic_1164.all;
 use work.records_pkg.all;
 
 -- Port and signal naming copies from ripes
-
-
-
 ----- Entity declarations -----
 
 -- Overall decode stage entity
--- TODO
---	Declare 'external' signals (Make ports for all signals external to the stage)
 
 -- FI/DI register
 
