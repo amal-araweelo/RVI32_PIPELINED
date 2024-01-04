@@ -29,6 +29,15 @@ component fetcher is
      );
 end component;
 
+component reg_ifid is
+	port (
+	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
+	out_pc, out_pc4, out_instruction : out std_logic_vector (31 downto 0);	-- register outputs
+	clk, en, clear : in std_logic												-- enable, clear
+	); 
+end component;
+
+
 begin
 
     -- Instruction Fetch
