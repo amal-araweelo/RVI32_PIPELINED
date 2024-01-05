@@ -5,22 +5,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use work.records_pkg.all;
-
--- Port and signal naming copies from ripes
-
-
+use work.alu_ctrl_const.all;
 
 ----- Entity declarations -----
 
--- Overall decode stage entity
--- TODO
---	Declare 'external' signals (Make ports for all signals external to the stage)
------ Entity declarations -----
 
--- Overall decode stage entity
-
--- FI/DI register
-
+-- ID/ID register
 entity reg_ifid is
 	port (
 	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
@@ -129,7 +119,7 @@ architecture behavioral of decoder is
 					case func3 is
 						-- addi
 						when "000" =>
-						decoder_out.ALUop <=  "0000"; -- ADD (STC)
+						decoder_out.ALUop <=  alu_add;
 						decoder_out.REG_we <= '1';
 
 						when others =>
@@ -152,11 +142,11 @@ architecture behavioral of decoder is
 					when "000" =>
 						-- add
 						if (func7 = "0000000") then
-						decoder_out.ALUop <=  "0000"; -- ADD (STC)
+						decoder_out.ALUop <=  alu_add; 
 						decoder_out.REG_we <= '1';
 						-- sub
 						elsif (func7 = "0100000") then
-						decoder_out.ALUop <=  "0001"; -- SUB (STC)
+						decoder_out.ALUop <=  alu_sub; 
 						decoder_out.REG_we <= '1';
 						else report "undefined func7: R-type, func3=000";
 						end if;
