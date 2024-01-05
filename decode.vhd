@@ -156,11 +156,11 @@ architecture behavioral of decoder is
 					when "000" =>
 						-- add
 						if (func7 = "0000000") then
-						decoder_out.ALUop <=  alu_add; 
+						decoder_out.ALUop <=  ALU_ADD; 
 						
 						-- sub
 						elsif (func7 = "0100000") then
-						decoder_out.ALUop <=  alu_sub; 
+						decoder_out.ALUop <=  ALU_SUB; 
 						
 						else report "undefined func7: R-type, func3=000";
 						end if;
@@ -169,21 +169,21 @@ architecture behavioral of decoder is
 					when  "100" =>
 						if (func7="0000000") then
 							decoder_out.ALUop <= ALU_XOR;
-						else report "Illegal func7: R xor"
+						else report "Illegal func7: R xor";
 					end if;
 
 					-- or
 					when "110" =>
 					if (func7="0000000") then
 						decoder_out.ALUop <= ALU_OR;
-					else report "Illegal func7: R or"
+					else report "Illegal func7: R or";
 					end if;
 
 					-- and 
 					when "111" =>
 					if (func7="0000000") then
 						decoder_out.ALUop <= ALU_AND;
-					else report "Illegal func7: R and"
+					else report "Illegal func7: R and";
 					end if;
 					
 					when others =>
