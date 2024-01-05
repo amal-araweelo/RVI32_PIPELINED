@@ -85,18 +85,29 @@ use ieee.numeric_std.all;
 architecture behavioral of decoder is
 	signal opcode: std_logic_vector(6 downto 0);
 	signal func3: std_logic_vector(2 downto 0);
+	signal func7: std_logic_vector(6 downto 0);
 	begin
 		process(instruction)
 		begin
-				opcode <= instruction(6 downto 0); 		-- update opcode
-				func3 <= instruction(14 downto 12);
+				-- Initialize internal signals
+				opcode <= instruction(6 downto 0); 
+				func3 <= (others => '0');
+				func7 <= (others => '0');
 
+				-- Set default values for decoder's outputs (all 0's)
+				-- ALUsrc and ALUop not set here, as it is always set (TODO check if true)
+				decoder_out.immediate(11 downto 0) <= (others => '0');
+				decoder_out.rd <= (others => '0');
+				decoder_out.REG_we <= '0';
+
+				-- TODO set any new values when expanding decoder
+									
 				case opcode is	
 				-- I-type
 				when "0000011" | "0001111" | "0010011" | "0011011" | "1100111" | "1110011" =>
 				decoder_out.rd <= instruction(11 downto 7);
-				decoder_out.ALUsrc1 <= '0';
-				decoder_out.ALUsrc2 <= '1';
+				decoder_out.ALUsrc1 <= '0';	-- register
+				decoder_out.ALUsrc2 <= '1';	-- immediate
 				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
 				if (decoder_out.immediate(11) = '1') then
 				    decoder_out.immediate(31 downto 12) <= (others => '1');
@@ -104,16 +115,47 @@ architecture behavioral of decoder is
 				    decoder_out.immediate(31 downto 12) <= (others => '0');
 				end if;
 
+				func3 <= instruction(14 downto 12);
+
 				--instructiontype <= "001";
 					case func3 is
 						-- addi
 						when "000" =>
-						decoder_out.ALUop <=  "0000";
+						decoder_out.ALUop <=  "0000"; -- ADD (STC)
 						decoder_out.REG_we <= '1';
 
 						when others =>
 							report "Undefined func3: I-type";
 					end case;
+				
+
+				-- R-type
+				when "0110011" | "0111011" =>
+				decoder_out.rd <= instruction(11 downto 7);
+				decoder_out.ALUsrc1 <= '0';	-- register
+				decoder_out.ALUsrc2 <= '0';	-- register
+				
+				func3 <= instruction(14 downto 12);
+				func7 <= instruction(31 downto 25);
+				case func3 is
+					-- add and sub
+					when "000" =>
+						-- add
+						if (func7 = "0000000") then
+						decoder_out.ALUop <=  "0000"; -- ADD (STC)
+						decoder_out.REG_we <= '1';
+						-- sub
+						elsif (func7 = "0100000") then
+						decoder_out.ALUop <=  "0001"; -- SUB (STC)
+						decoder_out.REG_we <= '1';
+						else report "undefined func7: R-type, func3=000"
+						end if;
+					
+				end case;
+
+						
+
+
 
 				when others =>
 					report "undefined opcode";
