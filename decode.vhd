@@ -91,7 +91,7 @@ architecture behavioral of decoder is
 	signal func3: std_logic_vector(2 downto 0);
 	signal func7: std_logic_vector(6 downto 0);
 	begin
-		process(instruction)
+	process(all) -- TODO: Remove process and replace case with select
 		begin
 				-- Initialize internal signals
 				opcode <= instruction(6 downto 0); 
