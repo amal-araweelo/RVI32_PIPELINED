@@ -154,8 +154,10 @@ architecture behavioral of decoder is
 						elsif (func7 = "0100000") then
 						decoder_out.ALUop <=  "0001"; -- SUB (STC)
 						decoder_out.REG_we <= '1';
-						else report "undefined func7: R-type, func3=000"
+						else report "undefined func7: R-type, func3=000";
 						end if;
+					when others =>
+						report "undefined func3: R-type";
 					
 				end case;
 
