@@ -36,7 +36,8 @@ use work.records_pkg.all;
 entity decoder is
 	port (
 	instruction: in std_logic_vector(31 downto 0);
-	decoder_out: out t_from_decoder
+	decoder_out: out t_from_decoder;
+  REG_rs1, REG_rs2: out std_logic_vector (4 downto 0)
 	);
 end decoder;
 
@@ -68,17 +69,17 @@ begin
 	begin
 	if (rising_edge(clock)) then		-- do stuff on rising clock edge
 	    if (clear = '0')  then		-- if the signal is not to clear the reg
-		if (en = '1') then		-- do stuff if enabled
-		out_pc <= in_pc;
-		out_pc4 <= in_pc4;
-		out_instruction <= in_instruction;
-		end if;
-	    else						-- clear the reg
+				if (en = '1') then		-- do stuff if enabled
+						out_pc <= in_pc;
+						out_pc4 <= in_pc4;
+						out_instruction <= in_instruction;
+				end if;
+  	else						-- clear the reg
 		out_pc <= (others=>'0');
 		out_pc4 <= (others=>'0');
 		out_instruction <= (others=>'0');
-	    end if;	
-	end if;
+	  end if;	
+		end if;
     end process;
 end behavioral;
 
@@ -103,8 +104,8 @@ architecture behavioral of decoder is
 				decoder_out.immediate(11 downto 0) <= (others => '0');
 				decoder_out.rd <= (others => '0');
 				decoder_out.REG_we <= '0';
-				decoder_out.REG_rs1 <= "00000";
-				decoder_out.REG_rs2 <= "00000";
+				REG_rs1 <= "00000";
+				REG_rs2 <= "00000";
 
 				-- TODO set any new values when expanding decoder
 									
@@ -115,7 +116,7 @@ architecture behavioral of decoder is
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '1';	-- immediate
 				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
-				decoder_out.REG_rs1 <= instruction(19 downto 15);
+				REG_rs1 <= instruction(19 downto 15);
 				if (decoder_out.immediate(11) = '1') then
 				    decoder_out.immediate(31 downto 12) <= (others => '1');
 				else
@@ -141,9 +142,8 @@ architecture behavioral of decoder is
 				decoder_out.rd <= instruction(11 downto 7);
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '0';	-- register
-				decoder_out.REG_rs1 <= instruction(19 downto 15);
-				decoder_out.REG_rs2 <= instruction(24 downto 20);
-
+				REG_rs1 <= instruction(19 downto 15);
+				REG_rs2 <= instruction(24 downto 20);
 
 				func3 <= instruction(14 downto 12);
 				func7 <= instruction(31 downto 25);
@@ -164,11 +164,6 @@ architecture behavioral of decoder is
 						report "undefined func3: R-type";
 					
 				end case;
-
-						
-
-
-
 				when others =>
 					report "undefined opcode";
 				end case;
@@ -188,12 +183,12 @@ begin
     process(clock)
     begin
 	    if (rising_edge(clock)) then
-		    if (we='1') then
+		    if (we = '1') then
 			    array_register(to_integer(unsigned(w_addr))) <= w_data; 
 		    end if;
 	    end if;
     end process;
     rs1_out <= array_register(to_integer(unsigned(instruction(19 downto 15))));
     rs2_out <= array_register(to_integer(unsigned(instruction(24 downto 20))));
-end behavioral;
 
+end behavioral;
