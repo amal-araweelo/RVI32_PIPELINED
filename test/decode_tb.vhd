@@ -45,7 +45,10 @@ architecture behavioral of decode_tb is
     ALUsrc2  => '0',
     ALUop  => "0000",
     REG_we => '0',
-    immediate => x"00000000");
+    immediate => x"00000000",
+    REG_rs1 => "00000",
+    REG_rs2 => "00000"
+);
 
     signal rs1_out : std_logic_vector(31 downto 0) := x"00000000";
     signal rs2_out : std_logic_vector(31 downto 0) := x"00000000";
@@ -119,6 +122,8 @@ begin
 	report "Value for ALUop is " & to_string(decoder_out.ALUop);
 	report "Value for REG_we is " & to_string(decoder_out.REG_we);
 	report "Value for immediate is " & to_string(decoder_out.immediate);
+	report "Value for REG_rs1 is " & to_string(decoder_out.REG_rs1);
+	report "Value for REG_rs2 is " & to_string(decoder_out.REG_rs2);
 
 
 	std.env.stop(0);
