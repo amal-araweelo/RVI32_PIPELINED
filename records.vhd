@@ -12,6 +12,8 @@ package records_pkg is
 		ALUop: std_logic_vector(3 downto 0);
 		REG_we: std_logic;						-- Register file write enable
 		immediate: std_logic_vector (31 downto 0); 	-- immediate value
+		REG_rs1: std_logic_vector (4 downto 0);
+		REG_rs2: std_logic_vector (4 downto 0);
 	end record t_from_decoder;
 
 

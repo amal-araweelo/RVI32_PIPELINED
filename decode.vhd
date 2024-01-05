@@ -99,6 +99,8 @@ architecture behavioral of decoder is
 				decoder_out.immediate(11 downto 0) <= (others => '0');
 				decoder_out.rd <= (others => '0');
 				decoder_out.REG_we <= '0';
+				decoder_out.REG_rs1 <= "00000";
+				decoder_out.REG_rs2 <= "00000";
 
 				-- TODO set any new values when expanding decoder
 									
@@ -109,6 +111,7 @@ architecture behavioral of decoder is
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '1';	-- immediate
 				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
+				decoder_out.REG_rs1 <= instruction(19 downto 15);
 				if (decoder_out.immediate(11) = '1') then
 				    decoder_out.immediate(31 downto 12) <= (others => '1');
 				else
@@ -134,7 +137,10 @@ architecture behavioral of decoder is
 				decoder_out.rd <= instruction(11 downto 7);
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '0';	-- register
-				
+				decoder_out.REG_rs1 <= instruction(19 downto 15);
+				decoder_out.REG_rs2 <= instruction(24 downto 20);
+
+
 				func3 <= instruction(14 downto 12);
 				func7 <= instruction(31 downto 25);
 				case func3 is
