@@ -11,7 +11,7 @@ use ieee.numeric_std.all;
 entity fetcher is 
     port (
      clock, branch, reset, we : in std_logic;
-     pc_out : out std_logic_vector (31 downto 0);
+     pc_out : out std_logic_vector (31 downto 0) := x"00000000";
      data_input: in std_logic_vector (31 downto 0);
      branch_address: in std_logic_vector (31 downto 0);
      instruction: out std_logic_vector (31 downto 0)
@@ -19,8 +19,7 @@ entity fetcher is
 end fetcher;
 
 architecture behavioral of fetcher is 
-signal pc : std_logic_vector (31 downto 0) := x"00000000";
-signal my_instruction : std_logic_vector (31 downto 0) := x"00A00093"; -- addi x1, x0, 10
+signal my_instruction : std_logic_vector (31 downto 0) := x"00310093"; -- addi x1, x2, 3
 signal length : std_logic_vector(31 downto 0) := x"00000004";
 
 component memory is
@@ -42,9 +41,9 @@ instruction <= my_instruction;
 
 process (clock, reset)
 begin 
-    if (reset = '1') then
-  	pc_out <= x"00000000";
-    elsif (rising_edge(clock)) then
+  if (reset = '1') then
+				pc_out <= x"00000000";
+  elsif (rising_edge(clock)) then
 	if (branch = '1') then
 	    pc_out <= branch_address;
 	else
