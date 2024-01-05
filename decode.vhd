@@ -125,6 +125,14 @@ architecture behavioral of decoder is
 						when "100" =>
 						decoder_out.ALUop <= ALU_XOR;
 
+						-- ori
+						when "110" =>
+						decoder_out.ALUop <= ALU_OR;
+						
+						-- andi
+						when "111" =>
+						decoder_out.ALUop <= ALU_AND;
+
 						when others =>
 							report "Undefined func3: I-type";
 					end case;
@@ -141,6 +149,8 @@ architecture behavioral of decoder is
 
 				func3 <= instruction(14 downto 12);
 				func7 <= instruction(31 downto 25);
+
+				-- case func3: R
 				case func3 is
 					-- add and sub
 					when "000" =>
@@ -154,6 +164,28 @@ architecture behavioral of decoder is
 						
 						else report "undefined func7: R-type, func3=000";
 						end if;
+					
+					-- xor
+					when  "100" =>
+						if (func7="0000000") then
+							decoder_out.ALUop <= ALU_XOR;
+						else report "Illegal func7: R xor"
+					end if;
+
+					-- or
+					when "110" =>
+					if (func7="0000000") then
+						decoder_out.ALUop <= ALU_OR;
+					else report "Illegal func7: R or"
+					end if;
+
+					-- and 
+					when "111" =>
+					if (func7="0000000") then
+						decoder_out.ALUop <= ALU_AND;
+					else report "Illegal func7: R and"
+					end if;
+					
 					when others =>
 						report "undefined func3: R-type";
 					
