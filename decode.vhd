@@ -103,6 +103,7 @@ architecture behavioral of decoder is
 				-- I-type
 				when "0000011" | "0001111" | "0010011" | "0011011" | "1100111" | "1110011" =>
 				decoder_out.rd <= instruction(11 downto 7);
+				decoder_out.REG_we <= '1';
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '1';	-- immediate
 				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
@@ -113,14 +114,16 @@ architecture behavioral of decoder is
 				    decoder_out.immediate(31 downto 12) <= (others => '0');
 				end if;
 
+				-- case: func3
 				func3 <= instruction(14 downto 12);
-
-				--instructiontype <= "001";
 					case func3 is
 						-- addi
 						when "000" =>
-						decoder_out.ALUop <=  alu_add;
-						decoder_out.REG_we <= '1';
+						decoder_out.ALUop <=  ALU_ADD;
+						
+						-- xori
+						when "100" =>
+						decoder_out.ALUop <= ALU_XOR;
 
 						when others =>
 							report "Undefined func3: I-type";
@@ -130,6 +133,7 @@ architecture behavioral of decoder is
 				-- R-type
 				when "0110011" | "0111011" =>
 				decoder_out.rd <= instruction(11 downto 7);
+				decoder_out.REG_we <= '1';
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '0';	-- register
 				REG_rs1 <= instruction(19 downto 15);
@@ -143,11 +147,11 @@ architecture behavioral of decoder is
 						-- add
 						if (func7 = "0000000") then
 						decoder_out.ALUop <=  alu_add; 
-						decoder_out.REG_we <= '1';
+						
 						-- sub
 						elsif (func7 = "0100000") then
 						decoder_out.ALUop <=  alu_sub; 
-						decoder_out.REG_we <= '1';
+						
 						else report "undefined func7: R-type, func3=000";
 						end if;
 					when others =>
