@@ -35,8 +35,6 @@ end component;
 
 begin
 
-instruction <= my_instruction;
-
 -- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc); -- TODO: Add this
 
 process (clock, reset)
@@ -44,12 +42,14 @@ begin
   if (reset = '1') then
 				pc_out <= x"00000000";
   elsif (rising_edge(clock)) then
-	if (branch = '1') then
-	    pc_out <= branch_address;
-	else
-	    pc_out <= std_logic_vector(unsigned(pc_out) + unsigned(length));
-	end if;
-    end if;
+			if (branch = '1') then
+					pc_out <= branch_address;
+			else
+					pc_out <= std_logic_vector(unsigned(pc_out) + unsigned(length));
+			end if;
+
+			instruction <= my_instruction;
+  end if;
 end process;
 
 end behavioral;
