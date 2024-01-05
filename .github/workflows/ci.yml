@@ -1,0 +1,32 @@
+name: VHDL Test
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential automake autoconf flex check llvm-dev pkg-config zlib1g-dev libdw-dev libffi-dev libzstd-dev
+
+    - name: Clone and build nvc
+      run: |
+        git clone https://github.com/nickg/nvc.git
+        cd nvc
+        ./autogen.sh
+        mkdir build && cd build
+        ../configure
+        make
+        sudo make install
+
+    - name: Run VHDL tests
+      run: |
+        # Add commands to compile and run your VHDL tests here
+        # For example:
+        make test

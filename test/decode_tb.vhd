@@ -24,7 +24,7 @@ architecture behavioral of decode_tb is
 	W: integer:= 5		-- no. of address bits (5 bits=32 addresses)
 	);
 	port (
-		clk, we: in std_logic;
+		clock, we: in std_logic;
 		instruction: in std_logic_vector(31 downto 0);
 		w_addr: in std_logic_vector(4 downto 0);
 		w_data: in std_logic_vector(B-1 downto 0);
@@ -33,7 +33,7 @@ architecture behavioral of decode_tb is
     end component;
 
     -- Inputs
-    signal instruction : std_logic_vector(31 downto 0) := x"00310093";
+    signal instruction : std_logic_vector(31 downto 0) := x"00000000";
     signal clk : std_logic := '0';
     signal we : std_logic := '0';
     signal w_addr : std_logic_vector(4 downto 0) := "00000";
@@ -62,7 +62,7 @@ begin
     );
 
     uut_reg_file : reg_file port map (
-	clk => clk,
+	clock => clk,
 	we => we,
 	instruction => instruction,
 	w_addr => w_addr,
@@ -112,6 +112,7 @@ begin
 	report "Value for rs2_out is " & to_string(rs2_out);
 
 	instruction <= x"00308113";
+	report "Instruction is " & to_string(instruction);
 	report "Value for rd is " & to_string(decoder_out.rd);
 	report "Value for ALUsrc1 is " & to_string(decoder_out.ALUsrc1);
 	report "Value for ALUsrc2 is " & to_string(decoder_out.ALUsrc2);

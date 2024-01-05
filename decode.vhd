@@ -15,6 +15,9 @@ use work.records_pkg.all;
 -- Overall decode stage entity
 -- TODO
 --	Declare 'external' signals (Make ports for all signals external to the stage)
+----- Entity declarations -----
+
+-- Overall decode stage entity
 
 -- FI/DI register
 
@@ -22,7 +25,7 @@ entity reg_ifid is
 	port (
 	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
 	out_pc, out_pc4, out_instruction : out std_logic_vector (31 downto 0);	-- register outputs
-	clk, en, clear : in std_logic												-- enable, clear
+	clock, en, clear : in std_logic												-- enable, clear
 	); 
 end reg_ifid;
 
@@ -48,7 +51,7 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 	W: integer:= 5		-- no. of address bits (5 bits=32 addresses)
 	);
 	port (
-		clk, we: in std_logic;
+		clock, we: in std_logic;
 		instruction: in std_logic_vector(31 downto 0);
 		w_addr: in std_logic_vector(4 downto 0);
 		w_data: in std_logic_vector(B-1 downto 0);
@@ -60,29 +63,30 @@ end reg_file;
 
 -- IF/ID register
 architecture behavioral of reg_ifid is
+begin
+    process(clock, clear, en)
 	begin
-		process(clk, clear, en)
-		begin
-			if (rising_edge(clk)) then		-- do stuff on rising clock edge
-				if (clear = '0')  then		-- if the signal is not to clear the reg
-					if (en = '1') then		-- do stuff if enabled
-						out_pc <= in_pc;
-						out_pc4 <= in_pc4;
-						out_instruction <= in_instruction;
-					end if;
-				else 						-- clear the reg
-					out_pc <= (others=>'0');
-					out_pc4 <= (others=>'0');
-					out_instruction <= (others=>'0');
-				end if;	
+	if (rising_edge(clock)) then		-- do stuff on rising clock edge
+	    if (clear = '0')  then		-- if the signal is not to clear the reg
+		if (en = '1') then		-- do stuff if enabled
+		out_pc <= in_pc;
+		out_pc4 <= in_pc4;
+		out_instruction <= in_instruction;
 		end if;
-	end process;
-	end behavioral;
+	    else						-- clear the reg
+		out_pc <= (others=>'0');
+		out_pc4 <= (others=>'0');
+		out_instruction <= (others=>'0');
+	    end if;	
+	end if;
+    end process;
+end behavioral;
 
 library ieee;
 use ieee.numeric_std.all;
 
 architecture behavioral of decoder is
+
 	signal opcode: std_logic_vector(6 downto 0);
 	signal func3: std_logic_vector(2 downto 0);
 	signal func7: std_logic_vector(6 downto 0);
@@ -176,20 +180,20 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 architecture behavioral of reg_file is
-	type registerfile_type is array (2**W-1 downto 0) of
-		std_logic_vector(B-1 downto 0);
-	signal array_register: registerfile_type;
+type registerfile_type is array (2**W-1 downto 0) of
+	std_logic_vector(B-1 downto 0);
+signal array_register: registerfile_type;
 
-	begin
-		process(clk)
-		begin
-			if (rising_edge(clk)) then
-				if (we='1') then
-					array_register(to_integer(unsigned(w_addr))) <= w_data; 
-				end if;
-			end if;
-		end process;
-	rs1_out <= array_register(to_integer(unsigned(instruction(19 downto 15))));
-	rs2_out <= array_register(to_integer(unsigned(instruction(24 downto 20))));
+begin
+    process(clock)
+    begin
+	    if (rising_edge(clock)) then
+		    if (we='1') then
+			    array_register(to_integer(unsigned(w_addr))) <= w_data; 
+		    end if;
+	    end if;
+    end process;
+    rs1_out <= array_register(to_integer(unsigned(instruction(19 downto 15))));
+    rs2_out <= array_register(to_integer(unsigned(instruction(24 downto 20))));
 end behavioral;
 

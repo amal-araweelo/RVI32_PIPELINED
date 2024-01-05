@@ -63,45 +63,78 @@ begin
         branch <= '0';
 	we <= '1';
         wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
+	
+	reset <= '0';
+
+	-- Test 1
+
+	if pc_out = x"00000000" then
+		report "Test 1 [PASSED]";
+	else
+		report "Test 1 [FAILED]";
+		std.env.stop(1);
+	end if;
+
+	-- Test 2
 	
 	reset <= '0';
         wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
 
-        wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
+	if pc_out = x"00000004" then
+	    report "Test 2 [PASSED]";
+	else
+	    report "Test 2 [FAILED]";
+	    std.env.stop(1);
+	end if;
+
+	-- Test 3
 	
         wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
-        
-	wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
+
+	if pc_out = x"00000008" then
+	    report "Test 3 [PASSED]";
+	else
+	    report "Test 3 [FAILED]";
+	    std.env.stop(1);
+	end if;
+
+	-- Test 4
 
 	wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
 
+	if pc_out = x"0000000C" then
+	    report "Test 4 [PASSED]";
+	else
+	    report "Test 4 [FAILED]";
+	    std.env.stop(1);
+	end if;
+
+	-- Test 5
         branch <= '1';
 	branch_address <= x"00000123";
 	wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
+
+	if pc_out = x"00000123" then
+	    report "Test 5 [PASSED]";
+	else
+	    report "Test 5 [FAILED]";
+	    std.env.stop(1);
+	end if;
+
+	-- Test 6
 
 	wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
 
         branch <= '0';
 	branch_address <= x"00000123";
 	wait for clock_period;
-	report "The value of PC is now: " & to_string(pc_out);
-	report "The value of Instruction is now: " & to_string(instruction);
+
+	if pc_out = x"00000127" then
+	    report "Test 6 [PASSED]";
+	else
+	    report "Test 6 [FAILED]";
+	    std.env.stop(1);
+	end if;
 
         -- finish simulation
 	std.env.stop(0);

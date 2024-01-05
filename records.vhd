@@ -16,17 +16,4 @@ package records_pkg is
 		REG_rs2: std_logic_vector (4 downto 0);
 	end record t_from_decoder;
 
-
-
-   
-
-
---	constant c_FROM_FIFO_INIT : t_FROM_FIFO := (wr_full => '0',
---												rd_empty => '1',
---												rd_dv => '0',
---												rd_data => (others => '0'));
-   
-
-	
-	 
   end package records_pkg;
