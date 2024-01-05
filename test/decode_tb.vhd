@@ -14,7 +14,8 @@ architecture behavioral of decode_tb is
     component decoder
 	port (
 	instruction: in std_logic_vector(31 downto 0);
-	decoder_out: out t_from_decoder
+	decoder_out: out t_from_decoder;
+  REG_rs1, REG_rs2: out std_logic_vector (4 downto 0)
 	);
     end component;
 
@@ -45,11 +46,11 @@ architecture behavioral of decode_tb is
     ALUsrc2  => '0',
     ALUop  => "0000",
     REG_we => '0',
-    immediate => x"00000000",
-    REG_rs1 => "00000",
-    REG_rs2 => "00000"
+    immediate => x"00000000"
 );
 
+		signal REG_rs1 : std_logic_vector(4 downto 0) := "00000";
+		signal REG_rs2 : std_logic_vector(4 downto 0) := "00000";
     signal rs1_out : std_logic_vector(31 downto 0) := x"00000000";
     signal rs2_out : std_logic_vector(31 downto 0) := x"00000000";
 
@@ -85,46 +86,33 @@ begin
 
     stim_proc: process
     begin 
-	report "Value for rs1_out is " & to_string(rs1_out);
-	report "Value for rs2_out is " & to_string(rs2_out);
+
+	instruction <= x"00308113"; -- Needed to read the correct registers
 
 	we <= '1';
 	w_addr <= "00001";
 	w_data <= x"00000001";
 	wait for clock_period;
 
-	report "Value for rs1_out is " & to_string(rs1_out);
-	report "Value for rs2_out is " & to_string(rs2_out);
-
 	we <= '1';
 	w_addr <= "00011";
 	w_data <= x"00000003";
 	wait for clock_period;
 
-	report "Value for rs1_out is " & to_string(rs1_out);
-	report "Value for rs2_out is " & to_string(rs2_out);
+	assert rs1_out = x"00000001" report "rs1_out is not correct" severity error;
+	assert rs2_out = x"00000003" report "rs2_out is not correct" severity error;
+	report "Test 1 [PASSED]" severity note;
 	
-	w_addr <= "00010";
-	w_data <= x"00000002";
 	instruction <= x"00308113";
 	wait for clock_period;
-	wait for clock_period;
-	wait for clock_period;
 
-	report "Value for rs1_out is " & to_string(rs1_out);
-	report "Value for rs2_out is " & to_string(rs2_out);
-
-	instruction <= x"00308113";
-	report "Instruction is " & to_string(instruction);
-	report "Value for rd is " & to_string(decoder_out.rd);
-	report "Value for ALUsrc1 is " & to_string(decoder_out.ALUsrc1);
-	report "Value for ALUsrc2 is " & to_string(decoder_out.ALUsrc2);
-	report "Value for ALUop is " & to_string(decoder_out.ALUop);
-	report "Value for REG_we is " & to_string(decoder_out.REG_we);
-	report "Value for immediate is " & to_string(decoder_out.immediate);
-	report "Value for REG_rs1 is " & to_string(decoder_out.REG_rs1);
-	report "Value for REG_rs2 is " & to_string(decoder_out.REG_rs2);
-
+  assert decoder_out.rd = "00010" report "rd is not correct" severity error;
+	assert decoder_out.ALUsrc1 = '0' report "ALUsrc1 is not correct" severity error;
+	assert decoder_out.ALUsrc2 = '1' report "ALUsrc2 is not correct (needs to be 1 for I-type)" severity error;
+	assert decoder_out.ALUop = "0000" report "ALUop is not correct (needs to be ADD)" severity error;
+	assert decoder_out.REG_we = '1' report "REG_we is not correct" severity error;
+	assert decoder_out.immediate = x"00000003" report "immediate is not correct" severity error;
+	report "Test 2 [PASSED]" severity note;
 
 	std.env.stop(0);
     end process;
