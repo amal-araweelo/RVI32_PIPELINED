@@ -11,7 +11,7 @@ use ieee.numeric_std.all;
 entity fetcher is 
     port (
      clock, branch, reset, we : in std_logic;
-     pc_out : out std_logic_vector (31 downto 0) := x"00000000";
+     pc_out : out std_logic_vector (31 downto 0);
      data_input: in std_logic_vector (31 downto 0);
      branch_address: in std_logic_vector (31 downto 0);
      instruction: out std_logic_vector (31 downto 0)
@@ -21,6 +21,8 @@ end fetcher;
 architecture behavioral of fetcher is 
 signal my_instruction : std_logic_vector (31 downto 0) := x"00310093"; -- addi x1, x2, 3
 signal length : std_logic_vector(31 downto 0) := x"00000004";
+signal reg : std_logic_vector(31 downto 0) := x"00000000";
+signal pc_next : std_logic_vector(31 downto 0);
 
 component memory is
   port
@@ -37,19 +39,24 @@ begin
 
 -- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc); -- TODO: Add this
 
+process(branch, reg, branch_address) begin
+		if (branch = '1') then
+				pc_next <= branch_address;
+		else
+				pc_next <= std_logic_vector(unsigned(reg) + unsigned(length));
+		end if;
+end process;
+
 process (clock, reset)
 begin 
   if (reset = '1') then
-				pc_out <= x"00000000";
+					reg <= (others => '0');
   elsif (rising_edge(clock)) then
-			if (branch = '1') then
-					pc_out <= branch_address;
-			else
-					pc_out <= std_logic_vector(unsigned(pc_out) + unsigned(length));
-			end if;
-
-			instruction <= my_instruction;
+					reg <= pc_next;
   end if;
 end process;
+
+pc_out <= reg;
+instruction <= my_instruction;
 
 end behavioral;
