@@ -62,8 +62,50 @@ component decoder is
 	);
 end component;
 
+component reg_idex is 
+		port (
+				clk, en, clear : std_logic;
+				in_from_id : in t_from_id;
+				out_to_ex : out t_from_id
+	 );
+end component;
 
--- Signals for interconnection
+component alu is
+  port
+  (
+    op_1, op_2 : in std_logic_vector(31 downto 0);
+    ctrl       : in std_logic_vector(3 downto 0);
+    res        : out std_logic_vector(31 downto 0)
+  );
+end component;
+
+component execute is
+  port
+  (
+    -- Inputs
+    -- the first two will be removed (only for testing);
+    forward_1       : in std_logic_vector(1 downto 0);
+    forward_2       : in std_logic_vector(1 downto 0);
+    do_jmp_in       : in std_logic                     := '0';
+    do_branch_in    : in std_logic                     := '0';
+    alu_ctrl_in     : in std_logic_vector(3 downto 0)  := (others => '0');
+    alu_op1_ctrl_in : in std_logic                     := '0'; -- select signal for operand 1
+    alu_op2_ctrl_in : in std_logic                     := '0'; -- select signal for operand 2
+    pc_in           : in std_logic_vector(31 downto 0) := (others => '0');
+    r1_in           : in std_logic_vector(31 downto 0) := (others => '0');
+    r2_in           : in std_logic_vector(31 downto 0) := (others => '0');
+    imm_in          : in std_logic_vector(31 downto 0) := (others => '0');
+    wb_reg_in       : in std_logic_vector(31 downto 0) := (others => '0'); -- to be forwarded from WB stage
+    mem_reg_in      : in std_logic_vector(31 downto 0) := (others => '0'); -- to be forwarded from MEM stage
+    -- more to come with forwarding, hazard and memory
+
+    -- Ouputs
+    sel_pc_out : out std_logic                     := '0'; -- select signal for pc
+    alures_out : out std_logic_vector(31 downto 0) := (others => '0')
+  );
+end component;
+
+		-- Signals for interconnection
     signal branch, reset, we, en, clear : std_logic;
     signal data_input, branch_address, in_pc4 : std_logic_vector(31 downto 0);
     signal pc_out, instruction, out_pc, out_pc4, out_instruction : std_logic_vector(31 downto 0);
@@ -72,6 +114,10 @@ end component;
 		signal w_addr : std_logic_vector (4 downto 0);
 		signal w_data : std_logic_vector (31 downto 0);
 		signal reg1_out, reg2_out : std_logic_vector (31 downto 0);
+		signal reg_idex_out : t_from_id;
+		signal clear_idex : std_logic;
+		signal execute_sel_pc_out : std_logic;
+		signal execute_alures_out : std_logic_vector (31 downto 0);
 
 begin
 
@@ -128,12 +174,45 @@ begin
 						REG_rs2 => REG_rs2
 			 );
 
+		-- Register ID/EX
+		reg_idex_inst: reg_idex
+				port map (
+						clk => clock,
+						en => en,
+						clear => clear_idex,
+						in_from_id.decoded => decoder_out, 
+						in_from_id.reg_rs1 => reg1_out,
+						in_from_id.reg_rs2 => reg2_out,
+						out_to_ex => reg_idex_out
+			 );
+
+		-- Execute
+		exec_inst: execute
+				port map (
+						forward_1 => "01",
+						forward_2 => "01",
+						do_jmp_in => '0',
+						do_branch_in => '0',
+						alu_ctrl_in => reg_idex_out.decoded.ALUOp,
+						alu_op1_ctrl_in => reg_idex_out.decoded.ALUSrc1,
+						alu_op2_ctrl_in => reg_idex_out.decoded.ALUSrc2,
+						pc_in => out_pc,
+						r1_in => reg1_out,
+						r2_in => reg2_out,
+						imm_in => decoder_out.immediate,
+						wb_reg_in => x"00000000",
+						mem_reg_in => x"00000000",
+						sel_pc_out => execute_sel_pc_out,
+						alures_out => execute_alures_out
+				);
+
 			reset <= '0';
 			branch <= '0';
 			en <= '1';
 			clear <= '0';
 			branch_address <= x"00000000";
 			we <= '0';
+			clear_idex <= '0';
 
 
 		 process(clock) is
@@ -146,15 +225,14 @@ begin
 					 report "Immediate: " & to_string(decoder_out.immediate);
 					 report "Register 1: " & to_string(reg1_out);
 					 report "Register 2: " & to_string(reg2_out);
+					 report "Out from ID/EX: " & to_string(reg_idex_out.decoded.immediate);
+					 report "ALU Src 1: " & to_string(reg_idex_out.decoded.ALUSrc1);
+					 report "ALU Src 2: " & to_string(reg_idex_out.decoded.ALUSrc2);
+					 report "ALU Op: " & to_string(reg_idex_out.decoded.ALUOp);
+
+					 report "Result from ALU: " & to_string(execute_alures_out);
+					 report "Execute SEL PC: " & to_string(execute_sel_pc_out);
 			 
-			-- Instruction Fetch
-
-			-- Instruction Decode
-
-			-- Execute 
-
-			-- Memory and Write Back
-		  
 		  end if;
 		 end process;
 
