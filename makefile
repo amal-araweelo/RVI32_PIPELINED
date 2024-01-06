@@ -1,17 +1,44 @@
-test: fetch
+test: fetch decode memory alu
+
+# Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
+
+NVC := nvc --std=2008
+
+records:
+	$(NVC) -a records.vhd
+
+auxiliary:
+	$(NVC) -a alu_ctrl_constants.vhd
+	$(NVC) -a mux2.vhd
+	$(NVC) -a mux3.vhd
+	$(NVC) -a comparator.vhd
+	$(NVC) -a alu.vhd
 
 fetch:
-	nvc  --std=2008 -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
+	$(NVC) -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
 
 execute:
-	nvc  --std=2008 -a execute.vhd test/execute_tb.vhd -e execute_tb -r --format=fst --gtkw=wave.fst --wave
+	$(NVC) -a execute.vhd test/execute_tb.vhd -e execute_tb -r 
 
 decode:
-	nvc --std=2008 -a records.vhd
-	nvc --std=2008 -a decode.vhd test/decode_tb.vhd -e decode_tb -r 
+	$(NVC) -a records.vhd
+	$(NVC) -a decode.vhd test/decode_tb.vhd -e decode_tb -r 
 
-cpu:
-	nvc --std=2008 -a records.vhd
-	nvc --std=2008 -a decode.vhd 
-	nvc --std=2008 -a fetch.vhd 
-	nvc --std=2008 -a cpu.vhd test/cpu_tb.vhd -e cpu_tb -r
+cpu: records auxiliary
+	$(NVC) -a decode.vhd 
+	$(NVC) -a execute.vhd 
+	$(NVC) -a fetch.vhd 
+	$(NVC) -a alu.vhd 
+	$(NVC) -a cpu.vhd test/cpu_tb.vhd -e cpu_tb -r --format=fst --gtkw=wave.fst --wave
+
+alu: auxiliary
+	$(NVC) -a alu.vhd test/alu_tb.vhd -e alu_tb -r
+
+memory:
+	$(NVC) -a memory.vhd test/memory_tb.vhd -e memory_tb -r
+
+id_ex: records
+	$(NVC) -a id_ex.vhd
+
+clean:
+	rm -rf work
