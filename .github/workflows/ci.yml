@@ -27,6 +27,4 @@ jobs:
 
     - name: Run VHDL tests
       run: |
-        # Add commands to compile and run your VHDL tests here
-        # For example:
         make test
