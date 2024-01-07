@@ -9,6 +9,7 @@ records:
 
 auxiliary:
 	$(NVC) -a alu_ctrl_constants.vhd
+	$(NVC) -a mem_op_constants.vhd
 	$(NVC) -a mux2.vhd
 	$(NVC) -a mux3.vhd
 	$(NVC) -a comparator.vhd
@@ -34,8 +35,8 @@ cpu: records auxiliary
 alu: auxiliary
 	$(NVC) -a alu.vhd test/alu_tb.vhd -e alu_tb -r
 
-memory:
-	$(NVC) -a memory.vhd test/memory_tb.vhd -e memory_tb -r
+datamem: auxiliary
+	$(NVC) -a datamem_5.vhd test/datamem_5_tb.vhd -e datamem_5_tb -r
 
 id_ex: records
 	$(NVC) -a id_ex.vhd
