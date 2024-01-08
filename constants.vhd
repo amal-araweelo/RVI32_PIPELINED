@@ -24,6 +24,11 @@ package alu_ctrl_const is
   constant alu_bge   : std_logic_vector(3 downto 0) := "1111";
 end alu_ctrl_const;
 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+
 package const_decoder is 
   -- OPCODES
   constant DEC_I_LOAD                 : std_logic_vector(6 downto 0) := "0000011";
@@ -39,8 +44,29 @@ package const_decoder is
 
 end package const_decoder;
 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
+-- Memory operation control constants
 
+package mem_op_const is
+  constant sw  : std_logic_vector(3 downto 0) := "0000";
+  constant sh  : std_logic_vector(3 downto 0) := "0001";
+  constant sb  : std_logic_vector(3 downto 0) := "0010";
+  constant lw  : std_logic_vector(3 downto 0) := "0011";
+  constant lh  : std_logic_vector(3 downto 0) := "0100";
+  constant lb  : std_logic_vector(3 downto 0) := "0101";
+  constant lwu : std_logic_vector(3 downto 0) := "0110";
+  constant lhu : std_logic_vector(3 downto 0) := "0111";
+  constant lbu : std_logic_vector(3 downto 0) := "1000";
+end mem_op_const;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 package records_pkg is
 	
