@@ -1,3 +1,5 @@
 work
 .hdl_checker
 *.fst
+*.vcd
+*.o
