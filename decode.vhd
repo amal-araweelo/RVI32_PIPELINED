@@ -15,20 +15,6 @@ use work.const_decoder.all;
 
 ----- Entity declarations -----
 
-
--- ID/ID register
-entity reg_ifid is
-	port (
-	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
-	out_pc, out_pc4, out_instruction : out std_logic_vector (31 downto 0);	-- register outputs
-	clock, en, clear : in std_logic												-- enable, clear
-	); 
-end reg_ifid;
-
-library ieee;
-use ieee.std_logic_1164.all;
-use work.records_pkg.all;
-
 entity decoder is
 	port (
 	instruction: in std_logic_vector(31 downto 0);
@@ -58,26 +44,7 @@ end reg_file;
 
 
 
--- IF/ID register
-architecture behavioral of reg_ifid is
-begin
-    process(clock, clear, en)
-	begin
-	if (rising_edge(clock)) then		-- do stuff on rising clock edge
-	    if (clear = '0')  then		-- if the signal is not to clear the reg
-				if (en = '1') then		-- do stuff if enabled
-						out_pc <= in_pc;
-						out_pc4 <= in_pc4;
-						out_instruction <= in_instruction;
-				end if;
-  	else						-- clear the reg
-		out_pc <= (others=>'0');
-		out_pc4 <= (others=>'0');
-		out_instruction <= (others=>'0');
-	  end if;	
-		end if;
-    end process;
-end behavioral;
+
 
 -- Re-includes bc VHDL do be like that
 library ieee;

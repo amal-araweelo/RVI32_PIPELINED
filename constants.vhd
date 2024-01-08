@@ -71,7 +71,7 @@ use ieee.numeric_std.all;
 package records_pkg is
 	
 	-- Outputs from decoder
-	type t_from_decoder is record
+	type t_decoder is record
 		rd: std_logic_vector(4 downto 0);		-- destination register
 		ALU_src1_ctrl: std_logic;						
 		ALU_src2_ctrl: std_logic;
@@ -79,7 +79,7 @@ package records_pkg is
 		REG_we: std_logic;						-- Register file write enable
 		immediate: std_logic_vector (31 downto 0); 	-- immediate value
 
-	end record t_from_decoder;
+	end record t_decoder;
 
 	type t_from_id is record
 			decoded: t_from_decoder;
@@ -88,4 +88,22 @@ package records_pkg is
 			-- pc: std_logic_vector (31 downto 0); -- not needed for now (only implemented for branch)
   end record t_from_id;
 
+  type t_ifid_reg is record
+    pc, instruction   : std_logic_vector (31 downto 0);	-- register inputs
+  end record t_ifid_reg;
+
+  type t_idex_reg is record
+    decoder_record : t_decoder;
+    pc, reg_src_1, reg_src_2: std_logic_vector(31 downto 0);
+  end record t_idex_reg;
+
+  type t_exmem_reg is record
+    REG_we, MEM_we      : std_logic;
+    WB_src_ctrl:        : std_logic_vector(1 downto 0);
+    MEM_op              : std_logic_vector(3 downto 0);
+    REG_dst_idx         : std_logic_vector(4 downto 0);
+    pc, ALU_res, REG_src_2  : std_logic_vector(31 downto 0);
+  end record t_exmem_reg;
+
   end package records_pkg;
+
