@@ -175,19 +175,22 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 architecture behavioral of reg_file is
-type registerfile_type is array (2**W-1 downto 0) of
-	std_logic_vector(B-1 downto 0);
-signal array_register: registerfile_type;
+type registerfile_type is array (2**5-1 downto 0) of std_logic_vector(31 downto 0);
+signal array_register: registerfile_type := (others => (others => '0'));
+signal zero_idx : std_logic_vector(4 downto 0) := (others => '0');
 
 begin
+
     process(clock)
     begin
 	    if (rising_edge(clock)) then
 		    if (we = '1') then
+			report "REG " & to_string(w_addr) & " = " & to_string(w_data);
 			    array_register(to_integer(unsigned(w_addr))) <= w_data; 
 		    end if;
 	    end if;
     end process;
+
     rs1_out <= array_register(to_integer(unsigned(instruction(19 downto 15))));
     rs2_out <= array_register(to_integer(unsigned(instruction(24 downto 20))));
 

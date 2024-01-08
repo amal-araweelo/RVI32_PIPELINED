@@ -6,7 +6,6 @@ use ieee.numeric_std.all;
 
 -- read binary file
 -- Hardcode an addi instruction
--- addi x1, x0, 10 -> 0x00A00093
 
 entity fetcher is 
     port (
@@ -19,25 +18,22 @@ entity fetcher is
 end fetcher;
 
 architecture behavioral of fetcher is 
-signal my_instruction : std_logic_vector (31 downto 0) := x"00310093"; -- addi x1, x2, 3
+signal my_instruction : std_logic_vector (31 downto 0) := x"00100093"; -- addi x1, x0, 1
 signal length : std_logic_vector(31 downto 0) := x"00000004";
 signal reg : std_logic_vector(31 downto 0) := x"00000000";
 signal pc_next : std_logic_vector(31 downto 0);
 
-component memory is
+component instrmem is
   port
   (
-    clk    : in std_logic;
-    we     : in std_logic;
-    rdData : out std_logic_vector(31 downto 0);
-    wrData : in std_logic_vector(31 downto 0);
-    addr   : in std_logic_vector(31 downto 0)
+    rdAddr   : in std_logic_vector(31 downto 0);
+    rdData : out std_logic_vector(31 downto 0)
   );
 end component;
 
 begin
 
--- Instruction_Memory: memory port map (clock, we, instruction, data_input, pc); -- TODO: Add this
+Instruction_Memory: instrmem port map ( rdData => instruction, rdAddr => reg);
 
 process(branch, reg, branch_address) begin
 		if (branch = '1') then
@@ -57,6 +53,6 @@ begin
 end process;
 
 pc_out <= reg;
-instruction <= my_instruction;
+-- instruction <= my_instruction;
 
 end behavioral;

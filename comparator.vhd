@@ -2,7 +2,6 @@ library ieee;
 library work;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.std_logic_unsigned.all;
 use work.alu_ctrl_const.all;
 
 -- note: this block is called 'branch' in Ripes

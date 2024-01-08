@@ -35,6 +35,13 @@ begin
     wait for clock_period;
     wait for clock_period;
     wait for clock_period;
+    wait for clock_period;
+    wait for clock_period;
+    wait for clock_period;
+
+    -- wait for clock_period;
+    -- wait for clock_period;
+    -- wait for clock_period;
 
     std.env.stop(0);
 end process;

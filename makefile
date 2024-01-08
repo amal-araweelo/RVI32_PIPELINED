@@ -1,45 +1,61 @@
 test: fetch decode datamem alu
 
-# Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
-
-NVC := nvc --std=2008
+HDLC := ghdl
+CARGS := --std=08
+# WAVE := --format=fst --gtkw=wave.fst --wave
+WAVE := --vcd=wave.vcd
 
 records:
-	$(NVC) -a records.vhd
+	$(HDLC) -a $(CARGS) records.vhd
 
 auxiliary:
-	$(NVC) -a alu_ctrl_constants.vhd
-	$(NVC) -a mem_op_constants.vhd
-	$(NVC) -a mux2.vhd
-	$(NVC) -a mux3.vhd
-	$(NVC) -a comparator.vhd
-	$(NVC) -a alu.vhd
+	$(HDLC) -a $(CARGS) alu_ctrl_constants.vhd
+	$(HDLC) -a $(CARGS) mem_op_constants.vhd
+	$(HDLC) -a $(CARGS) mux2.vhd
+	$(HDLC) -a $(CARGS) mux3.vhd
+	$(HDLC) -a $(CARGS) comparator.vhd
+	$(HDLC) -a $(CARGS) alu.vhd
 
 fetch:
-	$(NVC) -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
+	$(HDLC) -a $(CARGS) datamem.vhd
+	$(HDLC) -a $(CARGS) fetch.vhd 
+	$(HDLC) -a $(CARGS) test/fetch_tb.vhd
+	$(HDLC) -e $(CARGS) fetcher_tb
+	$(HDLC) -r $(CARGS) fetcher_tb
 
 execute:
-	$(NVC) -a execute.vhd test/execute_tb.vhd -e execute_tb -r 
+	$(HDLC) -a $(CARGS) execute.vhd test/execute_tb.vhd -e execute_tb -r 
 
 decode:
-	$(NVC) -a records.vhd
-	$(NVC) -a decode.vhd test/decode_tb.vhd -e decode_tb -r 
+	$(HDLC) -a $(CARGS) records.vhd
+	$(HDLC) -a $(CARGS) decode.vhd test/decode_tb.vhd -e decode_tb -r 
 
-cpu: records auxiliary
-	$(NVC) -a decode.vhd 
-	$(NVC) -a execute.vhd 
-	$(NVC) -a fetch.vhd 
-	$(NVC) -a alu.vhd 
-	$(NVC) -a cpu.vhd test/cpu_tb.vhd -e cpu_tb -r --format=fst --gtkw=wave.fst --wave
+cpu: records auxiliary id_ex ex_mem mem_wb
+	$(HDLC) -a $(CARGS) datamem.vhd
+	$(HDLC) -a $(CARGS) decode.vhd 
+	$(HDLC) -a $(CARGS) execute.vhd 
+	$(HDLC) -a $(CARGS) fetch.vhd 
+	$(HDLC) -a $(CARGS) alu.vhd 
+	$(HDLC) -a $(CARGS) write-back.vhd 
+	$(HDLC) -a $(CARGS) cpu.vhd 
+	$(HDLC) -a $(CARGS) test/cpu_tb.vhd
+	$(HDLC) -e $(CARGS) cpu_tb
+	$(HDLC) -r $(CARGS) cpu_tb $(WAVE)
 
 alu: auxiliary
-	$(NVC) -a alu.vhd test/alu_tb.vhd -e alu_tb -r
+	$(HDLC) -a $(CARGS) alu.vhd test/alu_tb.vhd -e alu_tb -r
 
 datamem: auxiliary
-	$(NVC) -a datamem_5.vhd test/datamem_5_tb.vhd -e datamem_5_tb -r
+	$(HDLC) -a $(CARGS) datamem.vhd test/memory.vhd -e memory_tb -r
 
 id_ex: records
-	$(NVC) -a id_ex.vhd
+	$(HDLC) -a $(CARGS) id_ex.vhd
+
+ex_mem: records
+	$(HDLC) -a $(CARGS) ex_mem.vhd
+
+mem_wb: records
+	$(HDLC) -a $(CARGS) mem_wb.vhd
 
 clean:
 	rm -rf work

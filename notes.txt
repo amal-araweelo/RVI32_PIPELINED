@@ -1,0 +1,4 @@
+folders: 
+ - packages
+ - compoenents (muxes, cmps)
+ - src
