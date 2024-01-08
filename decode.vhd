@@ -2,25 +2,21 @@
 
 -- DECODE STAGE
 
+-- TODO: ADD REST OF U-TYPE RECORD LOGIC
+-- TODO: ADD REST OF S-TYPE RECORD LOGIC
+-- TODO: ADD REST OF UJ-TYPE RECORD LOGIC
+
 library ieee;
 use ieee.std_logic_1164.all;
 use work.records_pkg.all;
-
--- Port and signal naming copies from ripes
-
+use work.alu_ctrl_const.all;
+use work.const_decoder.all;
 
 
 ----- Entity declarations -----
 
--- Overall decode stage entity
--- TODO
---	Declare 'external' signals (Make ports for all signals external to the stage)
------ Entity declarations -----
 
--- Overall decode stage entity
-
--- FI/DI register
-
+-- ID/ID register
 entity reg_ifid is
 	port (
 	in_pc, in_pc4, in_instruction : in std_logic_vector (31 downto 0);		-- register inputs
@@ -83,8 +79,12 @@ begin
     end process;
 end behavioral;
 
+-- Re-includes bc VHDL do be like that
 library ieee;
-use ieee.numeric_std.all;
+use ieee.std_logic_1164.all;
+use work.records_pkg.all;
+use work.alu_ctrl_const.all;
+use work.const_decoder.all;
 
 architecture behavioral of decoder is
 
@@ -111,62 +111,156 @@ architecture behavioral of decoder is
 									
 				case opcode is	
 				-- I-type
-				when "0000011" | "0001111" | "0010011" | "0011011" | "1100111" | "1110011" =>
+				when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR => 
 				decoder_out.rd <= instruction(11 downto 7);
+				decoder_out.REG_we <= '1';
 				decoder_out.ALUsrc1 <= '0';	-- register
 				decoder_out.ALUsrc2 <= '1';	-- immediate
 				decoder_out.immediate(11 downto 0) <= instruction(31 downto 20);
 				REG_rs1 <= instruction(19 downto 15);
+				-- Handle immediate sign extension
 				if (decoder_out.immediate(11) = '1') then
 				    decoder_out.immediate(31 downto 12) <= (others => '1');
 				else
 				    decoder_out.immediate(31 downto 12) <= (others => '0');
 				end if;
 
-				func3 <= instruction(14 downto 12);
-
-				--instructiontype <= "001";
+				-- case: func3
+					func3 <= instruction(14 downto 12);
 					case func3 is
 						-- addi
 						when "000" =>
-						decoder_out.ALUop <=  "0000"; -- ADD (STC)
-						decoder_out.REG_we <= '1';
+						decoder_out.ALUop <=  ALU_ADD;
+						
+						-- xori
+						when "100" =>
+						decoder_out.ALUop <= ALU_XOR;
+
+						-- ori
+						when "110" =>
+						decoder_out.ALUop <= ALU_OR;
+						
+						-- andi
+						when "111" =>
+						decoder_out.ALUop <= ALU_AND;
+						
+
+
 
 						when others =>
 							report "Undefined func3: I-type";
 					end case;
 				
-
 				-- R-type
-				when "0110011" | "0111011" =>
-				decoder_out.rd <= instruction(11 downto 7);
-				decoder_out.ALUsrc1 <= '0';	-- register
-				decoder_out.ALUsrc2 <= '0';	-- register
-				REG_rs1 <= instruction(19 downto 15);
-				REG_rs2 <= instruction(24 downto 20);
+				when DEC_R_OPS | DEC_R_OPSW => 
+					decoder_out.rd <= instruction(11 downto 7);
+					decoder_out.REG_we <= '1';
+					decoder_out.ALUsrc1 <= '0';	-- register
+					decoder_out.ALUsrc2 <= '0';	-- register
+					REG_rs1 <= instruction(19 downto 15);
+					REG_rs2 <= instruction(24 downto 20);
 
-				func3 <= instruction(14 downto 12);
-				func7 <= instruction(31 downto 25);
-				case func3 is
-					-- add and sub
-					when "000" =>
-						-- add
-						if (func7 = "0000000") then
-						decoder_out.ALUop <=  "0000"; -- ADD (STC)
-						decoder_out.REG_we <= '1';
-						-- sub
-						elsif (func7 = "0100000") then
-						decoder_out.ALUop <=  "0001"; -- SUB (STC)
-						decoder_out.REG_we <= '1';
-						else report "undefined func7: R-type, func3=000";
+					func3 <= instruction(14 downto 12);
+					func7 <= instruction(31 downto 25);
+
+						-- case func3: R
+						case func3 is
+						-- add and sub
+						when "000" =>
+							-- add
+							if (func7 = "0000000") then
+							decoder_out.ALUop <=  ALU_ADD; 
+							
+							-- sub
+							elsif (func7 = "0100000") then
+							decoder_out.ALUop <=  ALU_SUB; 
+							
+							else report "undefined func7: R-type, func3=000";
+							end if;
+						
+						-- xor
+						when  "100" =>
+							if (func7="0000000") then
+								decoder_out.ALUop <= ALU_XOR;
+							else report "Illegal func7: R xor";
 						end if;
-					when others =>
-						report "undefined func3: R-type";
+
+						-- or
+						when "110" =>
+						if (func7="0000000") then
+							decoder_out.ALUop <= ALU_OR;
+						else report "Illegal func7: R or";
+						end if;
+
+						-- and 
+						when "111" =>
+						if (func7="0000000") then
+							decoder_out.ALUop <= ALU_AND;
+						else report "Illegal func7: R and";
+						end if;
+						
+						when others =>
+							report "undefined func3: R-type";
+						
+						end case;
+
+				-- U-type (auipc, lui)
+				when DEC_U_AUIPC | DEC_U_LUI =>
+					decoder_out.rd <= instruction(11 downto 7);
+					decoder_out.immediate(31 downto 12) <= instruction(31 downto 12);
+					decoder_out.immediate(11 downto 0) <= (others => '0');
+					-- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
+
+
+				-- S-type (store)
+				when DEC_S =>
+					decoder_out.REG_we <= '0';
+					decoder_out.ALUsrc1 <= '0';	-- register
+					decoder_out.ALUsrc2 <= '0';	-- register
+					REG_rs1 <= instruction(19 downto 15);
+					REG_rs2 <= instruction(24 downto 20);
+					decoder_out.immediate(4 downto 0) 	<= instruction(11 downto 7);
+					decoder_out.immediate(11 downto 5) 	<= instruction(31 downto 25);
+					-- Handle immediate sign extension
+					if (decoder_out.immediate(11) = '1') then
+						decoder_out.immediate(31 downto 12) <= (others => '1');
+					else
+						decoder_out.immediate(31 downto 12) <= (others => '0');
+					end if;
+
+					-- TODO: ADD REST OF RECORD LOGIC 
 					
-				end case;
+
+					func3 <= instruction(14 downto 12);
+					case func3 is
+						-- TODO: ADD REST OF LOGIC
+						when others =>
+						report "undefined func3: S-type";
+					end case;
+				
+				-- UJ-type (jal)
+				when DEC_UJ =>
+					decoder_out.rd <= instruction(11 downto 7);
+					--construct immediate
+					decoder_out.immediate(20) <= instruction(31);					
+					decoder_out.immediate(10 downto 1) <= instruction(30 downto 21);					
+					decoder_out.immediate(11) <= instruction(20);					
+					decoder_out.immediate(19 downto 12) <= instruction(19 downto 12);					
+					-- Handle immediate sign extension
+					if (decoder_out.immediate(20) = '1') then
+						decoder_out.immediate(31 downto 21) <= (others => '1');
+					else
+						decoder_out.immediate(31 downto 21) <= (others => '0');
+					end if;
+					
+					
+					
+					-- TODO: ADD REST OF RECORD LOGIC
+
 				when others =>
 					report "undefined opcode";
 				end case;
+
 	end process;
 end behavioral;
 

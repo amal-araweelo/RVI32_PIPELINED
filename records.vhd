@@ -6,12 +6,13 @@ package records_pkg is
 	
 	-- Outputs from decoder
 	type t_from_decoder is record
-		ALUsrc1: std_logic;						
-		ALUsrc2: std_logic;
-		ALUop: std_logic_vector(3 downto 0);
 		rd: std_logic_vector(4 downto 0);		-- destination register
+		ALU_src1_ctrl: std_logic;						
+		ALU_src2_ctrl: std_logic;
+		ALU_op_ctrl: std_logic_vector(3 downto 0);
 		REG_we: std_logic;						-- Register file write enable
 		immediate: std_logic_vector (31 downto 0); 	-- immediate value
+
 	end record t_from_decoder;
 
 	type t_from_id is record
