@@ -1,6 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
 use std.env.stop;
 
 entity fetcher_tb is
@@ -110,7 +109,7 @@ begin
 	end if;
 
 	-- Test 5
-        branch <= '1';
+  branch <= '1';
 	branch_address <= x"00000123";
 	wait for clock_period;
 
@@ -125,7 +124,7 @@ begin
 
 	wait for clock_period;
 
-        branch <= '0';
+  branch <= '0';
 	branch_address <= x"00000123";
 	wait for clock_period;
 
@@ -136,8 +135,8 @@ begin
 	    std.env.stop(1);
 	end if;
 
-        -- finish simulation
+	-- finish simulation
 	std.env.stop(0);
-    end process;
+end process;
 
 end behavior;
