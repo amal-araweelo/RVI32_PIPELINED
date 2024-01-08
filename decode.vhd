@@ -143,6 +143,9 @@ architecture behavioral of decoder is
 						-- andi
 						when "111" =>
 						decoder_out.ALUop <= ALU_AND;
+						
+
+
 
 						when others =>
 							report "Undefined func3: I-type";
@@ -150,63 +153,63 @@ architecture behavioral of decoder is
 				
 				-- R-type
 				when DEC_R_OPS | DEC_R_OPSW => 
-				decoder_out.rd <= instruction(11 downto 7);
-				decoder_out.REG_we <= '1';
-				decoder_out.ALUsrc1 <= '0';	-- register
-				decoder_out.ALUsrc2 <= '0';	-- register
-				REG_rs1 <= instruction(19 downto 15);
-				REG_rs2 <= instruction(24 downto 20);
+					decoder_out.rd <= instruction(11 downto 7);
+					decoder_out.REG_we <= '1';
+					decoder_out.ALUsrc1 <= '0';	-- register
+					decoder_out.ALUsrc2 <= '0';	-- register
+					REG_rs1 <= instruction(19 downto 15);
+					REG_rs2 <= instruction(24 downto 20);
 
-				func3 <= instruction(14 downto 12);
-				func7 <= instruction(31 downto 25);
+					func3 <= instruction(14 downto 12);
+					func7 <= instruction(31 downto 25);
 
-					-- case func3: R
-					case func3 is
-					-- add and sub
-					when "000" =>
-						-- add
-						if (func7 = "0000000") then
-						decoder_out.ALUop <=  ALU_ADD; 
+						-- case func3: R
+						case func3 is
+						-- add and sub
+						when "000" =>
+							-- add
+							if (func7 = "0000000") then
+							decoder_out.ALUop <=  ALU_ADD; 
+							
+							-- sub
+							elsif (func7 = "0100000") then
+							decoder_out.ALUop <=  ALU_SUB; 
+							
+							else report "undefined func7: R-type, func3=000";
+							end if;
 						
-						-- sub
-						elsif (func7 = "0100000") then
-						decoder_out.ALUop <=  ALU_SUB; 
-						
-						else report "undefined func7: R-type, func3=000";
+						-- xor
+						when  "100" =>
+							if (func7="0000000") then
+								decoder_out.ALUop <= ALU_XOR;
+							else report "Illegal func7: R xor";
 						end if;
-					
-					-- xor
-					when  "100" =>
+
+						-- or
+						when "110" =>
 						if (func7="0000000") then
-							decoder_out.ALUop <= ALU_XOR;
-						else report "Illegal func7: R xor";
-					end if;
+							decoder_out.ALUop <= ALU_OR;
+						else report "Illegal func7: R or";
+						end if;
 
-					-- or
-					when "110" =>
-					if (func7="0000000") then
-						decoder_out.ALUop <= ALU_OR;
-					else report "Illegal func7: R or";
-					end if;
+						-- and 
+						when "111" =>
+						if (func7="0000000") then
+							decoder_out.ALUop <= ALU_AND;
+						else report "Illegal func7: R and";
+						end if;
+						
+						when others =>
+							report "undefined func3: R-type";
+						
+						end case;
 
-					-- and 
-					when "111" =>
-					if (func7="0000000") then
-						decoder_out.ALUop <= ALU_AND;
-					else report "Illegal func7: R and";
-					end if;
-					
-					when others =>
-						report "undefined func3: R-type";
-					
-					end case;
-
-				-- U-type (auipc)
-				when DEC_U =>
+				-- U-type (auipc, lui)
+				when DEC_U_AUIPC | DEC_U_LUI =>
 					decoder_out.rd <= instruction(11 downto 7);
 					decoder_out.immediate(31 downto 12) <= instruction(31 downto 12);
 					decoder_out.immediate(11 downto 0) <= (others => '0');
-					-- TODO: ADD REST OF RECORD LOGIC
+					-- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
 
 
 				-- S-type (store)
