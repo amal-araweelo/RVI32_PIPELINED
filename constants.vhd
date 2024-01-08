@@ -105,5 +105,11 @@ package records_pkg is
     pc, ALU_res, REG_src_2  : std_logic_vector(31 downto 0);
   end record t_exmem_reg;
 
+  type t_memwb_reg is record
+  REG_we, MEM_we      : std_logic;
+  REG_dst_idx         : std_logic_vector(4 downto 0);
+  pc, ALU_res, MEM_out  : std_logic_vector(31 downto 0);
+  end record t_memwb_reg;
+
   end package records_pkg;
 

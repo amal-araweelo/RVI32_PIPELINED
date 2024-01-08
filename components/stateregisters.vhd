@@ -87,3 +87,22 @@ architecture behavioral of reg_exmem is
             end if;
         end process;
 end behavioral;
+
+-- MEM/WB register
+architecture behavioral of reg_memwb is
+  begin
+      process(clk, clr, en)
+      begin
+      if (rising_edge(clk)) then		-- do stuff on rising clk edge
+          if (clr = '0')  then		-- if the signal is not to clr the reg
+                  if (en = '1') then		-- do stuff if enabled
+                          out_memwb_record <= in_memwb_record;
+                  end if;
+        else						-- clr the reg
+          out_memwb_record <= (others=>'0');       --TODO fix me!
+        end if;	
+          end if;
+      end process;
+end behavioral;
+
+
