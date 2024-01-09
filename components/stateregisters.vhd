@@ -4,10 +4,6 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use work.records_pkg.all;
 
--- TODO access indival record fields for clearing for ALL registers :))))
-
---  ENTITY DECLARATIONS
-
 -- IF/ID register
 entity reg_ifid is
   port
@@ -24,7 +20,7 @@ begin
   begin
     if (clr = '1') then
       out_ifid_record.pc          <= (others => '0');
-      out_ifid_record.instruction <= (others => '0');
+      out_ifid_record.instr <= (others => '0');
     end if;
     if (rising_edge(clk)) then -- do stuff on rising clk edge
       if (clr = '0' and en = '1') then -- if the signal is not to clr the reg
@@ -56,8 +52,8 @@ begin
   begin
     if (clr = '1') then
       -- Zero out specific fields in the decoder_out record
-      out_idex_record.decoder_out.ALU_src1_ctrl <= '0';
-      out_idex_record.decoder_out.ALU_src2_ctrl <= '0';
+      out_idex_record.decoder_out.ALU_src_1_ctrl <= '0';
+      out_idex_record.decoder_out.ALU_src_2_ctrl <= '0';
       out_idex_record.decoder_out.op_ctrl       <= (others => '0');
       out_idex_record.decoder_out.REG_we        <= '0';
       out_idex_record.decoder_out.imm           <= (others => '0');
@@ -106,14 +102,14 @@ begin
   process (clk, clr, en)
   begin
     if (clr = '1') then
-      out_exmem_record.REG_we      <= '0'; -- Zero out the REG_we field
-      out_exmem_record.MEM_we      <= '0'; -- Zero out the MEM_we field
-      out_exmem_record.WB_src_ctrl <= (others => '0'); -- Zero out the WB_src_ctrl field
-      out_exmem_record.MEM_op      <= (others => '0'); -- Zero out the MEM_op field
-      out_exmem_record.REG_dst_idx <= (others => '0'); -- Zero out the REG_dst_idx field
-      out_exmem_record.pc          <= (others => '0'); -- Zero out the pc field
-      out_exmem_record.ALU_res     <= (others => '0'); -- Zero out the ALU_res field
-      out_exmem_record.REG_src_2   <= (others => '0'); -- Zero out the REG_src_2 field
+      out_exmem_record.REG_we      <= '0'; 
+      out_exmem_record.MEM_we      <= '0'; 
+      out_exmem_record.WB_src_ctrl <= (others => '0'); 
+      out_exmem_record.MEM_op      <= (others => '0'); 
+      out_exmem_record.REG_dst_idx <= (others => '0'); 
+      out_exmem_record.pc          <= (others => '0'); 
+      out_exmem_record.ALU_res     <= (others => '0'); 
+      out_exmem_record.REG_src_2   <= (others => '0'); 
     end if;
 
     if (rising_edge(clk)) then -- do stuff on rising clk edge
