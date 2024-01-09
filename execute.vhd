@@ -94,8 +94,8 @@ architecture behavorial of execute is
   -- Branch taken signal
   signal branch_taken : std_logic := '0';
 
-	-- ALU result
-	signal alures : std_logic_vector(31 downto 0) := (others => '0');
+  -- ALU result
+  signal alures : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
 
@@ -112,7 +112,7 @@ begin
 
   inst_mux2_1 : mux2 port
   map(
-  a => op_1_br, b => pc_in, sel => alu_op1_ctrl_in, output => op_1_alu
+  a => pc_in, b => op_1_br, sel => alu_op1_ctrl_in, output => op_1_alu
   );
   inst_mux2_2 : mux2 port
   map(
@@ -121,7 +121,7 @@ begin
 
   inst_alu : alu port
   map(
-	op_1 => op_1_alu, op_2 => op_2_alu, ctrl => alu_ctrl_in, res => alures
+  op_1 => op_1_alu, op_2 => op_2_alu, ctrl => alu_ctrl_in, res => alures
   );
 
   inst_comparator : comparator port
@@ -134,7 +134,7 @@ begin
   process (all)
   begin
     -- Outputs
-		sel_pc_out <= std_logic((branch_taken and do_branch_in) or do_jmp_in);
-		alures_out <= alures;
+    sel_pc_out <= std_logic((branch_taken and do_branch_in) or do_jmp_in);
+    alures_out <= alures;
   end process;
 end behavorial;

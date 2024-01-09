@@ -68,8 +68,8 @@ begin
     -- Test add
     forward_1       <= "01";
     forward_2       <= "01";
-    r1_in           <= x"00000001"; -- 1
-    r2_in           <= x"00000011"; -- 17
+    r1_in           <= x"00000001";
+    r2_in           <= x"00000011";
     alu_op1_ctrl_in <= '1';
     alu_op2_ctrl_in <= '0';
     pc_in           <= x"00000000";
@@ -104,7 +104,7 @@ begin
 
     do_branch_in <= '0';
     wait for clk_period;
-    report "The value of sel_pc_out is now: " & to_string(0); -- branch not taken
+    assert sel_pc_out = '0' report "The value of sel_pc_out is now: " & to_string(sel_pc_out); -- branch not taken
     report "Test 4 [PASSED]" severity note;
 
     do_branch_in <= '1';
