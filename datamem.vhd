@@ -5,10 +5,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.mem_op_const.all;
 
-entity datamem is
+entity data_mem is
   port
   (
-
     -- Inputs
     clk         : in std_logic                     := '0'; -- clock
     pc          : in std_logic_vector(31 downto 0) := (others => '0');
@@ -20,9 +19,9 @@ entity datamem is
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0) := (others => '0')
   );
-end datamem;
+end data_mem;
 
-architecture impl of datamem is
+architecture impl of data_mem is
   type ram_type is array(2 ** 10 downto 0) -- 1 KiB
   of std_logic_vector (31 downto 0);
   signal ram : ram_type;
@@ -30,15 +29,15 @@ architecture impl of datamem is
 begin
   process (clk) begin
     if (rising_edge(clk)) then
+      MEM_data_out <= ram(to_integer(unsigned(MEM_addr))); -- data is always loaded from memory given addr
       case MEM_op is -- only implemented store word for now
         when sw =>
           if (MEM_we = '1') then
             ram(to_integer(unsigned(MEM_addr))) <= MEM_data_in;
           end if;
         when others =>
-          null; -- do nothing
+          null;
       end case;
     end if;
   end process;
-  MEM_data_out <= ram(to_integer(unsigned(MEM_addr))); -- data is always loaded from memory given addr
 end architecture;
