@@ -80,7 +80,7 @@ package records_pkg is
     imm           : std_logic_vector (31 downto 0); -- immediate value
 
     -- Not implemented yet
-    WB_src_ctrt : std_logic_vector(1 downto 0);
+    WB_src_ctrl : std_logic_vector(1 downto 0);
     MEM_op      : std_logic_vector(3 downto 0);
     MEM_we      : std_logic;
     do_jmp      : std_logic;
@@ -97,7 +97,7 @@ package records_pkg is
   end record t_ifid_reg;
 
   type t_idex_reg is record
-    decoder_record           : t_decoder;
+    decoder_out              : t_decoder;
     pc, REG_src_1, REG_src_2 : std_logic_vector(31 downto 0);
   end record t_idex_reg;
 
@@ -115,5 +115,4 @@ package records_pkg is
     REG_dst_idx          : std_logic_vector(4 downto 0);
     pc, ALU_res, MEM_out : std_logic_vector(31 downto 0);
   end record t_memwb_reg;
-
 end package records_pkg;
