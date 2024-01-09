@@ -73,8 +73,8 @@ package records_pkg is
   -- Outputs from decoder
   type t_decoder is record
     REG_dst_idx   : std_logic_vector(4 downto 0); -- destination register
-    ALU_src1_ctrl : std_logic;
-    ALU_src2_ctrl : std_logic;
+    ALU_src_1_ctrl : std_logic;
+    ALU_src_2_ctrl : std_logic;
     op_ctrl       : std_logic_vector(3 downto 0); -- operation control
     REG_we        : std_logic; -- Register file write enable
     imm           : std_logic_vector (31 downto 0); -- immediate value
@@ -93,7 +93,7 @@ package records_pkg is
   end record t_decoder;
 
   type t_ifid_reg is record
-    pc, instruction : std_logic_vector (31 downto 0); -- register inputs
+    pc, instr : std_logic_vector (31 downto 0); -- register inputs
   end record t_ifid_reg;
 
   type t_idex_reg is record
