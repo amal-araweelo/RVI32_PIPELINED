@@ -218,7 +218,7 @@ architecture behavioral of decoder is
 				
 			-- SB-type (branches)
 				when DEC_SB => 
-					decoder_out.do_branch = '1';
+					decoder_out.do_branch <=  '1';
 					
 					-- construct imm
 					decoder_out.imm(12) <= instr(31);					
