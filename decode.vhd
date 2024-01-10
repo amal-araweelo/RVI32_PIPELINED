@@ -38,7 +38,8 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 		instr: in std_logic_vector(31 downto 0);
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
-		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0)
+		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0);
+		blinky : out std_logic -- TODO DELETE MEE :)))
 	);
 end reg_file;
 
@@ -300,6 +301,6 @@ begin
     end if;
     end process;
     REG_src_1 <= array_register(to_integer(unsigned(instr(19 downto 15))));
-    REG_src_2 <= array_register(to_integer(unsigned(instr(24 downto 20))));
-
+    REG_src_2 <= array_register(to_integer(unsigned(instr(24 downto 20)))); --TODO FIX TO WORK WITH new decoder values instead of instruction lol
+	blinky <= array_register(2)(0);
 end behavioral;
