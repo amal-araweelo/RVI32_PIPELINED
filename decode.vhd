@@ -62,13 +62,28 @@ architecture behavioral of decoder is
 				func3 <= (others => '0');
 				func7 <= (others => '0');
 
-				-- Set default values for decoder's outputs (all 0's)
-				-- ALUsrc and op_ctrl not set here, as it is always set (TODO check if true)
-				decoder_out.imm(11 downto 0) <= (others => '0');
-				decoder_out.REG_dst_idx <= (others => '0');
-				decoder_out.REG_we <= '0';
+				-- Set default values for decoder outputs (all 0's)
+				
+				decoder_out.REG_dst_idx <= (others => '0');							-- Destination register
+				decoder_out.ALU_src_1_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 1
+				decoder_out.ALU_src_2_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 2
+				-- Op_ctrl not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
+				decoder_out.REG_we 		<= '0';										-- Register file write enable
+				decoder_out.imm(31 downto 0) <= (others => '0');					-- immediate value
+
+				decoder_out.WB_src_ctrl <= "00";									-- ctrl signal for WB input selector mux
+				decoder_out.MEM_op 		<= "0000";									-- ctrl signal for MEM operation type (eg. lw, sh ...)
+				decoder_out.MEM_we 		<= '0';										-- Memory Write enable
+				decoder_out.do_jmp 		<= '0';										-- Enable if is a jump instruction
+				decoder_out.do_branch 	<= '0';										-- Enable if is a branch instruction
+				decoder_out.MEM_rd 		<= '0';										-- Enable if is a load instruction (for hazard unit)
+				-- opcode may need to be passed. TODO undecided, use or delete.
+
 				REG_src_idx_1 <= "00000";
 				REG_src_idx_2 <= "00000";
+
+
+
 
 				-- TODO set any new values when expanding decoder
 									
@@ -77,7 +92,6 @@ architecture behavioral of decoder is
 				when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR => 
 				decoder_out.REG_dst_idx <= instr(11 downto 7);
 				decoder_out.REG_we <= '1';
-				decoder_out.ALU_src_1_ctrl <= '0';	-- register
 				decoder_out.ALU_src_2_ctrl <= '1';	-- imm
 				decoder_out.imm(11 downto 0) <= instr(31 downto 20);
 				REG_src_idx_1 <= instr(19 downto 15);
@@ -117,9 +131,9 @@ architecture behavioral of decoder is
 				-- R-type
 				when DEC_R_OPS | DEC_R_OPSW => 
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
+					-- ALU_src_ctrl_x is register as standard
 					decoder_out.REG_we <= '1';
-					decoder_out.ALU_src_1_ctrl <= '0';	-- register
-					decoder_out.ALU_src_2_ctrl <= '0';	-- register
+					
 					REG_src_idx_1 <= instr(19 downto 15);
 					REG_src_idx_2 <= instr(24 downto 20);
 
@@ -127,7 +141,7 @@ architecture behavioral of decoder is
 					func7 <= instr(31 downto 25);
 
 						-- case func3: R
-						case func3 is
+					case func3 is
 						-- add and sub
 						when "000" =>
 							-- add
@@ -165,7 +179,7 @@ architecture behavioral of decoder is
 						when others =>
 							report "undefined func3: R-type";
 						
-						end case;
+					end case;
 
 				-- U-type (auipc, lui)
 				when DEC_U_AUIPC | DEC_U_LUI =>
@@ -175,7 +189,7 @@ architecture behavioral of decoder is
 					-- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
 
 
-				-- S-type (store)
+			-- S-type (store)
 				when DEC_S =>
 					decoder_out.REG_we <= '0';
 					decoder_out.ALU_src_1_ctrl <= '0';	-- register
@@ -200,6 +214,35 @@ architecture behavioral of decoder is
 						when others =>
 						report "undefined func3: S-type";
 					end case;
+				
+				
+			-- SB-type (branches)
+				when DEC_SB => 
+					decoder_out.do_branch = '1';
+					
+					-- construct imm
+					decoder_out.imm(12) <= instr(31);					
+					decoder_out.imm(10 downto 5) <= instr(30 downto 25);					
+					decoder_out.imm(4 downto 1) <= instr(11 downto 8);					
+					decoder_out.imm(11) <= instr(7);
+					decoder_out.imm(0) <= '0';					
+					-- Handle imm sign extension
+					if (decoder_out.imm(12) = '1') then
+						decoder_out.imm(31 downto 13) <= (others => '1');
+					else
+						decoder_out.imm(31 downto 13) <= (others => '0');
+					end if;
+
+					REG_src_idx_1 <= instr(19 downto 15);
+					REG_src_idx_2 <= instr(24 downto 20);
+
+					func3 <= instr(14 downto 12);
+					case func3 is
+
+						when others => 
+							report "undefined func3: SB-type";
+					end case;
+
 				
 				-- UJ-type (jal)
 				when DEC_UJ =>
