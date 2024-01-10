@@ -92,6 +92,7 @@ architecture behavioral of decoder is
 				when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR => 
 				decoder_out.REG_dst_idx <= instr(11 downto 7);
 				decoder_out.REG_we <= '1';
+				decoder_out.ALU_src_1_ctrl <= '1';	-- register TODO: Decide if this is correct
 				decoder_out.ALU_src_2_ctrl <= '1';	-- imm
 				decoder_out.imm(11 downto 0) <= instr(31 downto 20);
 				REG_src_idx_1 <= instr(19 downto 15);
@@ -282,11 +283,12 @@ signal array_register: registerfile_type;
 begin
     process(clk)
     begin
-	    if (rising_edge(clk)) then
-		    if (REG_we = '1') then
-			    array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data; 
-		    end if;
-	    end if;
+    array_register(0) <= (others => '0');
+    if (rising_edge(clk)) then
+	if (REG_we = '1') then
+	    array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data; 
+	end if;
+    end if;
     end process;
     REG_src_1 <= array_register(to_integer(unsigned(instr(19 downto 15))));
     REG_src_2 <= array_register(to_integer(unsigned(instr(24 downto 20))));

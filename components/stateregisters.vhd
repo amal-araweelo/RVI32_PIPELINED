@@ -66,8 +66,8 @@ begin
       out_idex_record.decoder_out.MEM_read      <= '0';
     end if;
 
-    if (rising_edge(clk)) then -- do stuff on rising clk edge
-      if (clr = '0' and en = '1') then -- if the signal is not to clr the reg
+    if (rising_edge(clk)) then
+      if (clr = '0' and en = '1') then
         out_idex_record <= in_idex_record;
       end if;
     end if;
@@ -94,12 +94,12 @@ architecture behavioral of reg_exmem is
 
 begin
   -- Asynchronous
-  out_exmem_record.ALU_res   <= in_exmem_record.ALU_res;
-  out_exmem_record.REG_src_2 <= in_exmem_record.REG_src_2;
-  out_exmem_record.MEM_op    <= in_exmem_record.MEM_op;
-  out_exmem_record.MEM_we    <= in_exmem_record.MEM_we;
+  -- out_exmem_record.ALU_res   <= in_exmem_record.ALU_res;
+  -- out_exmem_record.REG_src_2 <= in_exmem_record.REG_src_2;
+  -- out_exmem_record.MEM_op    <= in_exmem_record.MEM_op;
+  -- out_exmem_record.MEM_we    <= in_exmem_record.MEM_we;
 
-  process (clk, clr, en)
+  process (all)
   begin
     if (clr = '1') then
       out_exmem_record.REG_we      <= '0'; 
@@ -112,13 +112,18 @@ begin
       out_exmem_record.REG_src_2   <= (others => '0'); 
     end if;
 
-    if (rising_edge(clk)) then -- do stuff on rising clk edge
-      if (clr = '0' and en = '1') then -- if the signal is not to clr the reg
-        --out_exmem_record <= in_exmem_record;
+    if (rising_edge(clk)) then 
+      if (clr = '0' and en = '1') then 
+        -- out_exmem_record <= in_exmem_record;
         out_exmem_record.REG_we      <= in_exmem_record.REG_we;
         out_exmem_record.WB_src_ctrl <= in_exmem_record.WB_src_ctrl;
         out_exmem_record.REG_dst_idx <= in_exmem_record.REG_dst_idx;
         out_exmem_record.pc          <= in_exmem_record.pc;
+
+	out_exmem_record.ALU_res   <= in_exmem_record.ALU_res;
+	out_exmem_record.REG_src_2 <= in_exmem_record.REG_src_2;
+	out_exmem_record.MEM_op    <= in_exmem_record.MEM_op;
+	out_exmem_record.MEM_we    <= in_exmem_record.MEM_we;
       end if;
     end if;
   end process;
