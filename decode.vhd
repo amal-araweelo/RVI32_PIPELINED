@@ -246,9 +246,9 @@ architecture behavioral of decoder is
 						when "101" => 
 							decoder_out.op_ctrl <= ALU_BGE;
 						when "110" => 
-							decoder_out.op_ctrl <= ALU_BLTU;
+							decoder_out.op_ctrl <= ALU_BLT_U;
 						when "111" => 
-							decoder_out.op_ctrl <= ALU_BGEU;
+							decoder_out.op_ctrl <= ALU_BGE_U;
 						when others => 
 							report "undefined func3: SB-type";
 					end case;
