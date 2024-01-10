@@ -33,7 +33,7 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clo
  
 
 ## LEDs
-set_property PACKAGE_PIN U16 [get_ports {io_led[0]}]				
+set_property PACKAGE_PIN U16 [get_ports {set_led_high[0]}]				
 #set_property PACKAGE_PIN E19 [get_ports {io_led[1]}]					
 #set_property PACKAGE_PIN U19 [get_ports {io_led[2]}]					
 #set_property PACKAGE_PIN V19 [get_ports {io_led[3]}]					
@@ -54,7 +54,7 @@ set_property PACKAGE_PIN U16 [get_ports {io_led[0]}]
 ##Buttons
 #set_property PACKAGE_PIN U18 [get_ports btnC]						
 #set_property PACKAGE_PIN T18 [get_ports btnU]						
-#set_property PACKAGE_PIN W19 [get_ports btnL]						
+set_property PACKAGE_PIN W19 [get_ports {clk}]						
 # btnR proposed as reset
 #set_property PACKAGE_PIN T17 [get_ports btnR]						
 set_property PACKAGE_PIN T17 [get_ports reset]						

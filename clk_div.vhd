@@ -31,6 +31,7 @@ begin
         count <= 0;
       end if;
     end if;
-    clk_out <= tmp;
+   clk_out <= tmp;
   end process;
 end architecture;
+
