@@ -62,16 +62,16 @@ architecture behavioral of decoder is
 				func3 <= (others => '0');
 				func7 <= (others => '0');
 
-				-- Set default values for decoder outputs (all 0's)
+				-- Set default values for decoder outputs 
 				
 				decoder_out.REG_dst_idx <= (others => '0');							-- Destination register
-				decoder_out.ALU_src_1_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 1
-				decoder_out.ALU_src_2_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 2
+				decoder_out.ALU_src_1_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
+				decoder_out.ALU_src_2_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
 				-- Op_ctrl not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
 				decoder_out.REG_we 		<= '0';										-- Register file write enable
 				decoder_out.imm(31 downto 0) <= (others => '0');					-- immediate value
 
-				decoder_out.WB_src_ctrl <= "00";									-- ctrl signal for WB input selector mux
+				decoder_out.WB_src_ctrl <= "01";		--default is ALU			-- ctrl signal for WB input selector mux (2=read from mem, 1=ALU, 0=jump/branch)
 				decoder_out.MEM_op 		<= "0000";									-- ctrl signal for MEM operation type (eg. lw, sh ...)
 				decoder_out.MEM_we 		<= '0';										-- Memory Write enable
 				decoder_out.do_jmp 		<= '0';										-- Enable if is a jump instruction
@@ -82,28 +82,25 @@ architecture behavioral of decoder is
 				REG_src_idx_1 <= "00000";
 				REG_src_idx_2 <= "00000";
 
-
-
-
 				-- TODO set any new values when expanding decoder
 									
+			-- I-type -- TODO check all fields are set
 				case opcode is	
-				-- I-type
 				when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR => 
-				decoder_out.REG_dst_idx <= instr(11 downto 7);
-				decoder_out.REG_we <= '1';
-				decoder_out.ALU_src_1_ctrl <= '1';	-- register TODO: Decide if this is correct
-				decoder_out.ALU_src_2_ctrl <= '1';	-- imm
-				decoder_out.imm(11 downto 0) <= instr(31 downto 20);
-				REG_src_idx_1 <= instr(19 downto 15);
-				-- Handle imm sign extension
-				if (decoder_out.imm(11) = '1') then
-				    decoder_out.imm(31 downto 12) <= (others => '1');
-				else
-				    decoder_out.imm(31 downto 12) <= (others => '0');
-				end if;
+					decoder_out.REG_dst_idx <= instr(11 downto 7);
+					decoder_out.REG_we <= '1';
+					decoder_out.ALU_src_2_ctrl <= '1';	-- imm
+					decoder_out.imm(11 downto 0) <= instr(31 downto 20);
 
-				-- case: func3
+					REG_src_idx_1 <= instr(19 downto 15);
+					-- Handle imm sign extension
+					if (decoder_out.imm(11) = '1') then
+						decoder_out.imm(31 downto 12) <= (others => '1');
+					else
+						decoder_out.imm(31 downto 12) <= (others => '0');
+					end if;
+
+					-- case func3: I
 					func3 <= instr(14 downto 12);
 					case func3 is
 						-- addi
@@ -129,7 +126,7 @@ architecture behavioral of decoder is
 							report "Undefined func3: I-type";
 					end case;
 				
-				-- R-type
+			-- R-type
 				when DEC_R_OPS | DEC_R_OPSW => 
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
 					-- ALU_src_ctrl_x is register as standard
@@ -141,7 +138,7 @@ architecture behavioral of decoder is
 					func3 <= instr(14 downto 12);
 					func7 <= instr(31 downto 25);
 
-						-- case func3: R
+					-- case func3: R
 					case func3 is
 						-- add and sub
 						when "000" =>
@@ -182,15 +179,15 @@ architecture behavioral of decoder is
 						
 					end case;
 
-				-- U-type (auipc, lui)
+			-- U-type (auipc, lui) -- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
 				when DEC_U_AUIPC | DEC_U_LUI =>
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
 					decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 					decoder_out.imm(11 downto 0) <= (others => '0');
-					-- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
+					
 
 
-			-- S-type (store)
+			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC 
 				when DEC_S =>
 					decoder_out.REG_we <= '0';
 					decoder_out.ALU_src_1_ctrl <= '0';	-- register
@@ -206,12 +203,12 @@ architecture behavioral of decoder is
 						decoder_out.imm(31 downto 12) <= (others => '0');
 					end if;
 
-					-- TODO: ADD REST OF RECORD LOGIC 
+					
 					
 
 					func3 <= instr(14 downto 12);
-					case func3 is
-						-- TODO: ADD REST OF LOGIC
+					case func3 is -- TODO: ADD REST OF LOGIC
+						
 						when others =>
 						report "undefined func3: S-type";
 					end case;
@@ -220,6 +217,7 @@ architecture behavioral of decoder is
 			-- SB-type (branches)
 				when DEC_SB => 
 					decoder_out.do_branch <=  '1';
+					decoder_out.WB_src_ctrl <= "00";
 					
 					-- construct imm
 					decoder_out.imm(12) <= instr(31);					
@@ -239,7 +237,18 @@ architecture behavioral of decoder is
 
 					func3 <= instr(14 downto 12);
 					case func3 is
-
+						when "000" => 
+							decoder_out.op_ctrl <= ALU_BEQ;
+						when "001" => 
+							decoder_out.op_ctrl <= ALU_BNE;
+						when "100" => 
+							decoder_out.op_ctrl <= ALU_BLT;
+						when "101" => 
+							decoder_out.op_ctrl <= ALU_BGE;
+						when "110" => 
+							decoder_out.op_ctrl <= ALU_BLTU;
+						when "111" => 
+							decoder_out.op_ctrl <= ALU_BGEU;
 						when others => 
 							report "undefined func3: SB-type";
 					end case;
