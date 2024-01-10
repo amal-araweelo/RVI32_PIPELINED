@@ -85,10 +85,10 @@ package records_pkg is
     MEM_we      : std_logic;
     do_jmp      : std_logic;
     do_branch   : std_logic; -- not implemented, check if op_ctrl > 9
-    opcode      : std_logic_vector(6 downto 0); -- could be different
+    --opcode      : std_logic_vector(6 downto 0); -- could be different
 
     -- Havent decided on signal name
-    MEM_read : std_logic;
+    MEM_rd : std_logic;
 
   end record t_decoder;
 
