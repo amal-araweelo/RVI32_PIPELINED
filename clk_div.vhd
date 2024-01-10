@@ -9,8 +9,9 @@ use ieee.numeric_std.all;
 entity clk_div is
   port
   (
-    clk_in, reset : in std_logic;
-    clk_out       : out std_logic);
+    clk_in : in std_logic:='0';
+    clk_out       : out std_logic
+    );
 end clk_div;
 
 architecture behavorial of clk_div is
@@ -19,14 +20,14 @@ architecture behavorial of clk_div is
   signal tmp   : std_logic := '0';
 
 begin
-  process (clk, reset)
+  process (clk_in)
   begin
-    if (reset = '1') then
-      count <= 1;
-      tmp   <= '0';
-    elsif (rising_edge(clk_in)) then
+    --if (reset = '1') then
+     -- count <= 1;
+      --tmp   <= '0';
+    if (rising_edge(clk_in)) then
       count <= count + 1;
-      if (count = 99999999) then -- calculation [(100 MHz/1 Hz) - 1 =]
+      if (count = 25000000-1) then 
         tmp   <= not(tmp);
         count <= 0;
       end if;
