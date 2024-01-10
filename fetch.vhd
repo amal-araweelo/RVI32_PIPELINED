@@ -12,7 +12,6 @@ entity fetcher is
   (
     clk, sel_pc, clr, en : in std_logic;
     pc                   : out std_logic_vector (31 downto 0);
-    -- data_input: in std_logic_vector (31 downto 0);
     branch_addr : in std_logic_vector (31 downto 0);
     instr       : out std_logic_vector (31 downto 0)
   );
@@ -27,11 +26,11 @@ architecture behavioral of fetcher is
     port
     (
       -- Inputs
-      clk      : in std_logic                     := '0'; -- clock
-      MEM_addr : in std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
+      clk      : in std_logic;
+      MEM_addr : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
 
       -- Outputs
-      MEM_instr_out : out std_logic_vector(31 downto 0) := (others => '0')
+      MEM_instr_out : out std_logic_vector(31 downto 0)
     );
   end component;
 
