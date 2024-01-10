@@ -35,7 +35,7 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 	);
 	port (
 		clk, REG_we: in std_logic;
-		REG_src_idx_1, REG_src_idx_1: in std_logic_vector(4 downto 0);
+		REG_src_idx_1, REG_src_idx_2: in std_logic_vector(4 downto 0);
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
 		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0);
@@ -300,7 +300,7 @@ begin
 	end if;
     end if;
     end process;
-    REG_src_1 <= REG_src_idx_1
-    REG_src_2 <= REG_src_idx_2
+    REG_src_1 <= REG_src_idx_1;
+    REG_src_2 <= REG_src_idx_2;
 	blinky <= array_register(2)(0);
 end behavioral;
