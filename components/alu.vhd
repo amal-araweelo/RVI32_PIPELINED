@@ -16,6 +16,8 @@ end alu;
 architecture behavorial of alu is
   -- Temporary result signal
   signal res_temp : std_logic_vector(32 downto 0) := (others => '0');
+  signal op_1_temp: std_logic_vector(32 downto 0) := (others => '0');
+  signal op_2_temp: std_logic_vector(32 downto 0) := (others => '0');
 
 begin
   process (all)
@@ -30,7 +32,7 @@ begin
         res <= std_logic_vector(shift_left(unsigned(op_1), to_integer(unsigned(op_2))));
 
       when alu_slt_s =>
-        res_temp <= std_logic_vector(signed(op_1) - signed(op_2));
+        res_temp <= std_logic_vector(signed('0' & op_1) - signed('0' & op_2));
         if (res_temp(32) = '1') then -- if the result of the signed subtraction is negative
           res <= x"00000001"; -- result is set to 1, since op_1 < op_2
         else

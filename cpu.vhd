@@ -15,6 +15,16 @@ end cpu;
 
 architecture behavioral of cpu is 
 
+  -- Clock divider
+
+  component clk_div is
+    port
+    (
+      clk_in : in std_logic; -- Connect to board clk
+      clk_out       : out std_logic
+      );
+  end component;
+
 component fetcher is
   port
   (
@@ -173,6 +183,11 @@ signal write_back_out : std_logic_vector(31 downto 0);
 
 begin
 
+  -- Clock divider
+  inst_clk_div: clk_div port map(
+    clk_in, clk
+  );
+
 -- Fetcher
 fetcher_inst: fetcher port map
 (
@@ -310,6 +325,7 @@ port map
     REG_write_data => write_back_out
 );
 
+led_status <= execute_stage_out_sel_pc;
 process(clk)
 begin
 
