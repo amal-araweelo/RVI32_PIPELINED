@@ -86,8 +86,6 @@ package records_pkg is
     do_jmp      : std_logic;                        -- Enable if is a jump instruction
     do_branch   : std_logic;                        -- Enable if is a branch instruction
     opcode      : std_logic_vector(6 downto 0);   -- could be different -- Opcode for passing on if needed (unknown if needed so is outcommented for now TODO use or delete)
-
-    -- Havent decided on signal name
     MEM_rd : std_logic;                             -- Enable if is a load instruction (for hazard unit)
 
   end record t_decoder;
