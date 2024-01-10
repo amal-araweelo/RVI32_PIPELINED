@@ -217,7 +217,7 @@ reg_file_inst : reg_file port map
     clk => clk,
     REG_we => memwb_out.REG_we,
     REG_src_idx_1 => REG_src_idx_1,
-    REG_src_idx_1 => REG_src_idx_1,
+    REG_src_idx_2 => REG_src_idx_2,
     REG_dst_idx => memwb_out.REG_dst_idx,
     REG_write_data => write_back_out,
     REG_src_1 => decode_stage_out.REG_src_1,
