@@ -40,6 +40,7 @@ package const_decoder is
   constant DEC_U_AUIPC              : std_logic_vector(6 downto 0) := "0010111";
   constant DEC_U_LUI                : std_logic_vector(6 downto 0) := "0110111";
   constant DEC_S                    : std_logic_vector(6 downto 0) := "0100011";
+  constant DEC_SB                   : std_logic_vector(6 downto 0) := "1100011";
   constant DEC_UJ                   : std_logic_vector(6 downto 0) := "1101111";
 
 end package const_decoder;
@@ -72,23 +73,22 @@ package records_pkg is
 
   -- Outputs from decoder
   type t_decoder is record
-    REG_dst_idx   : std_logic_vector(4 downto 0); -- destination register
-    ALU_src_1_ctrl : std_logic;
-    ALU_src_2_ctrl : std_logic;
-    op_ctrl       : std_logic_vector(3 downto 0); -- operation control
-    REG_we        : std_logic; -- Register file write enable
+    REG_dst_idx   : std_logic_vector(4 downto 0);   -- Destination register
+    ALU_src_1_ctrl : std_logic;                     -- ctrl signal for ALU input selector mux 1
+    ALU_src_2_ctrl : std_logic;                     -- ctrl signal for ALU input selector mux 2
+    op_ctrl       : std_logic_vector(3 downto 0);   -- operation control for ALU and Comparator (both receive same signal)
+    REG_we        : std_logic;                      -- Register file write enable
     imm           : std_logic_vector (31 downto 0); -- immediate value
 
-    -- Not implemented yet
-    WB_src_ctrl : std_logic_vector(1 downto 0);
-    MEM_op      : std_logic_vector(3 downto 0);
-    MEM_we      : std_logic;
-    do_jmp      : std_logic;
-    do_branch   : std_logic; -- not implemented, check if op_ctrl > 9
-    --opcode      : std_logic_vector(6 downto 0); -- could be different
+    WB_src_ctrl : std_logic_vector(1 downto 0);     -- ctrl signal for WB input selector mux
+    MEM_op      : std_logic_vector(3 downto 0);     -- ctrl signal for MEM operation type (eg. lw, sh ...)
+    MEM_we      : std_logic;                        -- Memory Write enable
+    do_jmp      : std_logic;                        -- Enable if is a jump instruction
+    do_branch   : std_logic;                        -- Enable if is a branch instruction
+    opcode      : std_logic_vector(6 downto 0);   -- could be different -- Opcode for passing on if needed (unknown if needed so is outcommented for now TODO use or delete)
 
     -- Havent decided on signal name
-    MEM_rd : std_logic;
+    MEM_rd : std_logic;                             -- Enable if is a load instruction (for hazard unit)
 
   end record t_decoder;
 

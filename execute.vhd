@@ -8,25 +8,25 @@ entity execute is
   port
   (
     -- Inputs
-    -- the first two will be removed (only for testing);
-    forward_1       : in std_logic_vector(1 downto 0);
-    forward_2       : in std_logic_vector(1 downto 0);
-    do_jmp_in       : in std_logic                     := '0';
-    do_branch_in    : in std_logic                     := '0';
-    alu_ctrl_in     : in std_logic_vector(3 downto 0)  := (others => '0');
-    alu_op1_ctrl_in : in std_logic                     := '0'; -- select signal for operand 1
-    alu_op2_ctrl_in : in std_logic                     := '0'; -- select signal for operand 2
-    pc_in           : in std_logic_vector(31 downto 0) := (others => '0');
-    r1_in           : in std_logic_vector(31 downto 0) := (others => '0');
-    r2_in           : in std_logic_vector(31 downto 0) := (others => '0');
-    imm_in          : in std_logic_vector(31 downto 0) := (others => '0');
-    wb_reg_in       : in std_logic_vector(31 downto 0) := (others => '0'); -- to be forwarded from WB stage
-    mem_reg_in      : in std_logic_vector(31 downto 0) := (others => '0'); -- to be forwarded from MEM stage
+    ALU_src_1_ctrl                                     : in std_logic                      := '0'; -- select signal for operand 1
+    ALU_src_2_ctrl                                     : in std_logic                      := '0'; -- select signal for operand 2
+    REG_src_1                                          : in std_logic_vector(31 downto 0)  := (others => '0');
+    REG_src_2                                          : in std_logic_vector(31 downto 0)  := (others => '0');
+    do_branch                                          : in std_logic                      := '0';
+    do_jmp                                             : in std_logic                      := '0';
+    imm                                                : in std_logic_vector(31 downto 0)  := (others => '0');
+    op_ctrl                                            : in std_logic_vector(3 downto 0)   := (others => '0');
+    pc                                                 : in std_logic_vector(31 downto 0)  := (others => '0');
     -- more to come with forwarding, hazard and memory
+    -- the first two will be removed (only for testing);
+    forward_1                                          : in std_logic_vector(1 downto 0);
+    forward_2                                          : in std_logic_vector(1 downto 0);
+    WB_reg                                             : in std_logic_vector(31 downto 0)  := (others => '0'); -- to be forwarded from WB stage
+    MEM_reg                                            : in std_logic_vector(31 downto 0)  := (others => '0'); -- to be forwarded from MEM stage
 
     -- Ouputs
-    sel_pc_out : out std_logic                     := '0'; -- select signal for pc
-    alures_out : out std_logic_vector(31 downto 0) := (others => '0')
+    sel_pc                                             : out std_logic                     := '0'; -- select signal for pc
+    ALU_res_out                                        : out std_logic_vector(31 downto 0) := (others => '0')
   );
 end execute;
 
@@ -95,38 +95,38 @@ architecture behavorial of execute is
   signal branch_taken : std_logic := '0';
 
   -- ALU result
-  signal alures : std_logic_vector(31 downto 0) := (others => '0');
+  signal ALU_res : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
 
   -- Components instantiation
   inst_mux3_1 : mux3 port map
   (
-    a => wb_reg_in, b => r1_in, c => mem_reg_in, sel => forward_1, output => op_1_br
+    a => WB_reg, b => REG_src_1, c => MEM_reg, sel => forward_1, output => op_1_br
   );
 
   inst_mux3_2 : mux3 port
   map(
-  a => wb_reg_in, b => r2_in, c => mem_reg_in, sel => forward_2, output => op_2_br
+  a => WB_reg, b => REG_src_2, c => MEM_reg, sel => forward_2, output => op_2_br
   );
 
   inst_mux2_1 : mux2 port
   map(
-  a => pc_in, b => op_1_br, sel => alu_op1_ctrl_in, output => op_1_alu
+  a => pc, b => op_1_br, sel => ALU_src_1_ctrl, output => op_1_alu
   );
   inst_mux2_2 : mux2 port
   map(
-  a => op_2_br, b => imm_in, sel => alu_op2_ctrl_in, output => op_2_alu
+  a => op_2_br, b => imm, sel => ALU_src_2_ctrl, output => op_2_alu
   );
 
   inst_alu : alu port
   map(
-  op_1 => op_1_alu, op_2 => op_2_alu, ctrl => alu_ctrl_in, res => alures
+  op_1 => op_1_alu, op_2 => op_2_alu, ctrl => op_ctrl, res => ALU_res
   );
 
   inst_comparator : comparator port
   map(
-  ctrl => alu_ctrl_in, op_1 => op_1_br, op_2 => op_2_br, res => branch_taken
+  ctrl => op_ctrl, op_1 => op_1_br, op_2 => op_2_br, res => branch_taken
   );
 
   -- inst_forwarding : forwarding_unit port
@@ -134,7 +134,7 @@ begin
   process (all)
   begin
     -- Outputs
-    sel_pc_out <= std_logic((branch_taken and do_branch_in) or do_jmp_in);
-    alures_out <= alures;
+    sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
+    ALU_res_out <= ALU_res;
   end process;
 end behavorial;

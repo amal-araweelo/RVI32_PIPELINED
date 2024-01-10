@@ -22,8 +22,8 @@ architecture impl of instr_mem is
   of std_logic_vector (31 downto 0);
   signal rom : rom_type := (
 		    0 => x"00200113", -- addi x2, x0, 2
-		    1 => x"00300113", -- addi x2, x0, 2
-		    2 => x"FFFFFFFF", -- addi x1, x0, 1
+		    1 => x"00300113", -- addi x2, x0, 3
+		    2 => x"00400113", -- addi x2, x0, 4
 		    3 => x"00000000", -- addi x1, x0, 1
 		    others => (x"00000000") 
     );

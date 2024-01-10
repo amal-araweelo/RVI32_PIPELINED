@@ -5,41 +5,47 @@ test: fetch decode datamem alu
 NVC := nvc --std=2008
 
 records:
-	$(NVC) -a records.vhd
+	$(NVC) -a constants.vhd
 
 auxiliary:
-	$(NVC) -a alu_ctrl_constants.vhd
-	$(NVC) -a mem_op_constants.vhd
-	$(NVC) -a mux2.vhd
-	$(NVC) -a mux3.vhd
-	$(NVC) -a comparator.vhd
-	$(NVC) -a alu.vhd
+	$(NVC) -a components/mux2.vhd
+	$(NVC) -a components/mux3.vhd
+	$(NVC) -a components/comparator.vhd
+	$(NVC) -a components/alu.vhd
 
-fetch:
+fetch-test:
 	$(NVC) -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
+
+fetch: memory
+	$(NVC) -a fetch.vhd
 
 execute:
 	$(NVC) -a execute.vhd test/execute_tb.vhd -e execute_tb -r 
 
 decode:
-	$(NVC) -a records.vhd
+	$(NVC) -a constants.vhd
 	$(NVC) -a decode.vhd test/decode_tb.vhd -e decode_tb -r 
 
-cpu: records auxiliary
+cpu: records auxiliary fetch state-regs
 	$(NVC) -a decode.vhd 
 	$(NVC) -a execute.vhd 
 	$(NVC) -a fetch.vhd 
-	$(NVC) -a alu.vhd 
-	$(NVC) -a cpu.vhd test/cpu_tb.vhd -e cpu_tb -r --format=fst --gtkw=wave.fst --wave
+	$(NVC) -a datamem.vhd
+	$(NVC) -a components/alu.vhd 
+	$(NVC) -a write-back.vhd
+	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r --format=fst --gtkw=wave.fst --wave
 
 alu: auxiliary
-	$(NVC) -a alu.vhd test/alu_tb.vhd -e alu_tb -r
+	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
 
 datamem: auxiliary
 	$(NVC) -a datamem_5.vhd test/datamem_5_tb.vhd -e datamem_5_tb -r
 
-id_ex: records
-	$(NVC) -a id_ex.vhd
+memory:
+	$(NVC) -a components/instr_mem.vhd
+
+state-regs:
+	$(NVC) -a components/stateregisters.vhd
 
 clean:
 	rm -rf work
