@@ -39,7 +39,7 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 		REG_src_idx_1, REG_src_idx_2: in std_logic_vector(4 downto 0);
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
-		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0);
+		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0)
 		-- blinky : out std_logic -- TODO DELETE MEE :)))
 	);
 end reg_file;
