@@ -220,7 +220,12 @@ architecture behavioral of decoder is
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
 					decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 					decoder_out.imm(11 downto 0) <= (others => '0');
-					
+					-- auipc
+					if (not(opcode(1))) then
+						
+
+					-- lui
+					else 
 
 
 			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC (have sw)
