@@ -53,15 +53,14 @@ use ieee.numeric_std.all;
 -- Memory operation control constants
 
 package mem_op_const is
-  constant sw  : std_logic_vector(3 downto 0) := "0000";
-  constant sh  : std_logic_vector(3 downto 0) := "0001";
-  constant sb  : std_logic_vector(3 downto 0) := "0010";
-  constant lw  : std_logic_vector(3 downto 0) := "0011";
-  constant lh  : std_logic_vector(3 downto 0) := "0100";
-  constant lb  : std_logic_vector(3 downto 0) := "0101";
-  constant lwu : std_logic_vector(3 downto 0) := "0110";
-  constant lhu : std_logic_vector(3 downto 0) := "0111";
-  constant lbu : std_logic_vector(3 downto 0) := "1000";
+  constant sb  : std_logic_vector(2 downto 0) := "000";
+  constant sh  : std_logic_vector(2 downto 0) := "001";
+  constant sw  : std_logic_vector(2 downto 0) := "010";
+  constant lb  : std_logic_vector(2 downto 0) := "011";
+  constant lh  : std_logic_vector(2 downto 0) := "100";
+  constant lw  : std_logic_vector(2 downto 0) := "101";
+  constant lbu : std_logic_vector(2 downto 0) := "110";
+  constant lhu : std_logic_vector(2 downto 0) := "111";
 end mem_op_const;
 
 library ieee;
@@ -102,7 +101,7 @@ package records_pkg is
   type t_exmem_reg is record
     REG_we, MEM_we         : std_logic;
     WB_src_ctrl            : std_logic_vector(1 downto 0);
-    MEM_op                 : std_logic_vector(3 downto 0);
+    MEM_op                 : std_logic_vector(2 downto 0);
     REG_dst_idx            : std_logic_vector(4 downto 0);
     pc, ALU_res, REG_src_2 : std_logic_vector(31 downto 0);
   end record t_exmem_reg;
