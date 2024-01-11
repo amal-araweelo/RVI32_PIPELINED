@@ -19,7 +19,7 @@ entity forwarding_unit is
     -- Outputs
     forward_1 : out std_logic_vector(1 downto 0) := (others => '0');
     forward_2 : out std_logic_vector(1 downto 0) := (others => '0')
-
+    
   );
 end forwarding_unit;
 
