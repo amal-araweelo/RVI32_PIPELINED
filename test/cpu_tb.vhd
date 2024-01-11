@@ -44,7 +44,7 @@ component reg_file is
 	);
 	port (
 		clk, REG_we: in std_logic;
-		instr: in std_logic_vector(31 downto 0);
+		REG_src_idx_1, REG_src_idx_2: in std_logic_vector(4 downto 0);
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
 		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0)
@@ -199,7 +199,8 @@ reg_file_inst : reg_file port map
 (
     clk => clk,
     REG_we => memwb_out.REG_we,
-    instr => ifid_out.instr,
+    REG_src_idx_1 => REG_src_idx_1,
+    REG_src_idx_2 => REG_src_idx_2,
     REG_dst_idx => memwb_out.REG_dst_idx,
     REG_write_data => write_back_out,
     REG_src_1 => decode_stage_out.REG_src_1,
