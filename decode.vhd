@@ -63,8 +63,7 @@ architecture behavioral of decoder is
 				func3 <= (others => '0');
 				func7 <= (others => '0');
 
-				-- Set default values for decoder outputs 
-				
+				-- <<< Set default values for decoder outputs >>>
 				decoder_out.REG_dst_idx <= (others => '0');							-- Destination register
 				decoder_out.ALU_src_1_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
 				decoder_out.ALU_src_2_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
@@ -79,6 +78,7 @@ architecture behavioral of decoder is
 				decoder_out.do_branch 	<= '0';										-- Enable if is a branch instruction
 				decoder_out.MEM_rd 		<= '0';										-- Enable if is a load instruction (for hazard unit)
 				-- opcode may need to be passed. TODO undecided, use or delete.
+				-- <<< Set default values for decoder outputs >>>
 
 				REG_src_idx_1 <= "00000";
 				REG_src_idx_2 <= "00000";
@@ -91,9 +91,9 @@ architecture behavioral of decoder is
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
 					decoder_out.REG_we <= '1';
 					decoder_out.ALU_src_2_ctrl <= '1';	-- imm
-					decoder_out.imm(11 downto 0) <= instr(31 downto 20);
-
 					REG_src_idx_1 <= instr(19 downto 15);
+					
+					decoder_out.imm(11 downto 0) <= instr(31 downto 20);
 					-- Handle imm sign extension
 					if (decoder_out.imm(11) = '1') then
 						decoder_out.imm(31 downto 12) <= (others => '1');
@@ -101,31 +101,58 @@ architecture behavioral of decoder is
 						decoder_out.imm(31 downto 12) <= (others => '0');
 					end if;
 
-					-- case func3: I
 					func3 <= instr(14 downto 12);
-					case func3 is
-						-- addi
-						when "000" =>
-						decoder_out.op_ctrl <=  ALU_ADD;
+					-- is DEC_I_LOAD
+					if (not(opcode(4) or opcode(5))) then
+						case func3 is
+							-- TODO CONTINUE HERE
+							when others => 
+								report "Undefined func3: I-type, DEC_I_LOAD";
+						end case;
+					
+					-- is DEC_I_ADD_SHIFT_LOGICOPS
+					elsif (opcode(4) and (not(opcode(5)))) then 
+						case func3 is
+							-- addi
+							when "000" =>
+							decoder_out.op_ctrl <=  ALU_ADD;
+							-- xori
+							when "100" =>
+							decoder_out.op_ctrl <= ALU_XOR;
+							-- ori
+							when "110" =>
+							decoder_out.op_ctrl <= ALU_OR;
+							-- andi
+							when "111" =>
+							decoder_out.op_ctrl <= ALU_AND;
+							----- shifts
+							-- slli
+							when "001" => 
+							decoder_out.op_ctrl <=  ALU_SL;
+							when "101" => 
+								if (instr(30)) then
+									-- srai
+									decoder_out.op_ctrl <=  ALU_SRA;
+								else
+									-- srli
+									decoder_out.op_ctrl <=  ALU_SR;
+								end if;
+							----- set if's
+							-- slti
+							when "010" => 
+							decoder_out.op_ctrl <=  ALU_SLT_S;
+							-- sltiu
+							when "011" => 
+							decoder_out.op_ctrl <=  ALU_SLT_U;
 						
-						-- xori
-						when "100" =>
-						decoder_out.op_ctrl <= ALU_XOR;
+							
+							when others =>
+								report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
+						end case;
+					-- 
+					else 
 
-						-- ori
-						when "110" =>
-						decoder_out.op_ctrl <= ALU_OR;
-						
-						-- andi
-						when "111" =>
-						decoder_out.op_ctrl <= ALU_AND;
-						
-
-
-
-						when others =>
-							report "Undefined func3: I-type";
-					end case;
+					end if;
 				
 			-- R-type
 				when DEC_R_OPS | DEC_R_OPSW => 
@@ -215,7 +242,7 @@ architecture behavioral of decoder is
 					end case;
 				
 				
-			-- SB-type (branches)
+			-- SB-type (branches) -- should be finished
 				when DEC_SB => 
 					decoder_out.do_branch <=  '1';
 					decoder_out.WB_src_ctrl <= "00";
