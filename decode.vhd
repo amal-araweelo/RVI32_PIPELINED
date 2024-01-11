@@ -218,10 +218,13 @@ architecture behavioral of decoder is
 			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC 
 				when DEC_S =>
 					decoder_out.REG_we <= '0';
-					decoder_out.ALU_src_1_ctrl <= '0';	-- register
-					decoder_out.ALU_src_2_ctrl <= '0';	-- register
+					decoder_out.ALU_src_2_ctrl <= '1';	-- imm for calculating address
 					REG_src_idx_1 <= instr(19 downto 15);
 					REG_src_idx_2 <= instr(24 downto 20);
+
+					decoder_out.MEM_we 		<= '1';	
+										
+					-- construct immediate
 					decoder_out.imm(4 downto 0) 	<= instr(11 downto 7);
 					decoder_out.imm(11 downto 5) 	<= instr(31 downto 25);
 					-- Handle imm sign extension
@@ -232,11 +235,13 @@ architecture behavioral of decoder is
 					end if;
 
 					
+					func3 <= instr(14 downto 12);
 					
 
-					func3 <= instr(14 downto 12);
 					case func3 is -- TODO: ADD REST OF LOGIC
-						
+						-- sw
+						when "010" => 
+						decoder_out.MEM_op <= sw;
 						when others =>
 						report "undefined func3: S-type";
 					end case;
