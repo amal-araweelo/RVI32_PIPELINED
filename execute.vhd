@@ -112,7 +112,7 @@ begin
 
   inst_mux2_1 : mux2 port
   map(
-  a => pc, b => op_1_br, sel => ALU_src_1_ctrl, output => op_1_alu
+  a => op_1_br, b => pc, sel => ALU_src_1_ctrl, output => op_1_alu
   );
   inst_mux2_2 : mux2 port
   map(
@@ -136,5 +136,10 @@ begin
     -- Outputs
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
+
+    -- report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
+    -- report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
+    -- report "[ALU] ALU_src_1_ctrl = " & to_string(ALU_src_1_ctrl); -- TODO: Delete
+    -- report "[ALU] ALU_src_2_ctrl = " & to_string(ALU_src_2_ctrl); -- TODO: Delete
   end process;
 end behavorial;

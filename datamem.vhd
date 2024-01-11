@@ -34,6 +34,7 @@ begin
         when sw =>
           if (MEM_we = '1') then
             ram(to_integer(unsigned(MEM_addr))) <= MEM_data_in;
+	    -- report "[DATA MEM] Storing " & to_string(MEM_data_in) & " at address " & to_string(MEM_addr); -- TODO: Delete
           end if;
         when others =>
           null;

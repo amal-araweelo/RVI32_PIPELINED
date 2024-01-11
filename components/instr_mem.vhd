@@ -21,9 +21,18 @@ architecture impl of instr_mem is
   type rom_type is array(2 ** 10 downto 0) -- 1 KiB
   of std_logic_vector (31 downto 0);
   signal rom : rom_type := (
-	0 => x"00500093", -- li ra,1
-	1 => x"00200113", -- li sp,2
-	2 => x"00300193", -- li gp,3
+0 => x"00500113", -- li	sp,5
+1 => x"00000013", -- nop
+2 => x"00000013", -- nop
+3 => x"00000013", -- nop
+4 => x"00202023", -- sw	sp,0(zero) # 0 <.text>
+5 => x"00000013", -- nop
+6 => x"00000013", -- nop
+7 => x"00000013", -- nop
+8 => x"00002083", -- lw	ra,0(zero) # 0 <.text>
+9 => x"00000013", -- nop
+10 => x"00000013", -- nop
+11 => x"00000013", -- nop
 	others => (x"00000000") 
     );
 

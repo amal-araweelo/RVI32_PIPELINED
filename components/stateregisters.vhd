@@ -124,6 +124,8 @@ begin
 	out_exmem_record.REG_src_2 <= in_exmem_record.REG_src_2;
 	out_exmem_record.MEM_op    <= in_exmem_record.MEM_op;
 	out_exmem_record.MEM_we    <= in_exmem_record.MEM_we;
+
+	-- report "[EXMEM REG] WB_src_ctrl: " & to_string(out_exmem_record.WB_src_ctrl); -- TODO: Delete
       end if;
     end if;
   end process;

@@ -303,7 +303,7 @@ port map
 write_back_inst : write_back
 port map
 (
-	WB_src_ctrl => "01", -- TODO: Fix memwb_out.WB_src_ctrl,
+	WB_src_ctrl => memwb_out.WB_src_ctrl,
 	pc => memwb_out.pc,
 	ALU_res => memwb_out.ALU_res,
 	MEM_out => memwb_out.MEM_out,
@@ -321,6 +321,76 @@ end process;
 stim_proc: process
 begin
 
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
+    wait for clk_period;
     wait for clk_period;
     report "--------- CLOCK CYCLE ---------";
 
@@ -352,32 +422,6 @@ begin
     report "memwb_out.WB_src_ctrl = " & to_string(memwb_out.WB_src_ctrl);
     report "mwmwb_out.ALU_res = " & to_string(memwb_out.ALU_res);
     report "memory_stage_out.ALU_res = " & to_string(memory_stage_out.ALU_res);
-
-    std.env.stop(0);
-
-    report "--------- CLOCK CYCLE ---------";
-
-    wait for clk_period;
-    report "IFID.instr = " & to_string(ifid_out.instr);
-    report "IFID.pc = " & to_string(ifid_out.pc);
-    report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
-    report "decode_stage_out.decoder.imm = " & to_string(decode_stage_out.decoder_out.imm);
-    report "idex_out.decoder_out.imm = " & to_string(idex_out.decoder_out.imm);
-    report "execute_stage_out.ALU_res_out = " & to_string(execute_stage_out.ALU_res);
-    report "execute_stage_out_sel_pc = " & to_string(execute_stage_out_sel_pc);
-    report "write_back_out = " & to_string(write_back_out);
-    
-    report "--------- CLOCK CYCLE ---------";
-
-    wait for clk_period;
-    report "IFID.instr = " & to_string(ifid_out.instr);
-    report "IFID.pc = " & to_string(ifid_out.pc);
-    report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
-    report "decode_stage_out.decoder.imm = " & to_string(decode_stage_out.decoder_out.imm);
-    report "idex_out.decoder_out.imm = " & to_string(idex_out.decoder_out.imm);
-    report "execute_stage_out.ALU_res_out = " & to_string(execute_stage_out.ALU_res);
-    report "execute_stage_out_sel_pc = " & to_string(execute_stage_out_sel_pc);
-    report "write_back_out = " & to_string(write_back_out);
 
     std.env.stop(0);
 end process;
