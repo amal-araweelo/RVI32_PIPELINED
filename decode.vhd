@@ -300,7 +300,7 @@ begin
 	end if;
     end if;
     end process;
-    REG_src_1 <= REG_src_idx_1;
-    REG_src_2 <= REG_src_idx_2;
-	blinky <= array_register(2)(0);
+    REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
+    REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
+    -- blinky <= array_register(2)(0);
 end behavioral;
