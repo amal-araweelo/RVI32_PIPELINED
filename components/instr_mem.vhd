@@ -10,7 +10,7 @@ entity instr_mem is
   (
     -- Inputs
     clk      : in std_logic;
-    MEM_addr : in std_logic_vector(31 downto 0) := (others => '0');
+    MEM_addr : in std_logic_vector(31 downto 0);
 
     -- Outputs
     MEM_instr_out : out std_logic_vector(31 downto 0)

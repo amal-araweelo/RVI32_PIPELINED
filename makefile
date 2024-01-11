@@ -1,4 +1,4 @@
-test: cpu
+test: fetch-test decode-test datamem-test # alu
 
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
@@ -7,14 +7,21 @@ NVC := nvc --std=2008
 records:
 	$(NVC) -a constants.vhd
 
-auxiliary:
+auxiliary: records
+	$(NVC) -a components/alu.vhd
 	$(NVC) -a components/mux2.vhd
 	$(NVC) -a components/mux3.vhd
 	$(NVC) -a components/comparator.vhd
-	$(NVC) -a components/alu.vhd
 
-fetch-test:
-	$(NVC) -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
+fetch-test: fetch
+	$(NVC) -a test/fetch_tb.vhd -e fetcher_tb -r
+
+decode-test: decode
+	$(NVC) -a test/decode_tb.vhd -e decode_tb -r 
+
+datamem-test: datamem
+	$(NVC) -a test/datamem_tb.vhd -e datamem_tb -r
+
 
 fetch: memory auxiliary records
 	$(NVC) -a fetch.vhd
@@ -24,14 +31,14 @@ execute:
 
 decode:
 	$(NVC) -a constants.vhd
-	$(NVC) -a decode.vhd test/decode_tb.vhd -e decode_tb -r 
+	$(NVC) -a decode.vhd
 
 cpu: records auxiliary fetch state-regs
+	$(NVC) -a components/alu.vhd 
 	$(NVC) -a decode.vhd 
 	$(NVC) -a execute.vhd 
 	$(NVC) -a fetch.vhd 
 	$(NVC) -a datamem.vhd
-	$(NVC) -a components/alu.vhd 
 	$(NVC) -a write-back.vhd
 	$(NVC) -a cpu.vhd
 	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r
@@ -40,9 +47,9 @@ alu: auxiliary
 	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
 
 datamem: auxiliary
-	$(NVC) -a datamem_5.vhd test/datamem_5_tb.vhd -e datamem_5_tb -r
+	$(NVC) -a datamem.vhd 
 
-memory:
+memory: auxiliary
 	$(NVC) -a components/instr_mem.vhd
 
 state-regs:

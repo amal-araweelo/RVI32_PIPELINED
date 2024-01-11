@@ -11,14 +11,13 @@ end datamem_tb;
 architecture behavorial of datamem_tb is
 
   -- Component Declaration for the Unit Under Test (UUT)
-  component datamem is
+  component data_mem is
     port
     (
       -- Inputs
       clk         : in std_logic                     := '0'; -- clock
-      pc          : in std_logic_vector(31 downto 0) := (others => '0');
       MEM_we      : in std_logic                     := '0'; -- write enable
-      MEM_op      : in std_logic_vector(3 downto 0)  := (others => '0'); -- memory operation
+      MEM_op      : in std_logic_vector(2 downto 0)  := (others => '0'); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0) := (others => '0');
       MEM_addr    : in std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
 
@@ -31,7 +30,7 @@ architecture behavorial of datamem_tb is
   signal clk         : std_logic                     := '0'; -- clock
   signal pc          : std_logic_vector(31 downto 0) := (others => '0');
   signal MEM_we      : std_logic                     := '0'; -- write enable
-  signal MEM_op      : std_logic_vector(3 downto 0)  := (others => '0'); -- memory operation
+  signal MEM_op      : std_logic_vector(2 downto 0)  := (others => '0'); -- memory operation
   signal MEM_data_in : std_logic_vector(31 downto 0) := (others => '0');
   signal MEM_addr    : std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
 
@@ -42,10 +41,16 @@ architecture behavorial of datamem_tb is
   constant clk_period : time := 100 ns;
 
 begin
+  
   -- Instantiate the Unit Under Test (UUT)
-  uut : datamem port map
+  uut : data_mem port map
   (
-    clk, pc, MEM_we, MEM_op, MEM_data_in, MEM_addr, MEM_data_out
+    clk => clk, 
+    MEM_we => MEM_we,
+    MEM_op => MEM_op,
+    MEM_data_in => MEM_data_in,
+    MEM_addr => MEM_addr,
+    MEM_data_out => MEM_data_out
   );
 
   -- Clock process

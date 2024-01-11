@@ -17,6 +17,7 @@ entity data_mem is
 
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0) := (others => '0')
+    -- blinky : out std_logic
   );
 end data_mem;
 

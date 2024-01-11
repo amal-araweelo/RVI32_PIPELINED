@@ -61,7 +61,7 @@ begin
     ctrl <= alu_add;
     wait for clk_period;
     assert res = x"00000002" report "Addition failed" severity error;
-		report "Test 1 [PASSED]";
+    report "Test 1 [PASSED]";
 
     -- Test subtraction
     op_1 <= x"00000005";
@@ -69,7 +69,7 @@ begin
     ctrl <= alu_sub;
     wait for clk_period;
     assert res = x"00000004" report "Subtraction failed" severity error;
-		report "Test 2 [PASSED]";
+    report "Test 2 [PASSED]";
 
     -- Test shift left logical
     op_1 <= x"00000010";
@@ -77,7 +77,7 @@ begin
     ctrl <= alu_sl;
     wait for clk_period;
     assert res = x"00000020" report "Shift left logical failed" severity error;
-		report "Test 3 [PASSED]";
+    report "Test 3 [PASSED]";
 
     -- finish simulation
     std.env.stop(0);
