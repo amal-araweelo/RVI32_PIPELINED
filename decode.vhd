@@ -107,7 +107,7 @@ architecture behavioral of decoder is
 					if (not(opcode(4) or opcode(5))) then
 						decoder_out.WB_src_ctrl <= "10";		--read from mem
 						decoder_out.MEM_rd 	<= '1';	
-
+						report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
 						case func3 is
 							-- lw
 							when "010" => 
@@ -344,18 +344,20 @@ use ieee.numeric_std.all;
 architecture behavioral of reg_file is
 type registerfile_type is array (2**W-1 downto 0) of
 	std_logic_vector(B-1 downto 0);
-signal array_register: registerfile_type;
+signal array_register: registerfile_type := (others => (others => '0'));
 
 begin
+    array_register(0) <= (others => '0');
     process(clk)
     begin
-    array_register(0) <= (others => '0');
     if (rising_edge(clk)) then
-	if (REG_we = '1') then
+	if (REG_we = '1' and REG_dst_idx /= "00000") then
+	    -- report "[REG FILE] Register(" & to_string(REG_dst_idx) & ") <= " & to_string(REG_write_data); -- TODO: Delete
 	    array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data; 
 	end if;
     end if;
     end process;
+
     REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
     REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
     -- blinky <= array_register(2)(0);
