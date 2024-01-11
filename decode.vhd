@@ -11,6 +11,7 @@ use ieee.std_logic_1164.all;
 use work.records_pkg.all;
 use work.alu_ctrl_const.all;
 use work.const_decoder.all;
+use work.mem_op_const.all;
 
 
 ----- Entity declarations -----
