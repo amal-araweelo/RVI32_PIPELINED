@@ -74,7 +74,7 @@ architecture behavioral of decoder is
 				decoder_out.imm(31 downto 0) <= (others => '0');					-- immediate value
 
 				decoder_out.WB_src_ctrl <= "01";		--default is ALU			-- ctrl signal for WB input selector mux (2=read from mem, 1=ALU, 0=jump/branch)
-				decoder_out.MEM_op 		<= "0000";									-- ctrl signal for MEM operation type (eg. lw, sh ...)
+				decoder_out.MEM_op 		<= "000";									-- ctrl signal for MEM operation type (eg. lw, sh ...)
 				decoder_out.MEM_we 		<= '0';										-- Memory Write enable
 				decoder_out.do_jmp 		<= '0';										-- Enable if is a jump instruction
 				decoder_out.do_branch 	<= '0';										-- Enable if is a branch instruction
@@ -110,11 +110,21 @@ architecture behavioral of decoder is
 						decoder_out.MEM_rd 	<= '1';	
 						report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
 						case func3 is
+							-- lb
+							when "000" => 
+							decoder_out.MEM_op 	<= lb;		
+							-- lh
+							when "001" => 
+							decoder_out.MEM_op 	<= lh;
 							-- lw
 							when "010" => 
 							decoder_out.MEM_op 	<= lw;		
-							
-							-- TODO CONTINUE HERE
+							-- lbu
+							when "100" => 
+							decoder_out.MEM_op 	<= lbu;
+							-- lhu
+							when "101" => 
+							decoder_out.MEM_op 	<= lhu;
 							when others => 
 								report "Undefined func3: I-type, DEC_I_LOAD";
 						end case;
