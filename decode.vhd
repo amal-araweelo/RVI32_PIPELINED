@@ -40,9 +40,10 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
 		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0);
-		blinky : out std_logic -- TODO DELETE MEE :)))
+		-- blinky : out std_logic -- TODO DELETE MEE :)))
 	);
 end reg_file;
+
 
 -- Re-includes bc VHDL do be like that
 library ieee;
@@ -347,7 +348,6 @@ type registerfile_type is array (2**W-1 downto 0) of
 signal array_register: registerfile_type := (others => (others => '0'));
 
 begin
-    array_register(0) <= (others => '0');
     process(clk)
     begin
     if (rising_edge(clk)) then
@@ -356,9 +356,11 @@ begin
 	    array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data; 
 	end if;
     end if;
+	
     end process;
 
     REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
     REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
+	
     -- blinky <= array_register(2)(0);
 end behavioral;

@@ -126,7 +126,10 @@ component data_mem is
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
 
     -- Outputs
-    MEM_data_out : out std_logic_vector(31 downto 0)
+    MEM_data_out : out std_logic_vector(31 downto 0);
+
+    -- Changes
+    blinky: out std_logic
   );
 end component;
 
@@ -224,7 +227,7 @@ reg_file_inst : reg_file port map
     REG_write_data => write_back_out,
     REG_src_1 => decode_stage_out.REG_src_1,
     REG_src_2 => decode_stage_out.REG_src_2,
-    blinky => led_status
+    --blinky => led_status
 );
 
 -- Decoder
@@ -305,7 +308,8 @@ port map
     MEM_op => exmem_out.MEM_op,
     MEM_data_in => exmem_out.REG_src_2,
     MEM_addr => exmem_out.ALU_res,
-    MEM_data_out => memory_stage_out.MEM_out
+    MEM_data_out => memory_stage_out.MEM_out,
+    blinky => led_status 
 );
 
 -- Register MEM/WB

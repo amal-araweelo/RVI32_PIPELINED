@@ -27,7 +27,7 @@ begin
       --tmp   <= '0';
     if (rising_edge(clk_in)) then
       count <= count + 1;
-      if (count = 25000000-1) then 
+      if (count = 12500000-1) then 
         tmp   <= not(tmp);
         count <= 0;
       end if;
@@ -35,4 +35,3 @@ begin
    clk_out <= tmp;
   end process;
 end architecture;
-
