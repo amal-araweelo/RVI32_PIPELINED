@@ -157,9 +157,12 @@ architecture behavioral of decoder is
 							when others =>
 								report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
 						end case;
-					-- 
-					else 
-
+					-- DEC_I_ADDW_SHIFTW
+		--			elsif 
+					-- DEC_I_JALR
+		--			elsif
+					-- Undefined opcode
+		--			else --report undefined opcode
 					end if;
 				
 			-- R-type
@@ -215,17 +218,24 @@ architecture behavioral of decoder is
 						
 					end case;
 
-			-- U-type (auipc, lui) -- TODO: ADD REST OF RECORD LOGIC, if statement on opcode to do one or the other
+			-- U-type (auipc, lui) 
 				when DEC_U_AUIPC | DEC_U_LUI =>
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
+					decoder_out.ALU_src_2_ctrl <= '1';	-- imm
+					decoder_out.REG_we <= '1';
+					decoder_out.op_ctrl <= ALU_add;
+
 					decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 					decoder_out.imm(11 downto 0) <= (others => '0');
+					
 					-- auipc
 					if (not(opcode(1))) then
-						
-
+						decoder_out.ALU_src_1_ctrl <= '1';	-- pc
 					-- lui
 					else 
+						-- ALU src 1 is register, x0 is default. The add is set above, so there is no unique code here :)
+						null;
+					end if;
 
 
 			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC (have sw)
