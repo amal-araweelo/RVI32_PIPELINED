@@ -11,9 +11,9 @@ entity fetcher is
   port
   (
     clk, sel_pc, clr, en : in std_logic;
+    branch_addr          : in std_logic_vector (31 downto 0);
     pc                   : out std_logic_vector (31 downto 0);
-    branch_addr : in std_logic_vector (31 downto 0);
-    instr       : out std_logic_vector (31 downto 0)
+    instr                : out std_logic_vector (31 downto 0)
   );
 end fetcher;
 
@@ -36,9 +36,9 @@ architecture behavioral of fetcher is
 
 begin
   inst_instr_mem : instr_mem port map
-    (clk, pc_next, instr);
+    (clk, pc_reg, instr);
 
-  process (sel_pc, pc_reg, branch_addr) begin
+  process (all) begin
     if (sel_pc = '1') then
       pc_next <= branch_addr;
     else

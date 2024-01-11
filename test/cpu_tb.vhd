@@ -320,11 +320,11 @@ end process;
 
 stim_proc: process
 begin
-    wait for clk_period;
 
+    wait for clk_period;
     report "--------- CLOCK CYCLE ---------";
 
-    wait for clk_period;
+    report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
@@ -338,11 +338,7 @@ begin
     report "--------- CLOCK CYCLE ---------";
 
     wait for clk_period;
-    wait for clk_period;
-    wait for clk_period;
-    wait for clk_period;
-    wait for clk_period;
-    wait for clk_period;
+    report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);

@@ -16,7 +16,7 @@ auxiliary:
 fetch-test:
 	$(NVC) -a fetch.vhd test/fetch_tb.vhd -e fetcher_tb -r
 
-fetch: memory
+fetch: memory auxiliary records
 	$(NVC) -a fetch.vhd
 
 execute:
