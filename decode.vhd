@@ -104,10 +104,14 @@ architecture behavioral of decoder is
 					func3 <= instr(14 downto 12);
 					-- is DEC_I_LOAD
 					if (not(opcode(4) or opcode(5))) then
+						decoder_out.WB_src_ctrl <= "10";		--read from mem
+						decoder_out.MEM_rd 	<= '1';	
+
 						case func3 is
 							-- lw
 							when "010" => 
-
+							decoder_out.MEM_op 	<= lw;		
+							
 							-- TODO CONTINUE HERE
 							when others => 
 								report "Undefined func3: I-type, DEC_I_LOAD";
