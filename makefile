@@ -34,7 +34,7 @@ cpu: records auxiliary fetch state-regs
 	$(NVC) -a components/alu.vhd 
 	$(NVC) -a write-back.vhd
 	$(NVC) -a cpu.vhd
-	# $(NVC) -a test/cpu_tb.vhd -e cpu_tb -r --format=fst --gtkw=wave.fst --wave
+	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r
 
 alu: auxiliary
 	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
