@@ -8,7 +8,7 @@ use work.records_pkg.all;
 entity cpu is
     port 
     (
-	clk: in std_logic;
+	clk_in: in std_logic;
 	led_status : out std_logic
     );
 end cpu;
@@ -181,6 +181,8 @@ signal memwb_out : t_memwb_reg;
 -- Writeback signals
 signal write_back_out : std_logic_vector(31 downto 0);
 
+-- Clock signal
+signal clk : std_logic;
 
 begin
 
