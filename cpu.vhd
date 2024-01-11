@@ -230,6 +230,8 @@ reg_file_inst : reg_file port map
     --blinky => led_status
 );
 
+decode_stage_out.pc <= ifid_out.pc;
+
 -- Decoder
 decode_inst: decoder port map
 (
