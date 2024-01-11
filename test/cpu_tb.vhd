@@ -103,7 +103,6 @@ component data_mem is
   (
     -- Inputs
     clk         : in std_logic; -- clock
-    pc          : in std_logic_vector(31 downto 0);
     MEM_we      : in std_logic; -- write enable
     MEM_op      : in std_logic_vector(3 downto 0); -- memory operation
     MEM_data_in : in std_logic_vector(31 downto 0);
@@ -280,7 +279,6 @@ memory_inst : data_mem
 port map 
 (
     clk => clk,
-    pc => exmem_out.pc,
     MEM_we => exmem_out.MEM_we,
     MEM_op => exmem_out.MEM_op,
     MEM_data_in => exmem_out.REG_src_2,

@@ -11,7 +11,7 @@ entity data_mem is
     -- Inputs
     clk         : in std_logic                     := '0'; -- clock
     MEM_we      : in std_logic                     := '0'; -- write enable
-    MEM_op      : in std_logic_vector(3 downto 0)  := (others => '0'); -- memory operation
+    MEM_op      : in std_logic_vector(2 downto 0)  := (others => '0'); -- memory operation
     MEM_data_in : in std_logic_vector(31 downto 0) := (others => '0');
     MEM_addr    : in std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
 
