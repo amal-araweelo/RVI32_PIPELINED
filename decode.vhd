@@ -105,6 +105,9 @@ architecture behavioral of decoder is
 					-- is DEC_I_LOAD
 					if (not(opcode(4) or opcode(5))) then
 						case func3 is
+							-- lw
+							when "010" => 
+
 							-- TODO CONTINUE HERE
 							when others => 
 								report "Undefined func3: I-type, DEC_I_LOAD";
@@ -215,7 +218,7 @@ architecture behavioral of decoder is
 					
 
 
-			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC 
+			-- S-type (store) -- TODO: ADD REST OF RECORD LOGIC (have sw)
 				when DEC_S =>
 					decoder_out.REG_we <= '0';
 					decoder_out.ALU_src_2_ctrl <= '1';	-- imm for calculating address
@@ -241,6 +244,7 @@ architecture behavioral of decoder is
 					case func3 is -- TODO: ADD REST OF LOGIC
 						-- sw
 						when "010" => 
+						decoder_out.op_ctrl <= ALU_ADD; 
 						decoder_out.MEM_op <= sw;
 						when others =>
 						report "undefined func3: S-type";
