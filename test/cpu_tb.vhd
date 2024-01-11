@@ -354,32 +354,6 @@ begin
     report "memory_stage_out.ALU_res = " & to_string(memory_stage_out.ALU_res);
 
     std.env.stop(0);
-
-    report "--------- CLOCK CYCLE ---------";
-
-    wait for clk_period;
-    report "IFID.instr = " & to_string(ifid_out.instr);
-    report "IFID.pc = " & to_string(ifid_out.pc);
-    report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
-    report "decode_stage_out.decoder.imm = " & to_string(decode_stage_out.decoder_out.imm);
-    report "idex_out.decoder_out.imm = " & to_string(idex_out.decoder_out.imm);
-    report "execute_stage_out.ALU_res_out = " & to_string(execute_stage_out.ALU_res);
-    report "execute_stage_out_sel_pc = " & to_string(execute_stage_out_sel_pc);
-    report "write_back_out = " & to_string(write_back_out);
-    
-    report "--------- CLOCK CYCLE ---------";
-
-    wait for clk_period;
-    report "IFID.instr = " & to_string(ifid_out.instr);
-    report "IFID.pc = " & to_string(ifid_out.pc);
-    report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
-    report "decode_stage_out.decoder.imm = " & to_string(decode_stage_out.decoder_out.imm);
-    report "idex_out.decoder_out.imm = " & to_string(idex_out.decoder_out.imm);
-    report "execute_stage_out.ALU_res_out = " & to_string(execute_stage_out.ALU_res);
-    report "execute_stage_out_sel_pc = " & to_string(execute_stage_out_sel_pc);
-    report "write_back_out = " & to_string(write_back_out);
-
-    std.env.stop(0);
 end process;
 
 end behavior;
