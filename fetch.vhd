@@ -36,7 +36,7 @@ architecture behavioral of fetcher is
 
 begin
   inst_instr_mem : instr_mem port map
-    (clk, pc, instr);
+    (clk, pc_next, instr);
 
   process (sel_pc, pc_reg, branch_addr) begin
     if (sel_pc = '1') then
