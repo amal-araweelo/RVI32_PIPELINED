@@ -323,7 +323,7 @@ port map
 write_back_inst : write_back
 port map
 (
-    WB_src_ctrl => "01", -- TODO: Fix memwb_out.WB_src_ctrl,
+    WB_src_ctrl => memwb_out.WB_src_ctrl,
     pc => memwb_out.pc,
     ALU_res => memwb_out.ALU_res,
     MEM_out => memwb_out.MEM_out,
