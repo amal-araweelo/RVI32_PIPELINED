@@ -10,7 +10,7 @@ entity forwarding_unit is
   (
     -- Inputs
     REG_src_idx_1  : in std_logic_vector(4 downto 0) := (others => '0'); -- rs2 ID
-    REG_src_idx_1    : in std_logic_vector(4 downto 0) := (others => '0'); -- rs1 ID
+    REG_src_idx_2    : in std_logic_vector(4 downto 0) := (others => '0'); -- rs1 ID
     REG_we  : in std_logic                    := '0';
     WB_dst_reg: in std_logic_vector(4 downto 0) := (others => '0');
     MEM_dst_reg : in std_logic_vector(4 downto 0) := (others => '0');
@@ -26,19 +26,19 @@ end forwarding_unit;
 architecture behavorial of forwarding_unit is
 
 begin
-  process (all)
-  begin
-    if (((mem_reg_wr_en = '1') and (mem_reg_wr_idx /= 0) and (mem_reg_wr_idx = id_reg1_idx))) then
-      forward_1 <= "10";
-    end if;
-    if (((mem_reg_wr_en = '1') and WB_dst_reg/= 0) and WB_dst_reg= id_reg1_idx))) then
-      forward_1 <= "01";
-    end if;
-    if (((mem_reg_wr_en = '1') and (mem_reg_wr_idx /= 0) and (mem_reg_wr_idx = id_reg2_idx))) then
-      forward_2 <= "10";
-    end if;
-    if (((mem_reg_wr_en = '1') and WB_dst_reg/= 0) and WB_dst_reg= id_reg2_idx))) then
-      forward_2 <= "01";
-    end if;
-  end process;
+ -- process (all)
+ -- begin
+   -- if (((mem_reg_wr_en = '1') and (mem_reg_wr_idx /= 0) and (mem_reg_wr_idx = id_reg1_idx))) then
+    --  forward_1 <= "10";
+    --end if;
+    --if (((mem_reg_wr_en = '1') and WB_dst_reg/= 0) and WB_dst_reg= id_reg1_idx))) then
+      --forward_1 <= "01";
+    --end if;
+    --if (((mem_reg_wr_en = '1') and (mem_reg_wr_idx /= 0) and (mem_reg_wr_idx = id_reg2_idx))) then
+      --forward_2 <= "10";
+    --end if;
+    --if (((mem_reg_wr_en = '1') and WB_dst_reg/= 0) and WB_dst_reg= id_reg2_idx))) then
+      --forward_2 <= "01";
+    --end if;
+ -- end process;
 end architecture;

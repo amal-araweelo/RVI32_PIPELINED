@@ -16,8 +16,7 @@ entity data_mem is
     MEM_addr    : in std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
 
     -- Outputs
-    MEM_data_out : out std_logic_vector(31 downto 0) := (others => '0');
-    blinky : out std_logic
+    MEM_data_out : out std_logic_vector(31 downto 0) := (others => '0')
   );
 end data_mem;
 
@@ -28,9 +27,8 @@ architecture impl of data_mem is
 
 
 begin
-  process (clk, blinky) begin
+  process (clk) begin
        -- Changes
-       blinky <= ram(0)(0);
     if (rising_edge(clk)) then
       MEM_data_out <= ram(to_integer(unsigned(MEM_addr))); -- data is always loaded from memory given addr
       case MEM_op is -- only implemented store word for now
