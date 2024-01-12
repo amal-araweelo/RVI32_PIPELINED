@@ -46,7 +46,7 @@ begin
   -- Stimulus process
   stim_proc : process
   begin
-    wait for clk_period;
+    wait for 500* clk_period;
     -- Check clock output
     assert clk_out = '0' report "Initial assertion failed " & to_string(clk_out) severity error;
     wait for 0.5 * clk_period;
@@ -60,7 +60,8 @@ begin
        -- Check if the divided clock toggled
     assert clk_out = '0' report "Clock division 2 failed "  & to_string(clk_out) severity error;
     wait for 0.5 * clk_period;
-    wait for 1 ns;
+    wait for 10 * clk_period;
+    wait for 5 ps;
 
     -- Check if the divided clock toggled again
     assert clk_out = '0' report "Clock division 3 failed " & to_string(clk_out) severity error;
