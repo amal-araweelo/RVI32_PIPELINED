@@ -22,15 +22,15 @@ begin
   -- Clock process
   process(clk)
     begin
-    if(rising_edge(clk))
+    if(rising_edge(clk)) then
       out_ifid_record <= intermediate_ifid_record;
     end if;
-
+  end process;
     -- Combinatorial process
   process(all)
     begin
       intermediate_ifid_record <= in_ifid_record;
-      if (clr = '1')
+      if (clr = '1') then
         intermediate_ifid_record.pc <= (others => '0');
         intermediate_ifid_record.instr <= (others => '0');
       end if;
@@ -38,7 +38,7 @@ begin
       if (clr='0' and en='1') then
         intermediate_ifid_record <= in_ifid_record;
       end if;
-    end process;
+   end process;
 end behavioral;
 
 library ieee;
@@ -64,7 +64,7 @@ architecture behavioral of reg_idex is
   -- Clock process
   process(clk)
     begin
-    if(rising_edge(clk))
+    if(rising_edge(clk)) then
       out_ifid_record <= intermediate_ifid_record;
     end if;
   end process;
@@ -120,7 +120,7 @@ begin
   -- Clock process
   process(clk)
     begin
-    if(rising_edge(clk))
+    if(rising_edge(clk)) then
       out_exmem_record <= intermediate_exmem_record;
     end if;
   end process;
@@ -178,7 +178,7 @@ begin
   -- Clock process
   process(clk)
     begin
-    if(rising_edge(clk))
+    if(rising_edge(clk)) then
       out_exmem_record <= intermediate_memwb_record;
     end if;
   end process;
