@@ -18,7 +18,7 @@ entity instr_mem is
 end instr_mem;
 
 architecture impl of instr_mem is
-  type rom_type is array(2 ** 10 downto 0) -- 1 KiB
+  type rom_type is array(2 ** 7 downto 0) -- 1 KiB
   of std_logic_vector (31 downto 0);
 
   signal rom : rom_type := (
