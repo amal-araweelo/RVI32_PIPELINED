@@ -26,8 +26,11 @@ architecture behavioral of fetcher is
   component instr_mem is
     port
     (
+      -- Inputs
       clk      : in std_logic;
-      MEM_addr : in std_logic_vector(31 downto 0);
+      MEM_addr : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
+
+      -- Outputs
       MEM_instr_out : out std_logic_vector(31 downto 0)
     );
   end component;
