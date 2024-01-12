@@ -79,6 +79,62 @@ begin
     assert res = x"00000020" report "Shift left logical failed" severity error;
     report "Test 3 [PASSED]";
 
+    -- Test SLT signed
+    op_1 <= x"00000005";
+    op_2 <= x"FFFFFFFB"; -- minus 5
+    ctrl <= alu_slt_s;
+    wait for clk_period;
+    assert res = x"00000000" report "SLT signed failed" severity error;
+    report "Test 4 [PASSED]";
+
+    -- Test SLT unsigned
+    op_1 <= x"00000005";
+    op_2 <= x"00000002";
+    ctrl <= alu_slt_u;
+    wait for clk_period;
+    assert res = x"00000000" report "SLT unsigned failed" severity error;
+    report "Test 5 [PASSED]";
+
+    -- Test XOR
+    op_1 <= x"0000000A";
+    op_2 <= x"00000005";
+    ctrl <= alu_xor;
+    wait for clk_period;
+    assert res = x"0000000F" report "XOR failed" severity error;
+    report "Test 6 [PASSED]";
+
+    -- Test SR (shift right logical)
+    op_1 <= x"00000020";
+    op_2 <= x"00000001";
+    ctrl <= alu_sr;
+    wait for clk_period;
+    assert res = x"00000010" report "Shift right logical failed" severity error;
+    report "Test 7 [PASSED]";
+
+    -- Test SRA (shift right arithmetic)
+    op_1 <= x"FFFFFFFE";
+    op_2 <= x"00000001";
+    ctrl <= alu_sra;
+    wait for clk_period;
+    assert res = x"FFFFFFFF" report "Shift right arithmetic failed" severity error;
+    report "Test 8 [PASSED]";
+
+    -- Test OR
+    op_1 <= x"0000000F";
+    op_2 <= x"00000001";
+    ctrl <= alu_or;
+    wait for clk_period;
+    assert res = x"0000000F" report "OR failed" severity error;
+    report "Test 9 [PASSED]";
+
+    -- Test AND
+    op_1 <= x"0000000F";
+    op_2 <= x"00000005";
+    ctrl <= alu_and;
+    wait for clk_period;
+    assert res = x"00000005" report "AND failed" severity error;
+    report "Test 10 [PASSED]";
+
     -- finish simulation
     std.env.stop(0);
   end process;
