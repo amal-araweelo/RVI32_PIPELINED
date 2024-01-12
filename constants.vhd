@@ -94,7 +94,7 @@ package records_pkg is
   end record t_ifid_reg;
 
   type t_idex_reg is record
-    decoder_out              : t_decoder;
+    decoder_out           : t_decoder;
     pc, REG_src_1, REG_src_2 : std_logic_vector(31 downto 0);
   end record t_idex_reg;
 

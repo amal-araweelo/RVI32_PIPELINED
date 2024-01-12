@@ -48,7 +48,7 @@ end component;
 component decoder is
 port (
 	instr: in std_logic_vector(31 downto 0);
-	decoder_out: out t_decoder;
+	decoder_our: out t_decoder;
 	REG_src_idx_1, REG_src_idx_2: out std_logic_vector (4 downto 0)
 	);
 end component;
@@ -164,10 +164,10 @@ signal fetch_stage_out : t_ifid_reg;
 signal ifid_out : t_ifid_reg;
 
 -- Decoder signals
-signal decode_stage_out : t_idex_reg;
 signal REG_src_idx_1, REG_src_idx_2 : std_logic_vector(4 downto 0);
 
 -- Register ID/EX signals
+signal idex_in  : t_idex_reg;
 signal idex_out : t_idex_reg;
 
 -- Execute signals
@@ -225,18 +225,18 @@ reg_file_inst : reg_file port map
     REG_src_idx_2 => REG_src_idx_2,
     REG_dst_idx => memwb_out.REG_dst_idx,
     REG_write_data => write_back_out,
-    REG_src_1 => decode_stage_out.REG_src_1,
-    REG_src_2 => decode_stage_out.REG_src_2,
+    REG_src_1 => idex_in.REG_src_1,
+    REG_src_2 => idex_in.REG_src_2,
    blinky => led_status
 );
 
-decode_stage_out.pc <= ifid_out.pc;
+idex_in.pc <= ifid_out.pc;
 
 -- Decoder
 decode_inst: decoder port map
 (
     instr => ifid_out.instr,
-    decoder_out => decode_stage_out.decoder_out,
+    decoder_out => idex_in.decoder_out,
     REG_src_idx_1 => REG_src_idx_1,
     REG_src_idx_2 => REG_src_idx_2
 );
@@ -248,7 +248,7 @@ port map
     clk => clk,
     clr => '0',
     en => '1',
-    in_idex_record => decode_stage_out,
+    in_idex_record => idex_in,
     out_idex_record => idex_out
 );
 
