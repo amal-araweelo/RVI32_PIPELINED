@@ -17,8 +17,6 @@ entity execute is
     imm                                                : in std_logic_vector(31 downto 0)  := (others => '0');
     op_ctrl                                            : in std_logic_vector(3 downto 0)   := (others => '0');
     pc                                                 : in std_logic_vector(31 downto 0)  := (others => '0');
-    -- more to come with forwarding, hazard and memory
-    -- the first two will be removed (only for testing);
     forward_1                                          : in std_logic_vector(1 downto 0);
     forward_2                                          : in std_logic_vector(1 downto 0);
     WB_reg                                             : in std_logic_vector(31 downto 0)  := (others => '0'); -- to be forwarded from WB stage
@@ -32,7 +30,8 @@ end execute;
 
 architecture behavorial of execute is
 
-  -- Components
+  -- Component declarations
+
   -- ALU component declaration
 
   component alu is
@@ -82,10 +81,6 @@ architecture behavorial of execute is
   signal op_1_alu : std_logic_vector(31 downto 0) := (others => '0');
   signal op_2_alu : std_logic_vector(31 downto 0) := (others => '0');
 
-  -- Output from forwarding unit to be used as select signals for the MUX3's
-  -- signal forward_1 : std_logic_vector(1 downto 0) := (others => '0');
-  -- signal forward_2 : std_logic_vector(1 downto 0) := (others => '0');
-  -- for now just an input to the execute stage for testing
 
   -- Outputs of the MUX3's
   signal op_1_br : std_logic_vector(31 downto 0) := (others => '0');
@@ -112,7 +107,7 @@ begin
 
   inst_mux2_1 : mux2 port
   map(
-  a => op_1_br, b => pc, sel => ALU_src_1_ctrl, output => op_1_alu
+  a => pc, b => op_1_br, sel => ALU_src_1_ctrl, output => op_1_alu
   );
   inst_mux2_2 : mux2 port
   map(
