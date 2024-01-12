@@ -9,33 +9,28 @@ use ieee.numeric_std.all;
 entity clk_div is
   port
   (
-    clk_in : in std_logic:='0';
-    clk_out       : out std_logic
-    );
+    clk_in, reset : in std_logic;
+    clk_out       : out std_logic);
 end clk_div;
 
 architecture behavorial of clk_div is
-  signal count_current : integer   := 0;
-  signal count_next: integer:=0;
+
+  signal count : integer   := 0;
   signal tmp   : std_logic := '0';
 
-begin 
-  process(all)
+begin
+  process (clk_in, reset)
   begin
-    if (count_current = 12500000-1) then 
-      tmp   <= not(tmp);
-      count_next <= 0;
-    else
-      count_next <= count_current + 1;
+    if (reset = '1') then
+      count <= 1;
+      tmp   <= '0';
+    elsif (rising_edge(clk_in)) then
+      count <= count + 1;
+      if (count = 125000000 - 1) then 
+        tmp   <= not(tmp);
+        count <= 0;
+      end if;
     end if;
-
-  end process;
-
-  process (clk_in)
-  begin
-    if (rising_edge(clk_in)) then
-      clk_out <= tmp;
-      count_current <=count_next; 
-    end if;
+    clk_out <= tmp;
   end process;
 end architecture;

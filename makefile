@@ -1,4 +1,4 @@
-test: fetch-test decode-test datamem-test # alu
+test: clk_div
 
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
@@ -22,6 +22,14 @@ decode-test: decode
 datamem-test: datamem
 	$(NVC) -a test/datamem_tb.vhd -e datamem_tb -r
 
+alu-test: auxiliary
+	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
+
+clk_div: 
+	$(NVC) -a clk_div.vhd test/clk_div_tb.vhd -e clk_div_tb -r
+
+comparator-test:
+	$(NVC) -a components/comparator.vhd test/comparator_tb.vhd -e comparator_tb -r
 
 fetch: memory auxiliary records
 	$(NVC) -a fetch.vhd
@@ -42,9 +50,6 @@ cpu: records auxiliary fetch state-regs
 	$(NVC) -a write-back.vhd
 	$(NVC) -a cpu.vhd
 	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r
-
-alu: auxiliary
-	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
 
 datamem: auxiliary
 	$(NVC) -a datamem.vhd 
