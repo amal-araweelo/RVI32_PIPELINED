@@ -15,23 +15,27 @@ entity clk_div is
 end clk_div;
 
 architecture behavorial of clk_div is
-
-  signal count : integer   := 0;
+  signal count_current : integer   := 0;
+  signal count_next: integer:=0;
   signal tmp   : std_logic := '0';
 
-begin
+begin 
+  process(all)
+  begin
+    if (count_current = 12500000-1) then 
+      tmp   <= not(tmp);
+      count_next <= 0;
+    else
+      count_next <= count_current + 1;
+    end if;
+
+  end process;
+
   process (clk_in)
   begin
-    --if (reset = '1') then
-     -- count <= 1;
-      --tmp   <= '0';
     if (rising_edge(clk_in)) then
-      count <= count + 1;
-      if (count = 12500000-1) then 
-        tmp   <= not(tmp);
-        count <= 0;
-      end if;
+      clk_out <= tmp;
+      count_current <=count_next; 
     end if;
-   clk_out <= tmp;
   end process;
 end architecture;

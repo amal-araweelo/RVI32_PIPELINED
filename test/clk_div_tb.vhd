@@ -53,17 +53,17 @@ begin
     wait for 5 ps;
 
     -- Check if the divided clock toggled
-    assert clk_out = '1' report "Clock division 1 failed "  & to_string(clk_out) severity error;
+    assert clk_out = '0' report "Clock division 1 failed "  & to_string(clk_out) severity error;
+    wait for 0.5 * clk_period;
+    wait for 5 ps;
+
+       -- Check if the divided clock toggled
+    assert clk_out = '0' report "Clock division 2 failed "  & to_string(clk_out) severity error;
     wait for 0.5 * clk_period;
     wait for 1 ns;
 
-       -- Check if the divided clock toggled
-       assert clk_out = '0' report "Clock division 2 failed "  & to_string(clk_out) severity error;
-       wait for 0.5 * clk_period;
-       wait for 1 ns;
-
     -- Check if the divided clock toggled again
-    assert clk_out = '1' report "Clock division 3 failed " & to_string(clk_out) severity error;
+    assert clk_out = '0' report "Clock division 3 failed " & to_string(clk_out) severity error;
 
     -- Finish simulation
     std.env.stop(0);
