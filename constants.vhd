@@ -88,27 +88,27 @@ package records_pkg is
 
   end record t_decoder;
 
-  type t_ifid_reg is record
+  type t_ifid is record
     pc, instr : std_logic_vector (31 downto 0); -- register inputs
-  end record t_ifid_reg;
+  end record t_ifid;
 
-  type t_idex_reg is record
+  type t_idex is record
     decoder_out              : t_decoder;
     pc, REG_src_1, REG_src_2 : std_logic_vector(31 downto 0);
-  end record t_idex_reg;
+  end record t_idex;
 
-  type t_exmem_reg is record
+  type t_exmem is record
     REG_we, MEM_we         : std_logic;
     WB_src_ctrl            : std_logic_vector(1 downto 0);
     MEM_op                 : std_logic_vector(2 downto 0);
     REG_dst_idx            : std_logic_vector(4 downto 0);
     pc, ALU_res, REG_src_2 : std_logic_vector(31 downto 0);
-  end record t_exmem_reg;
+  end record t_exmem;
 
-  type t_memwb_reg is record
+  type t_memwb is record
     REG_we, MEM_we       : std_logic;
     WB_src_ctrl          : std_logic_vector(1 downto 0);
     REG_dst_idx          : std_logic_vector(4 downto 0);
     pc, ALU_res, MEM_out : std_logic_vector(31 downto 0);
-  end record t_memwb_reg;
+  end record t_memwb;
 end package records_pkg;

@@ -9,14 +9,14 @@ entity reg_ifid is
   port
   (
     clk, clr, en    : in std_logic;
-    in_ifid_record  : in t_ifid_reg;
-    out_ifid_record : out t_ifid_reg
+    in_ifid_record  : in t_ifid;
+    out_ifid_record : out t_ifid
   );
 end reg_ifid;
 
 architecture behavioral of reg_ifid is
   -- Intermediate signal
-  signal intermediate_ifid_record : t_ifid_reg;
+  signal intermediate_ifid_record : t_ifid;
 begin
 
   -- Clock process
@@ -52,14 +52,14 @@ entity reg_idex is
   port
   (
     clk, clr, en    : in std_logic;
-    in_idex_record  : in t_idex_reg;
-    out_idex_record : out t_idex_reg
+    in_idex_record  : in t_idex;
+    out_idex_record : out t_idex
   );
 end reg_idex;
 
 architecture behavioral of reg_idex is
   -- Intermediate signal
-  signal intermediate_idex_record : t_idex_reg;
+  signal intermediate_idex_record : t_idex;
   begin
   -- Clock process
   process(clk)
@@ -106,14 +106,14 @@ entity reg_exmem is
   port
   (
     clk, clr, en     : in std_logic;
-    in_exmem_record  : in t_exmem_reg;
-    out_exmem_record : out t_exmem_reg
+    in_exmem_record  : in t_exmem;
+    out_exmem_record : out t_exmem
   );
 end reg_exmem;
 
 architecture behavioral of reg_exmem is
 -- Intermediate signal
-signal intermediate_exmem_record: t_exmem_reg;
+signal intermediate_exmem_record: t_exmem;
 
 begin
   intermediate_exmem_record <= in_exmem_record;
@@ -165,14 +165,14 @@ entity reg_memwb is
   port
   (
     clk, clr, en     : in std_logic;
-    in_memwb_record  : in t_memwb_reg;
-    out_memwb_record : out t_memwb_reg
+    in_memwb_record  : in t_memwb;
+    out_memwb_record : out t_memwb
   );
 end reg_memwb;
 
 architecture behavioral of reg_memwb is
   -- Intermediate signal
-  signal intermediate_memwb_record : t_memwb_reg;
+  signal intermediate_memwb_record : t_memwb;
 begin
   intermediate_memwb_record <= in_memwb_record;
   -- Clock process
