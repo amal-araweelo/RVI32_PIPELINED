@@ -8,6 +8,7 @@ use work.records_pkg.all;
 entity cpu is
     port 
     (
+  --    clk: in std_logic
 	clk_in: in std_logic;
 	led_status : out std_logic
     );
@@ -120,15 +121,15 @@ component data_mem is
     -- Inputs
     clk         : in std_logic; -- clock
     MEM_we      : in std_logic; -- write enable
-    MEM_op      : in std_logic_vector(3 downto 0); -- memory operation
+    MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
     MEM_data_in : in std_logic_vector(31 downto 0);
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
 
     -- Outputs
-    MEM_data_out : out std_logic_vector(31 downto 0);
+    MEM_data_out : out std_logic_vector(31 downto 0)
 
     -- Changes
-    blinky: out std_logic
+    --blinky: out std_logic
   );
 end component;
 
@@ -189,8 +190,8 @@ signal clk : std_logic;
 begin
 
   -- Clock divider
-  inst_clk_div: clk_div port map(
-    clk_in, clk
+ inst_clk_div: clk_div port map(
+   clk_in, clk
   );
 
 -- Fetcher
@@ -225,8 +226,8 @@ reg_file_inst : reg_file port map
     REG_dst_idx => memwb_out.REG_dst_idx,
     REG_write_data => write_back_out,
     REG_src_1 => decode_stage_out.REG_src_1,
-    REG_src_2 => decode_stage_out.REG_src_2
-    --blinky => led_status
+    REG_src_2 => decode_stage_out.REG_src_2,
+   blinky => led_status
 );
 
 decode_stage_out.pc <= ifid_out.pc;
@@ -308,8 +309,8 @@ port map
     MEM_op => exmem_out.MEM_op,
     MEM_data_in => exmem_out.REG_src_2,
     MEM_addr => exmem_out.ALU_res,
-    MEM_data_out => memory_stage_out.MEM_out,
-    blinky => led_status 
+    MEM_data_out => memory_stage_out.MEM_out
+     
 );
 
 -- Register MEM/WB

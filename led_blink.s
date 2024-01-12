@@ -1,24 +1,31 @@
 .text
-addi x5, x0, 5
-sw x0, 0(x0)
-
 reset:
-addi x5, x0, 0
-addi x1,x0,1
-addi x4, x0,1
-nop
-nop
+    addi x1, x0, 0
+    addi x2, x0, 1
+    addi x3, x0, 5
+    nop
+    nop
+    nop
+    sw x2,0(x0)
+    nop
+    nop
+    nop
+
 loop:
-    addi x1, x1, 1
+    nop
+    nop
+    addi x1,x1,1
     nop
     nop
     nop
-    beq x1, x5, blink
+    beq x1, x3, blink
     beq x0, x0, loop
 
 blink:
-    sw x4,0(x0)
+    lw x2, 0(x0)
     nop
     nop
     nop
-    beq x0, x0, reset 
+    addi x2,x0,0
+    beq x0,x0,reset
+

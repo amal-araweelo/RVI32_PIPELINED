@@ -39,8 +39,8 @@ entity reg_file is -- Kindly borrowed and adapted from FPGA prototyping by VHDL 
 		REG_src_idx_1, REG_src_idx_2: in std_logic_vector(4 downto 0);
 		REG_dst_idx: in std_logic_vector(4 downto 0);
 		REG_write_data: in std_logic_vector(B-1 downto 0);
-		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0)
-		-- blinky : out std_logic -- TODO DELETE MEE :)))
+		REG_src_1, REG_src_2: out std_logic_vector(B-1 downto 0);
+		blinky : out std_logic -- TODO DELETE MEE :)))
 	);
 end reg_file;
 
@@ -69,7 +69,7 @@ architecture behavioral of decoder is
 				decoder_out.REG_dst_idx <= (others => '0');							-- Destination register
 				decoder_out.ALU_src_1_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
 				decoder_out.ALU_src_2_ctrl <= '0';	-- register						-- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
-				-- Op_ctrl not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
+				decoder_out.op_ctrl<=alu_add; -- not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
 				decoder_out.REG_we 		<= '0';										-- Register file write enable
 				decoder_out.imm(31 downto 0) <= (others => '0');					-- immediate value
 
@@ -126,6 +126,7 @@ architecture behavioral of decoder is
 							when "101" => 
 							decoder_out.MEM_op 	<= lhu;
 							when others => 
+								null;
 								report "Undefined func3: I-type, DEC_I_LOAD";
 						end case;
 					
@@ -135,15 +136,19 @@ architecture behavioral of decoder is
 							-- addi
 							when "000" =>
 							decoder_out.op_ctrl <=  ALU_ADD;
+			
 							-- xori
 							when "100" =>
 							decoder_out.op_ctrl <= ALU_XOR;
+	
 							-- ori
 							when "110" =>
 							decoder_out.op_ctrl <= ALU_OR;
+	
 							-- andi
 							when "111" =>
 							decoder_out.op_ctrl <= ALU_AND;
+	
 							----- shifts
 							-- slli
 							when "001" => 
@@ -166,6 +171,7 @@ architecture behavioral of decoder is
 						
 							
 							when others =>
+								decoder_out.op_ctrl <= "0000";
 								report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
 						end case;
 					-- DEC_I_ADDW_SHIFTW
@@ -174,6 +180,8 @@ architecture behavioral of decoder is
 		--			elsif
 					-- Undefined opcode
 		--			else --report undefined opcode
+					else
+						decoder_out.op_ctrl <= "0000"; -- Default value
 					end if;
 				
 			-- R-type
@@ -200,31 +208,40 @@ architecture behavioral of decoder is
 							elsif (func7 = "0100000") then
 							decoder_out.op_ctrl <=  ALU_SUB; 
 							
-							else report "undefined func7: R-type, func3=000";
+							else
+								null;
+								 report "undefined func7: R-type, func3=000";
 							end if;
 						
 						-- xor
 						when  "100" =>
 							if (func7="0000000") then
 								decoder_out.op_ctrl <= ALU_XOR;
-							else report "Illegal func7: R xor";
+							else 
+								null;
+								report "Illegal func7: R xor";
 						end if;
 
 						-- or
 						when "110" =>
 						if (func7="0000000") then
 							decoder_out.op_ctrl <= ALU_OR;
-						else report "Illegal func7: R or";
+						else 
+							null;
+							report "Illegal func7: R or";
 						end if;
 
 						-- and 
 						when "111" =>
 						if (func7="0000000") then
 							decoder_out.op_ctrl <= ALU_AND;
-						else report "Illegal func7: R and";
+						else 
+							null;
+							report "Illegal func7: R and";
 						end if;
 						
 						when others =>
+							null;
 							report "undefined func3: R-type";
 						
 					end case;
@@ -278,6 +295,7 @@ architecture behavioral of decoder is
 						decoder_out.op_ctrl <= ALU_ADD; 
 						decoder_out.MEM_op <= sw;
 						when others =>
+							null;
 						report "undefined func3: S-type";
 					end case;
 				
@@ -318,6 +336,7 @@ architecture behavioral of decoder is
 						when "111" => 
 							decoder_out.op_ctrl <= ALU_BGE_U;
 						when others => 
+							null;
 							report "undefined func3: SB-type";
 					end case;
 
@@ -343,8 +362,9 @@ architecture behavioral of decoder is
 
 				when others =>
 					report "undefined opcode";
+					-- [AMAL] sets a default value for opcode in case it's not covered. it resulted in a latch
+					opcode <= (others => '0');
 				end case;
-
 	end process;
 end behavioral;
 
@@ -361,16 +381,13 @@ begin
     process(clk)
     begin
     if (rising_edge(clk)) then
-	if (REG_we = '1' and REG_dst_idx /= "00000") then
+		REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
+		REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
+		if (REG_we = '1' and REG_dst_idx /= "00000") then
 	    -- report "[REG FILE] Register(" & to_string(REG_dst_idx) & ") <= " & to_string(REG_write_data); -- TODO: Delete
 	    array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data; 
+			blinky <= array_register(2)(0); -- register 2 (led turns on when the number 1 is loaded from memory)
+		end if;
 	end if;
-    end if;
-	
-    end process;
-
-    REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
-    REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
-	
-    -- blinky <= array_register(2)(0);
+    end process;	
 end behavioral;

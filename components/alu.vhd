@@ -25,12 +25,13 @@ begin
     case ctrl is
       when alu_add =>
         res <= std_logic_vector(signed(op_1) + signed(op_2)); -- sign-extension of both operands
+        res_temp(32 downto 0) <= (others => '0');
       when alu_sub =>
         res <= std_logic_vector(signed(op_1) - signed(op_2)); -- sign-extension of both operands
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_sl =>
         res <= std_logic_vector(shift_left(unsigned(op_1), to_integer(unsigned(op_2))));
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_slt_s =>
         res_temp <= std_logic_vector(signed('0' & op_1) - signed('0' & op_2));
         if (res_temp(32) = '1') then -- if the result of the signed subtraction is negative
@@ -38,7 +39,7 @@ begin
         else
           res <= x"00000000";-- result is set to 0, since op_2 < op_1
         end if;
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_slt_u =>
         res_temp <= std_logic_vector(unsigned('0' & op_1) - unsigned('0' & op_2));
         if (res_temp(32) = '1') then -- if the result of the unsigned subtraction is negative
@@ -46,22 +47,22 @@ begin
         else
           res <= x"00000000"; -- result is set to 0, since op_2 < op_2
         end if;
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_xor =>
         res <= op_1 xor op_2;
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_sr =>
         res <= std_logic_vector(shift_right(unsigned(op_1), to_integer(unsigned(op_2))));
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_sra =>
         res <= std_logic_vector(shift_right(signed(op_1), to_integer(unsigned(op_2))));
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_or =>
         res <= op_1 or op_2;
-
+        res_temp(32 downto 0) <= (others => '0');
       when alu_and =>
         res <= op_1 and op_2;
-
+        res_temp(32 downto 0) <= (others => '0');
       when others =>
         res_temp(32 downto 0) <= (others => '0');
         res                   <= res_temp(31 downto 0);

@@ -62,7 +62,7 @@ begin
       out_idex_record.decoder_out.MEM_we        <= '0';
       out_idex_record.decoder_out.do_jmp        <= '0';
       out_idex_record.decoder_out.do_branch     <= '0';
-      out_idex_record.decoder_out.opcode        <= (others => '0');
+      --out_idex_record.decoder_out.opcode        <= (others => '0');
       out_idex_record.decoder_out.MEM_rd      <= '0';
     end if;
 

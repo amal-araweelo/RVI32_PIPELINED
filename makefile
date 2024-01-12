@@ -1,4 +1,4 @@
-test: fetch decode datamem alu
+test: cpu
 
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 

@@ -2,3 +2,4 @@ work
 .hdl_checker
 *.fst
 *.o
+*.sh
