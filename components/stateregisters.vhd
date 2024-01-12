@@ -64,8 +64,8 @@ architecture behavioral of reg_idex is
   -- Clock process
   process(clk)
     begin
-    if(rising_edge(clk)) then
-      out_ifid_record <= intermediate_ifid_record;
+    if (rising_edge(clk)) then
+      out_idex_record <= intermediate_idex_record;
     end if;
   end process;
 
@@ -179,7 +179,7 @@ begin
   process(clk)
     begin
     if(rising_edge(clk)) then
-      out_exmem_record <= intermediate_memwb_record;
+      out_memwb_record <= intermediate_memwb_record;
     end if;
   end process;
 
