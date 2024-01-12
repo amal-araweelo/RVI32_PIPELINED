@@ -33,7 +33,6 @@ package const_decoder is
   -- OPCODES
   constant DEC_I_LOAD               : std_logic_vector(6 downto 0) := "0000011";
   constant DEC_I_ADD_SHIFT_LOGICOPS : std_logic_vector(6 downto 0) := "0010011";
-  constant DEC_I_ADDW_SHIFTW        : std_logic_vector(6 downto 0) := "0011011";
   constant DEC_I_JALR               : std_logic_vector(6 downto 0) := "1100111";
   constant DEC_R_OPS                : std_logic_vector(6 downto 0) := "0110011";
   constant DEC_R_OPSW               : std_logic_vector(6 downto 0) := "0111011";

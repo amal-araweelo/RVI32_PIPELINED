@@ -2,7 +2,6 @@
 
 -- DECODE STAGE
 
--- TODO: ADD REST OF U-TYPE RECORD LOGIC
 -- TODO: ADD REST OF S-TYPE RECORD LOGIC
 -- TODO: ADD REST OF UJ-TYPE RECORD LOGIC
 
@@ -87,7 +86,7 @@ architecture behavioral of decoder is
 
 				-- TODO set any new values when expanding decoder
 									
-			-- I-type -- TODO check all fields are set
+			-- I-type -- TODO make the rest of the load/stores
 				case opcode is	
 				when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR => 
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
@@ -168,20 +167,19 @@ architecture behavioral of decoder is
 							-- sltiu
 							when "011" => 
 							decoder_out.op_ctrl <=  ALU_SLT_U;
-						
 							
 							when others =>
 								decoder_out.op_ctrl <= "0000";
 								report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
+
 						end case;
-					-- DEC_I_ADDW_SHIFTW
-		--			elsif 
-					-- DEC_I_JALR
-		--			elsif
-					-- Undefined opcode
-		--			else --report undefined opcode
-					else
-						decoder_out.op_ctrl <= "0000"; -- Default value
+						-- DEC_I_JALR
+					elsif (opcode(6) and (opcode(5))) then 
+						decoder_out.op_ctrl <=  ALU_ADD;
+						-- TODO how to set lsb of result to 0? Add XOR with JAL on that bits signal?
+					
+					else 
+						report "undefined opcode - I-type";
 					end if;
 				
 			-- R-type
@@ -257,7 +255,7 @@ architecture behavioral of decoder is
 					decoder_out.imm(11 downto 0) <= (others => '0');
 					
 					-- auipc
-					if (not(opcode(1))) then
+					if (not(opcode(5))) then
 						decoder_out.ALU_src_1_ctrl <= '1';	-- pc
 					-- lui
 					else 
@@ -344,6 +342,11 @@ architecture behavioral of decoder is
 				-- UJ-type (jal)
 				when DEC_UJ =>
 					decoder_out.REG_dst_idx <= instr(11 downto 7);
+					decoder_out.ALU_src_1_ctrl <= '1';	-- pc
+					decoder_out.ALU_src_2_ctrl <= '1';	-- imm	
+					decoder_out.REG_we 		<= '1';
+					decoder_out.do_jmp 		<= '0';
+
 					--construct imm
 					decoder_out.imm(20) <= instr(31);					
 					decoder_out.imm(10 downto 1) <= instr(30 downto 21);					
@@ -356,9 +359,7 @@ architecture behavioral of decoder is
 						decoder_out.imm(31 downto 21) <= (others => '0');
 					end if;
 					
-					
-					
-					-- TODO: ADD REST OF RECORD LOGIC
+					decoder_out.op_ctrl <=  ALU_ADD;
 
 				when others =>
 					report "undefined opcode";
