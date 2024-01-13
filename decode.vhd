@@ -39,7 +39,7 @@ begin
 
     -- <<< Set default values for decoder outputs >>>
     decoder_out.REG_dst_idx      <= (others => '0'); -- Destination register
-    decoder_out.ALU_src_1_ctrl   <= '0'; -- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
+    decoder_out.ALU_src_1_ctrl   <= '1'; -- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
     decoder_out.ALU_src_2_ctrl   <= '0'; -- register						-- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
     decoder_out.op_ctrl          <= alu_add; -- not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
     decoder_out.REG_we           <= '0'; -- Register file write enable
@@ -61,7 +61,7 @@ begin
 
     -- I-type -- TODO check all fields are set
     case opcode is
-      when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_ADDW_SHIFTW | DEC_I_JALR =>
+      when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_JALR =>
         decoder_out.REG_dst_idx    <= instr(11 downto 7);
         decoder_out.REG_we         <= '1';
         decoder_out.ALU_src_2_ctrl <= '1'; -- imm
@@ -99,7 +99,6 @@ begin
               decoder_out.MEM_op <= lhu;
             when others =>
               null;
-              report "Undefined func3: I-type, DEC_I_LOAD";
           end case;
 
           -- is DEC_I_ADD_SHIFT_LOGICOPS
@@ -142,7 +141,6 @@ begin
               decoder_out.op_ctrl <= ALU_SLT_U;
             when others =>
               decoder_out.op_ctrl <= "0000";
-              report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
           end case;
           -- DEC_I_ADDW_SHIFTW
           --			elsif 
@@ -180,7 +178,6 @@ begin
 
             else
               null;
-              report "undefined func7: R-type, func3=000";
             end if;
 
             -- xor
@@ -189,7 +186,6 @@ begin
               decoder_out.op_ctrl <= ALU_XOR;
             else
               null;
-              report "Illegal func7: R xor";
             end if;
 
             -- or
@@ -198,7 +194,6 @@ begin
               decoder_out.op_ctrl <= ALU_OR;
             else
               null;
-              report "Illegal func7: R or";
             end if;
 
             -- and 
@@ -207,12 +202,10 @@ begin
               decoder_out.op_ctrl <= ALU_AND;
             else
               null;
-              report "Illegal func7: R and";
             end if;
 
           when others =>
             null;
-            report "undefined func3: R-type";
 
         end case;
 
@@ -260,7 +253,6 @@ begin
             decoder_out.MEM_op  <= sw;
           when others =>
             null;
-            report "undefined func3: S-type";
         end case;
         -- SB-type (branches) -- should be finished
       when DEC_SB =>
@@ -299,7 +291,6 @@ begin
             decoder_out.op_ctrl <= ALU_BGE_U;
           when others =>
             null;
-            report "undefined func3: SB-type";
         end case;
         -- UJ-type (jal)
       when DEC_UJ =>
@@ -319,9 +310,8 @@ begin
         -- TODO: ADD REST OF RECORD LOGIC
 
       when others =>
-        report "undefined opcode";
         -- [AMAL] sets a default value for opcode in case it's not covered. it resulted in a latch
-        opcode <= (others => '0');
+
     end case;
   end process;
 end behavioral;
