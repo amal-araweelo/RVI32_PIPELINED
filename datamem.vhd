@@ -24,16 +24,61 @@ end data_mem;
 architecture impl of data_mem is
   type ram_type is array(2 ** 10 downto 0) -- 1 KiB
   of std_logic_vector (31 downto 0);
-  signal ram : ram_type;
+  signal ram        : ram_type;
+  signal read_data  : std_logic_vector(31 downto 0);
+  signal write_data : std_logic_vector(31 downto 0);
 
 begin
+  write_data <= MEM_data_in; -- default assignment
   -- Synchronous write
   process (clk) begin
     if (rising_edge(clk)) then
       if (MEM_we = '1') then
-        ram(to_integer(unsigned(MEM_addr))) <= MEM_data_in;
+        ram(to_integer(unsigned(MEM_addr))) <= write_data;
       end if;
     end if;
-    MEM_data_out <= ram(to_integer(unsigned(MEM_addr)));
   end process;
+
+  -- Asynchronous read
+  process (all) begin
+    case MEM_op is
+      when lw =>
+        read_data <= ram(to_integer(unsigned(MEM_addr)));
+      when lh =>
+        read_data(15 downto 0) <= ram(to_integer(unsigned(MEM_addr)))(15 downto 0);
+        if read_data(15) = '1' then
+          -- Sign extension for negative value
+          read_data(31 downto 16) <= (others => '1');
+        else
+          read_data(31 downto 16) <= (others => '0');
+        end if;
+        write_data <= (others => '0');
+      when lhu              =>
+        read_data(15 downto 0)  <= ram(to_integer(unsigned(MEM_addr)))(15 downto 0);
+        read_data(31 downto 16) <= (others => '0'); -- Zero-extend
+      when lb                            =>
+        read_data(7 downto 0) <= ram(to_integer(unsigned(MEM_addr)))(7 downto 0);
+        if read_data(7) = '1' then
+          -- Sign extension for negative value
+          read_data(31 downto 8) <= (others => '1');
+        else
+          read_data(31 downto 8) <= (others => '0');
+        end if;
+      when lbu =>
+        read_data(7 downto 0)  <= ram(to_integer(unsigned(MEM_addr)))(7 downto 0);
+        read_data(31 downto 8) <= (others => '0'); -- Zero-extend
+      when sw                           =>
+        write_data <= MEM_data_in(31 downto 0);
+      when sh =>
+        write_data(15 downto 0)   <= MEM_data_in(15 downto 0);
+        write_data (31 downto 16) <= (others => '0'); -- fill up with 0's
+      when sb                              =>
+        write_data(7 downto 0)    <= MEM_data_in(7 downto 0);
+        write_data (31 downto 16) <= (others => '0'); -- fill up with 0's
+      when others                          =>
+        read_data  <= x"00000000";
+        write_data <= x"00000000";
+    end case;
+  end process;
+  MEM_data_out <= read_data;
 end architecture;
