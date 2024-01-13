@@ -44,7 +44,6 @@ begin
         res <= op_1 xor op_2;
               when alu_sr =>
         res <= std_logic_vector(shift_right(unsigned(op_1), to_integer(unsigned(op_2))));
-        res_temp(32 downto 0) <= (others => '0');
       when alu_sra =>
         res <= std_logic_vector(shift_right(signed(op_1), to_integer(unsigned(op_2))));
               when alu_or =>
@@ -52,7 +51,7 @@ begin
               when alu_and =>
         res <= op_1 and op_2;
       when others =>
-        res                   <= res_temp(31 downto 0);
+        res                   <= (others => '0');
     end case;
   end process;
 end behavorial;
