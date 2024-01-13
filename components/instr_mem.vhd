@@ -22,7 +22,7 @@ architecture impl of instr_mem is
   of std_logic_vector (31 downto 0);
 
   signal rom : rom_type := (
-  0      => x"00000093", -- li ra,0
+  0      => x"00a00093", -- addi x1, x0, 10
   1      => x"00100113", -- li sp,1
   2      => x"00500193", -- li gp,5
   3      => x"00000013", -- nop
@@ -50,9 +50,7 @@ architecture impl of instr_mem is
   );
 
 begin
-  process (clk) begin
-    if (rising_edge(clk)) then
-      MEM_instr_out <= rom(to_integer(unsigned(MEM_addr(31 downto 0)))); -- data is always loaded from memory given addr
-    end if;
+  process (all) begin
+    MEM_instr_out <= rom(to_integer(unsigned(MEM_addr(31 downto 0)))); -- data is always loaded from memory given addr
   end process;
 end architecture;
