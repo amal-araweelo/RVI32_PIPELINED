@@ -131,7 +131,6 @@ begin
     -- Outputs
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
-
     -- report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
     -- report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
     -- report "[ALU] ALU_src_1_ctrl = " & to_string(ALU_src_1_ctrl); -- TODO: Delete

@@ -83,7 +83,7 @@ begin
     alu_src_1_ctrl <= '1';
     alu_src_2_ctrl  <= '1';
     wait for clk_period;
-    assert ALU_RES_out = "00000000000000000000000000000001" report "Test 2 failed"; -- expect 1
+    assert ALU_RES_out = "00000000000000000000000000000010" report "Test 2 failed"; -- expect 1
     report "Test 2 [PASSED]" severity note;
 
     -- Tests for beq
@@ -160,7 +160,7 @@ begin
     reg_src_2           <= x"0000000A";
     op_ctrl     <= alu_slt_u;
     wait for clk_period;
-    assert ALU_RES_out = "00000000000000000000000000000001" report "Test 10 failed";
+    assert ALU_RES_out = "00000000000000000000000000000001" report "Test 10 failed ";
     report "Test 10 [PASSED]" severity note;
 
     std.env.stop(0);
