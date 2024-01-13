@@ -34,12 +34,6 @@ begin
         ram(to_integer(unsigned(MEM_addr))) <= MEM_data_in;
       end if;
     end if;
-  end process;
-
-  -- Synchronous read
-  process (clk) begin
-    if (rising_edge(clk)) then
-      MEM_data_out <= ram(to_integer(unsigned(MEM_addr))); 
-    end if;
+    MEM_data_out <= ram(to_integer(unsigned(MEM_addr)));
   end process;
 end architecture;
