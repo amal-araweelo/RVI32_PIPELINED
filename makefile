@@ -1,4 +1,4 @@
-test: fetch-test
+test: records cpu
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
@@ -11,6 +11,7 @@ auxiliary: records
 	$(NVC) -a components/mux2.vhd
 	$(NVC) -a components/mux3.vhd
 	$(NVC) -a components/comparator.vhd
+	$(NVC) -a registerfile.vhd
 
 fetch-test: fetch
 	$(NVC) -a test/fetch_tb.vhd -e fetcher_tb -r
