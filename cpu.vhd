@@ -45,7 +45,8 @@ architecture behavioral of cpu is
     (
       clk, sel_pc, clr, en : in std_logic;
       branch_addr          : in std_logic_vector (31 downto 0);
-      pc                   : out std_logic_vector (31 downto 0)
+      pc                   : out std_logic_vector (31 downto 0);
+      instr                : out std_logic_vector (31 downto 0)
     );
   end component;
 
@@ -172,7 +173,7 @@ architecture behavioral of cpu is
     );
   end component;
 
-  -- Fetcher signals
+  -- Fetcher signals [pc, instr]
   signal fetch_stage_out : t_ifid;
 
   -- Register IF/ID signals
@@ -210,25 +211,17 @@ begin
     clk_in, clk
   );
 
-  -- Instruction Memory
-  instr_mem_inst : instr_mem port
-  map
-  (
-  clk           => clk,
-  MEM_addr      => fetch_stage_out.pc,
-  MEM_instr_out => fetch_stage_out.instr
-  );
-
   -- Fetcher
   fetcher_inst : fetcher port
   map
   (
-  clk    => clk,
-  sel_pc => execute_stage_out_sel_pc,
-  clr    => '0',
-  en     => '1',
-  branch_addr => (others => '0'),
-  pc     => fetch_stage_out.pc
+  clk         => clk,
+  sel_pc      => execute_stage_out_sel_pc,
+  clr         => '0',
+  en          => '1',
+  branch_addr => execute_stage_out.ALU_res,
+  pc          => fetch_stage_out.pc,
+  instr       => fetch_stage_out.instr
   );
 
   -- Register IF/ID
