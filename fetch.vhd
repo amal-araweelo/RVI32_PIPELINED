@@ -48,11 +48,11 @@ begin
     pc_next <= pc;
 
     if (en = '1') then
-	if (sel_pc = '1') then
-	  pc_next <= branch_addr;
-	else
-	  pc_next <= std_logic_vector(unsigned(pc_current) + unsigned(length));
-	end if;
+      if (sel_pc = '1') then
+        pc_next <= branch_addr;
+      else
+        pc_next <= std_logic_vector(unsigned(pc_current) + unsigned(length));
+      end if;
     end if;
 
     if (clr = '1') then
@@ -67,7 +67,5 @@ begin
       report "[FETCH] PC: " & to_string(unsigned(pc_next));
     end if;
   end process;
-
-
   pc <= pc_current;
 end behavioral;
