@@ -41,9 +41,10 @@ begin
   begin
     if (REG_we = '1' and REG_dst_idx /= "00000") then
       write_enable <= '1';
-      write_data   <= REG_write_data;
+      --  write_data   <= REG_write_data;
     else
       write_enable <= '0';
+
     end if;
   end process;
 
@@ -57,7 +58,8 @@ begin
     end if;
   end process;
 
-  -- Asynchronous reaD
+  -- Asynchronous read
   REG_src_1 <= array_register(to_integer(unsigned(REG_src_idx_1)));
   REG_src_2 <= array_register(to_integer(unsigned(REG_src_idx_2)));
+
 end behavioral;
