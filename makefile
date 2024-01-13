@@ -1,5 +1,4 @@
-test: clk_div
-
+test: fetch-test
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
@@ -27,6 +26,10 @@ alu-test: auxiliary
 
 clk_div: 
 	$(NVC) -a clk_div.vhd test/clk_div_tb.vhd -e clk_div_tb -r
+
+reg-file-test: auxiliary
+	$(NVC) -a registerfile.vhd test/registerfile_tb.vhd -e reg_file_tb -r
+	
 
 comparator-test:
 	$(NVC) -a components/comparator.vhd test/comparator_tb.vhd -e comparator_tb -r
