@@ -89,10 +89,10 @@ begin
 
     -- Test SLT unsigned
     op_1 <= x"00000005";
-    op_2 <= x"00000002";
+    op_2 <= x"0000000A";
     ctrl <= alu_slt_u;
     wait for clk_period;
-    assert res = x"00000000" report "SLT unsigned failed" severity error;
+    assert res = x"00000001" report "SLT unsigned failed" severity error;
     report "Test 5 [PASSED]";
 
     -- Test XOR
@@ -134,7 +134,6 @@ begin
     wait for clk_period;
     assert res = x"00000005" report "AND failed" severity error;
     report "Test 10 [PASSED]";
-
     -- finish simulation
     std.env.stop(0);
   end process;
