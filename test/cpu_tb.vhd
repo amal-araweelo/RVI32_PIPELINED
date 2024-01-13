@@ -24,8 +24,8 @@ component reg_ifid is
   port
   (
     clk, clr, en    : in std_logic;
-    in_ifid_record  : in t_ifid_reg;
-    out_ifid_record : out t_ifid_reg
+    in_ifid_record  : in t_ifid;
+    out_ifid_record : out t_ifid
   );
 end component;
 
@@ -55,8 +55,8 @@ component reg_idex is
   port
   (
     clk, clr, en    : in std_logic;
-    in_idex_record  : in t_idex_reg;
-    out_idex_record : out t_idex_reg
+    in_idex_record  : in t_idex;
+    out_idex_record : out t_idex
   );
 end component;
 
@@ -92,8 +92,8 @@ component reg_exmem is
   port
   (
     clk, clr, en     : in std_logic;
-    in_exmem_record  : in t_exmem_reg;
-    out_exmem_record : out t_exmem_reg
+    in_exmem_record  : in t_exmem;
+    out_exmem_record : out t_exmem
   );
 end component;
 
@@ -118,8 +118,8 @@ component reg_memwb is
   port
   (
     clk, clr, en     : in std_logic;
-    in_memwb_record  : in t_memwb_reg;
-    out_memwb_record : out t_memwb_reg
+    in_memwb_record  : in t_memwb;
+    out_memwb_record : out t_memwb
   );
 end component;
 
@@ -143,28 +143,28 @@ signal clk : std_logic := '0';
 constant clk_period : time := 10 ns;
 
 -- Fetcher signals
-signal fetch_stage_out : t_ifid_reg;
+signal fetch_stage_out : t_ifid;
 
 -- Register IF/ID signals
-signal ifid_out : t_ifid_reg;
+signal ifid_out : t_ifid;
 
 -- Decoder signals
-signal decode_stage_out : t_idex_reg;
+signal decode_stage_out : t_idex;
 signal REG_src_idx_1, REG_src_idx_2 : std_logic_vector(4 downto 0);
 
 -- Register ID/EX signals
-signal idex_out : t_idex_reg;
+signal idex_out : t_idex;
 
 -- Execute signals
 signal execute_stage_out_sel_pc : std_logic;
 
 -- Register EX/MEM signals
-signal execute_stage_out : t_exmem_reg;
-signal exmem_out : t_exmem_reg;
+signal execute_stage_out : t_exmem;
+signal exmem_out : t_exmem;
 
 -- Register MEM/WB signals
-signal memory_stage_out : t_memwb_reg;
-signal memwb_out : t_memwb_reg;
+signal memory_stage_out : t_memwb;
+signal memwb_out : t_memwb;
 
 -- Writeback signals
 signal write_back_out : std_logic_vector(31 downto 0);
@@ -319,7 +319,6 @@ end process;
 stim_proc: process
 begin
 
-    wait for clk_period;
     report "--------- CLOCK CYCLE ---------";
 
     report "Instruction = " & to_string(fetch_stage_out.instr);
