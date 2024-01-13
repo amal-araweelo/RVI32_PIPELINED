@@ -13,14 +13,14 @@ entity fetcher is
     clk, sel_pc, clr, en : in std_logic;
     branch_addr          : in std_logic_vector (31 downto 0);
     pc                   : out std_logic_vector (31 downto 0);
-    instr		 : out std_logic_vector (31 downto 0)
+    instr                : out std_logic_vector (31 downto 0)
   );
 end fetcher;
 
 architecture behavioral of fetcher is
-  signal length  : std_logic_vector(31 downto 0) := x"00000004";
-  signal pc_current  : std_logic_vector(31 downto 0) := x"00000000";
-  signal pc_next : std_logic_vector(31 downto 0);
+  signal length     : std_logic_vector(31 downto 0) := x"00000001";
+  signal pc_current : std_logic_vector(31 downto 0) := x"00000000";
+  signal pc_next    : std_logic_vector(31 downto 0);
 
   -- Instruction memory
   component instr_mem is
@@ -37,16 +37,15 @@ architecture behavioral of fetcher is
 
 begin
 
-   instr_mem_inst : instr_mem port map 
-   (
-      clk => clk,
-      MEM_addr => pc_next,
-      MEM_instr_out => instr
-   );
+  instr_mem_inst : instr_mem port map
+  (
+    clk           => clk,
+    MEM_addr      => pc_next,
+    MEM_instr_out => instr
+  );
 
   process (all) begin
     pc_next <= pc;
-
     if (en = '1') then
       if (sel_pc = '1') then
         pc_next <= branch_addr;
@@ -56,7 +55,7 @@ begin
     end if;
 
     if (clr = '1') then
-	  pc_next <= (others => '0');
+      pc_next <= (others => '0');
     end if;
   end process;
 

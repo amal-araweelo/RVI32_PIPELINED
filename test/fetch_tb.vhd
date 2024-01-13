@@ -79,7 +79,7 @@ begin
     clr <= '0';
     wait for clk_period;
 
-    if pc_out = x"00000004" then
+    if pc_out = x"00000001" then
       report "Test 2 [PASSED]";
     else
       report "Test 2 [FAILED]";
@@ -90,7 +90,7 @@ begin
 
     wait for clk_period;
 
-    if pc_out = x"00000008" then
+    if pc_out = x"00000002" then
       report "Test 3 [PASSED]";
     else
       report "Test 3 [FAILED]";
@@ -101,7 +101,7 @@ begin
 
     wait for clk_period;
 
-    if pc_out = x"0000000C" then
+    if pc_out = x"00000003" then
       report "Test 4 [PASSED]";
     else
       report "Test 4 [FAILED]";
@@ -128,7 +128,7 @@ begin
     branch_addr <= x"00000123";
     wait for clk_period;
 
-    if pc_out = x"00000127" then
+    if pc_out = x"00000124" then
       report "Test 6 [PASSED]";
     else
       report "Test 6 [FAILED]";
