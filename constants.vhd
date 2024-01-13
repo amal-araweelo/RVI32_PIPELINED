@@ -71,20 +71,20 @@ package records_pkg is
 
   -- Outputs from decoder
   type t_decoder is record
-    REG_dst_idx   : std_logic_vector(4 downto 0);   -- Destination register
-    ALU_src_1_ctrl : std_logic;                     -- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
-    ALU_src_2_ctrl : std_logic;                     -- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
-    op_ctrl       : std_logic_vector(3 downto 0);   -- operation control for ALU and Comparator (both receive same signal)
-    REG_we        : std_logic;                      -- Register file write enable
-    imm           : std_logic_vector (31 downto 0); -- immediate value
+    REG_dst_idx    : std_logic_vector(4 downto 0); -- Destination register
+    ALU_src_1_ctrl : std_logic; -- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
+    ALU_src_2_ctrl : std_logic; -- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
+    op_ctrl        : std_logic_vector(3 downto 0); -- operation control for ALU and Comparator (both receive same signal)
+    REG_we         : std_logic; -- Register file write enable
+    imm            : std_logic_vector (31 downto 0); -- immediate value
 
-    WB_src_ctrl : std_logic_vector(1 downto 0);     -- ctrl signal for WB input selector mux  (2=read from mem, 1=ALU, 0=jump/branch)
-    MEM_op      : std_logic_vector(2 downto 0);     -- ctrl signal for MEM operation type (eg. lw, sh ...)
-    MEM_we      : std_logic;                        -- Memory Write enable
-    do_jmp      : std_logic;                        -- Enable if is a jump instruction
-    do_branch   : std_logic;                        -- Enable if is a branch instruction
+    WB_src_ctrl : std_logic_vector(1 downto 0); -- ctrl signal for WB input selector mux  (2=read from mem, 1=ALU, 0=jump/branch)
+    MEM_op      : std_logic_vector(2 downto 0); -- ctrl signal for MEM operation type (eg. lw, sh ...)
+    MEM_we      : std_logic; -- Memory Write enable
+    do_jmp      : std_logic; -- Enable if is a jump instruction
+    do_branch   : std_logic; -- Enable if is a branch instruction
     --opcode      : std_logic_vector(6 downto 0);   -- could be different -- Opcode for passing on if needed (unknown if needed so is outcommented for now TODO use or delete)
-    MEM_rd : std_logic;                             -- Enable if is a load instruction (for hazard unit)
+    MEM_rd : std_logic; -- Enable if is a load instruction (for hazard unit)
 
   end record t_decoder;
 
