@@ -39,6 +39,7 @@ architecture behavioral of cpu is
     );
   end component;
 
+  -- Fetcher
   component fetcher is
     port
     (
@@ -78,8 +79,7 @@ architecture behavioral of cpu is
       REG_src_idx_1, REG_src_idx_2 : in std_logic_vector(4 downto 0);
       REG_dst_idx                  : in std_logic_vector(4 downto 0);
       REG_write_data               : in std_logic_vector(B - 1 downto 0);
-      REG_src_1, REG_src_2         : out std_logic_vector(B - 1 downto 0);
-      blinky                       : out std_logic
+      REG_src_1, REG_src_2         : out std_logic_vector(B - 1 downto 0)
     );
   end component;
 
@@ -253,8 +253,8 @@ begin
   REG_dst_idx    => memwb_out.REG_dst_idx,
   REG_write_data => write_back_out,
   REG_src_1      => decode_stage_out.REG_src_1,
-  REG_src_2      => decode_stage_out.REG_src_2,
-  blinky         => led_status
+  REG_src_2      => decode_stage_out.REG_src_2
+  --blinky         => led_status
   );
 
   decode_stage_out.pc <= ifid_out.pc;
