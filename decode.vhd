@@ -216,7 +216,7 @@ begin
 
         -- auipc
         if (not(opcode(1))) then
-          decoder_out.ALU_src_1_ctrl <= '1'; -- pc
+          decoder_out.ALU_src_1_ctrl <= '0'; -- pc
           -- lui
         else
           -- ALU src 1 is register, x0 is default. The add is set above, so there is no unique code here :)
