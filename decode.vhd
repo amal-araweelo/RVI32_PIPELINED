@@ -75,118 +75,113 @@ begin
           decoder_out.imm(31 downto 12) <= (others => '0');
         end if;
 
-        func3 <= instr(14 downto 12);
-        -- is DEC_I_LOAD
-        if (not(opcode(4) or opcode(5))) then
-          decoder_out.WB_src_ctrl <= "10"; --read from mem
-          decoder_out.MEM_rd      <= '1';
-          report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
-          case func3 is
-              -- lb
-            when "000" =>
-              decoder_out.MEM_op <= lb;
-              -- lh
-            when "001" =>
-              decoder_out.MEM_op <= lh;
-              -- lw
-            when "010" =>
-              decoder_out.MEM_op <= lw;
-              -- lbu
-            when "100" =>
-              decoder_out.MEM_op <= lbu;
-              -- lhu
-            when "101" =>
-              decoder_out.MEM_op <= lhu;
-            when others =>
-              null;
-          end case;
+					func3 <= instr(14 downto 12);
+					-- is DEC_I_LOAD
+					if (not(opcode(4) or opcode(5))) then
+						decoder_out.WB_src_ctrl <= "10";		--read from mem
+						decoder_out.MEM_rd 	<= '1';	
+						report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
+						case func3 is
+							-- lb
+							when "000" => 
+							decoder_out.MEM_op 	<= lb;		
+							-- lh
+							when "001" => 
+							decoder_out.MEM_op 	<= lh;
+							-- lw
+							when "010" => 
+							decoder_out.MEM_op 	<= lw;		
+							-- lbu
+							when "100" => 
+							decoder_out.MEM_op 	<= lbu;
+							-- lhu
+							when "101" => 
+							decoder_out.MEM_op 	<= lhu;
+							when others => 
+								report "Undefined func3: I-type, DEC_I_LOAD";
+						end case;
+					
+					-- is DEC_I_ADD_SHIFT_LOGICOPS
+					elsif (opcode(4) and (not(opcode(5)))) then 
+						case func3 is
+							-- addi
+							when "000" =>
+							decoder_out.op_ctrl <=  ALU_ADD;
+							-- xori
+							when "100" =>
+							decoder_out.op_ctrl <= ALU_XOR;
+							-- ori
+							when "110" =>
+							decoder_out.op_ctrl <= ALU_OR;
+							-- andi
+							when "111" =>
+							decoder_out.op_ctrl <= ALU_AND;
+							----- shifts
+							-- slli
+							when "001" => 
+							decoder_out.op_ctrl <=  ALU_SL;
+							when "101" => 
+								if (instr(30)) then
+									-- srai
+									decoder_out.op_ctrl <=  ALU_SRA;
+								else
+									-- srli
+									decoder_out.op_ctrl <=  ALU_SR;
+								end if;
+							----- set if's
+							-- slti
+							when "010" => 
+							decoder_out.op_ctrl <=  ALU_SLT_S;
+							-- sltiu
+							when "011" => 
+							decoder_out.op_ctrl <=  ALU_SLT_U;
+							
+							when others =>
+								report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
 
-          -- is DEC_I_ADD_SHIFT_LOGICOPS
-        elsif (opcode(4) and (not(opcode(5)))) then
-          case func3 is
-              -- addi
-            when "000" =>
-              decoder_out.op_ctrl <= ALU_ADD;
-
-              -- xori
-            when "100" =>
-              decoder_out.op_ctrl <= ALU_XOR;
-
-              -- ori
-            when "110" =>
-              decoder_out.op_ctrl <= ALU_OR;
-
-              -- andi
-            when "111" =>
-              decoder_out.op_ctrl <= ALU_AND;
-
-              ----- shifts
-              -- slli
-            when "001" =>
-              decoder_out.op_ctrl <= ALU_SL;
-            when "101" =>
-              if (instr(30)) then
-                -- srai
-                decoder_out.op_ctrl <= ALU_SRA;
-              else
-                -- srli
-                decoder_out.op_ctrl <= ALU_SR;
-              end if;
-              ----- set if's
-              -- slti
-            when "010" =>
-              decoder_out.op_ctrl <= ALU_SLT_S;
-              -- sltiu
-            when "011" =>
-              decoder_out.op_ctrl <= ALU_SLT_U;
-            when others =>
-              decoder_out.op_ctrl <= "0000";
-          end case;
-          -- DEC_I_ADDW_SHIFTW
-          --			elsif 
-          -- DEC_I_JALR
-          --			elsif
-          -- Undefined opcode
-          --			else --report undefined opcode
-        else
-          decoder_out.op_ctrl <= "0000"; -- Default value
-        end if;
-
-        -- R-type
-      when DEC_R_OPS | DEC_R_OPSW =>
-        decoder_out.REG_dst_idx <= instr(11 downto 7);
-        -- ALU_src_ctrl_x is register as standard
-        decoder_out.REG_we <= '1';
-
-        REG_src_idx_1 <= instr(19 downto 15);
-        REG_src_idx_2 <= instr(24 downto 20);
+						end case;
+					-- DEC_I_JALR
+					elsif (opcode(6) and (opcode(5))) then 
+						decoder_out.op_ctrl <=  ALU_ADD;
+						-- TODO how to set lsb of result to 0? Add XOR with JAL on that bits signal?
+					
+					else 
+						report "undefined opcode - I-type";
+					end if;
+				
+			-- R-type
+				when DEC_R_OPS => 
+					decoder_out.REG_dst_idx <= instr(11 downto 7);
+					-- ALU_src_ctrl_x is register as standard
+					decoder_out.REG_we <= '1';
+					
+					REG_src_idx_1 <= instr(19 downto 15);
+					REG_src_idx_2 <= instr(24 downto 20);
 
         func3 <= instr(14 downto 12);
         func7 <= instr(31 downto 25);
 
-        -- case func3: R
-        case func3 is
-            -- add and sub
-          when "000" =>
-            -- add
-            if (func7 = "0000000") then
-              decoder_out.op_ctrl <= ALU_ADD;
-
-              -- sub
-            elsif (func7 = "0100000") then
-              decoder_out.op_ctrl <= ALU_SUB;
-
-            else
-              null;
-            end if;
-
-            -- xor
-          when "100" =>
-            if (func7 = "0000000") then
-              decoder_out.op_ctrl <= ALU_XOR;
-            else
-              null;
-            end if;
+					-- case func3: DEC_R_OPS
+					case func3 is
+						-- add and sub
+						when "000" =>
+							-- add
+							if (func7 = "0000000") then
+							decoder_out.op_ctrl <=  ALU_ADD; 
+							
+							-- sub
+							elsif (func7 = "0100000") then
+							decoder_out.op_ctrl <=  ALU_SUB; 
+							
+							else report "undefined func7: R-type, func3=000";
+							end if;
+						
+						-- xor
+						when  "100" =>
+							if (func7="0000000") then
+								decoder_out.op_ctrl <= ALU_XOR;
+							else report "Illegal func7: R xor";
+						end if;
 
             -- or
           when "110" =>

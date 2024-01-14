@@ -35,7 +35,6 @@ package const_decoder is
   constant DEC_I_ADD_SHIFT_LOGICOPS : std_logic_vector(6 downto 0) := "0010011";
   constant DEC_I_JALR               : std_logic_vector(6 downto 0) := "1100111";
   constant DEC_R_OPS                : std_logic_vector(6 downto 0) := "0110011";
-  constant DEC_R_OPSW               : std_logic_vector(6 downto 0) := "0111011";
   constant DEC_U_AUIPC              : std_logic_vector(6 downto 0) := "0010111";
   constant DEC_U_LUI                : std_logic_vector(6 downto 0) := "0110111";
   constant DEC_S                    : std_logic_vector(6 downto 0) := "0100011";
