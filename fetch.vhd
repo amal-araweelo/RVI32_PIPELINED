@@ -18,7 +18,7 @@ entity fetcher is
 end fetcher;
 
 architecture behavioral of fetcher is
-  signal length     : std_logic_vector(31 downto 0) := x"00000001";
+  signal length     : std_logic_vector(31 downto 0) := x"00000004";
   signal pc_current : std_logic_vector(31 downto 0) := x"00000000";
   signal pc_next    : std_logic_vector(31 downto 0);
 
@@ -40,7 +40,7 @@ begin
   instr_mem_inst : instr_mem port map
   (
     clk           => clk,
-    MEM_addr      => pc_current,
+    MEM_addr      => "00" & pc_current(31 downto 2),
     MEM_instr_out => instr
   );
 
@@ -48,6 +48,7 @@ begin
     pc_next <= pc;
     if (en = '1') then
       if (sel_pc = '1') then
+	report "[FETCH] BRANCHING to: " & to_string(branch_addr);
         pc_next <= branch_addr;
       else
         pc_next <= std_logic_vector(unsigned(pc_current) + unsigned(length));
