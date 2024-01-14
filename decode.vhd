@@ -39,7 +39,7 @@ begin
 
     -- <<< Set default values for decoder outputs >>>
     decoder_out.REG_dst_idx      <= (others => '0'); -- Destination register
-    decoder_out.ALU_src_1_ctrl   <= '1'; -- register						-- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
+    decoder_out.ALU_src_1_ctrl   <= '1'; -- register						-- ctrl signal for ALU input selector mux 1 (1=reg, 0=pc)
     decoder_out.ALU_src_2_ctrl   <= '0'; -- register						-- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
     decoder_out.op_ctrl          <= alu_add; -- not set here, as it is always set (TODO check if true)	-- operation control for ALU and Comparator (both receive same signal)
     decoder_out.REG_we           <= '0'; -- Register file write enable

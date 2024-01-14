@@ -64,7 +64,7 @@ begin
     wait for clk_period;
 
     assert decoder_out.REG_dst_idx = "00010" report "REG_dst_idx is not correct" severity error;
-    assert decoder_out.ALU_src_1_ctrl = '0' report "ALU_src_1_ctrl is not correct" severity error;
+    assert decoder_out.ALU_src_1_ctrl = '1' report "ALU_src_1_ctrl is not correct" severity error;
     assert decoder_out.ALU_src_2_ctrl = '1' report "ALU_src_2_ctrl is not correct (needs to be 1 for I-type)" severity error;
     assert decoder_out.op_ctrl = ALU_ADD report "op_ctrl is not correct (needs to be ADD)" severity error;
     assert decoder_out.REG_we = '1' report "REG_we is not correct" severity error;
