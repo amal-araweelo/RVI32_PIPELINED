@@ -328,11 +328,11 @@ begin
 
   stim_proc : process
   begin
-    wait for 5 ps;
+    wait for clk_period;
 
     -- First instruction
     report "--------- CLOCK CYCLE ---------";
-      report "Instruction = " & to_string(fetch_stage_out.instr);
+    report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
@@ -340,11 +340,14 @@ begin
     report "idex_out.decoder_out.imm = " & to_string(idex_out.decoder_out.imm);
     report "execute_stage_out.ALU_res_out = " & to_string(execute_stage_out.ALU_res);
     report "execute_stage_out_sel_pc = " & to_string(execute_stage_out_sel_pc);
+    report "exmem_out.ALU_res = " & to_string(exmem_out.ALU_res);
+    report "memwb_out.WB_src_ctrl = " & to_string(memwb_out.WB_src_ctrl);
+    report "memwb_out.ALU_res = " & to_string(memwb_out.ALU_res);
     report "write_back_out = " & to_string(write_back_out);
     report "--------- CLOCK CYCLE ---------";
 
       -- Second instruction
-      wait for clk_period;
+    wait for clk_period;
     report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
