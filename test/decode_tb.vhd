@@ -59,19 +59,37 @@ begin
 
   stim_proc : process
   begin
+    wait for 1 ns;
 
-    instr <= x"00308113";
+    -- Instruction test: addi x1, x2, 5
+    instr <= x"00510093";
     wait for clk_period;
-
-    assert decoder_out.REG_dst_idx = "00010" report "REG_dst_idx is not correct" severity error;
+    assert decoder_out.REG_dst_idx = "00001" report "REG_dst_idx is not correct" severity error;
+    assert REG_src_idx_1 = "00010" report "REG_src_idx_1 is not correct" severity error;
+    assert REG_src_idx_2 = "00000" report "REG_src_idx_2 is not correct" severity error;
     assert decoder_out.ALU_src_1_ctrl = '1' report "ALU_src_1_ctrl is not correct" severity error;
     assert decoder_out.ALU_src_2_ctrl = '1' report "ALU_src_2_ctrl is not correct (needs to be 1 for I-type)" severity error;
     assert decoder_out.op_ctrl = ALU_ADD report "op_ctrl is not correct (needs to be ADD)" severity error;
     assert decoder_out.REG_we = '1' report "REG_we is not correct" severity error;
-    assert decoder_out.imm = x"00000003" report "imm is not correct" severity error;
+    assert decoder_out.imm = x"00000005" report "imm is not correct" severity error;
+    assert decoder_out.WB_src_ctrl = "01" report "WB_src_ctrl is not correct" severity error;
+    assert decoder_out.MEM_op = "000" report "MEM_op is not correct" severity error;
+    assert decoder_out.MEM_we = '0' report "MEM_we is not correct" severity error;
     report "Test 1 [PASSED]" severity note;
 
-    instr <= x"00a00093";
+    -- Instruction test: add x1, x5, x2
+    instr <= x"002280b3";
+    wait for clk_period;
+    assert decoder_out.REG_dst_idx = "00001" report "REG_dst_idx is not correct" severity error;
+    assert decoder_out.ALU_src_1_ctrl = '1' report "ALU_src_1_ctrl is not correct" severity error;
+    assert decoder_out.ALU_src_2_ctrl = '1' report "ALU_src_2_ctrl is not correct (needs to be 1 for I-type)" severity error;
+    assert decoder_out.op_ctrl = ALU_ADD report "op_ctrl is not correct (needs to be ADD)" severity error;
+    assert decoder_out.REG_we = '1' report "REG_we is not correct" severity error;
+    assert decoder_out.imm = x"0000000A" report "imm is not correct" severity error;
+    report "Test 2 [PASSED]" severity note;
+
+    -- Instruction test: or x2, x2, x3
+    instr <= x"002280b3";
     wait for clk_period;
     assert decoder_out.REG_dst_idx = "00001" report "REG_dst_idx is not correct" severity error;
     assert decoder_out.ALU_src_1_ctrl = '1' report "ALU_src_1_ctrl is not correct" severity error;
