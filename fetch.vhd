@@ -40,7 +40,7 @@ begin
   instr_mem_inst : instr_mem port map
   (
     clk           => clk,
-    MEM_addr      => pc_next,
+    MEM_addr      => pc_current,
     MEM_instr_out => instr
   );
 
