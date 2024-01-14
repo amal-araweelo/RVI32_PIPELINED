@@ -26,19 +26,6 @@ architecture behavioral of cpu is
     );
   end component;
 
-  -- Instruction memory
-  component instr_mem is
-    port
-    (
-      -- Inputs
-      clk      : in std_logic;
-      MEM_addr : in std_logic_vector(31 downto 0) := (others => '0');
-
-      -- Outputs
-      MEM_instr_out : out std_logic_vector(31 downto 0)
-    );
-  end component;
-
   -- Fetcher
   component fetcher is
     port
@@ -325,7 +312,7 @@ begin
   memory_stage_out.ALU_res     <= exmem_out.ALU_res;
 
   -- Memory
-  memory_inst : data_mem
+  data_mem_inst : data_mem
   port
   map
   (
