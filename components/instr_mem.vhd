@@ -51,6 +51,6 @@ architecture impl of instr_mem is
 
 begin
   process (all) begin
-    MEM_instr_out <= rom(to_integer(unsigned(MEM_addr(31 downto 0)))); -- data is always loaded from memory given addr
+    MEM_instr_out <= rom(to_integer(unsigned(MEM_addr))); -- data is always loaded from memory given addr
   end process;
 end architecture;
