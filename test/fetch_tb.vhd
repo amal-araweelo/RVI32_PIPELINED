@@ -61,10 +61,9 @@ begin
     clr    <= '1';
     sel_pc <= '0';
     en     <= '1';
-    wait for clk_period;
+    wait for 1 ns;
 
     clr <= '0';
-
     -- Test 1
 
     if pc_out = x"00000000" then
