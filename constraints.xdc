@@ -33,7 +33,7 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk
  
 
 ## LEDs
-#set_property PACKAGE_PIN U16 [get_ports {led_status}]				
+set_property PACKAGE_PIN U16 [get_ports {led_status}]				
 #set_property PACKAGE_PIN E19 [get_ports {io_led[1]}]					
 #set_property PACKAGE_PIN U19 [get_ports {io_led[2]}]					
 #set_property PACKAGE_PIN V19 [get_ports {io_led[3]}]					

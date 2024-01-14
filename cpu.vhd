@@ -362,8 +362,10 @@ begin
   REG_write_data => write_back_out
   );
 
-  process (clk)
+  process (all)
   begin
+    report "led_status" & to_string(led_status);
+    led_status <= execute_stage_out_sel_pc;
 
   end process;
 end behavioral;
