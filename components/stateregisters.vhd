@@ -29,7 +29,7 @@ begin
   -- Combinatorial process
   process (all)
   begin
-    intermediate_ifid_record <= in_ifid_record;
+    intermediate_ifid_record <= out_ifid_record;
     if (clr = '1') then
       intermediate_ifid_record.pc    <= (others => '0');
       intermediate_ifid_record.instr <= (others => '0');
@@ -72,9 +72,8 @@ begin
   -- Combinatorial process
   process (all)
   begin
-    intermediate_idex_record <= in_idex_record;
+    intermediate_idex_record <= out_idex_record;
     if (clr = '1') then
-      -- Zero out specific fields in the decoder_out record
       intermediate_idex_record.decoder_out.ALU_src_1_ctrl <= '0';
       intermediate_idex_record.decoder_out.ALU_src_2_ctrl <= '0';
       intermediate_idex_record.decoder_out.op_ctrl        <= (others => '0');
@@ -85,8 +84,11 @@ begin
       intermediate_idex_record.decoder_out.MEM_we         <= '0';
       intermediate_idex_record.decoder_out.do_jmp         <= '0';
       intermediate_idex_record.decoder_out.do_branch      <= '0';
-      --out_idex_record.decoder_out.opcode        <= (others => '0');
+      -- out_idex_record.decoder_out.opcode        <= (others => '0');
       intermediate_idex_record.decoder_out.MEM_rd <= '0';
+			intermediate_idex_record.pc <= (others => '0');
+			intermediate_idex_record.REG_src_1 <= (others => '0');
+			intermediate_idex_record.REG_src_2 <= (others => '0');
     end if;
 
     if (clr = '0' and en = '1') then
@@ -116,7 +118,6 @@ architecture behavioral of reg_exmem is
   signal intermediate_exmem_record : t_exmem;
 
 begin
-  intermediate_exmem_record <= in_exmem_record;
   -- Clock process
   process (clk)
   begin
@@ -128,6 +129,7 @@ begin
   -- Combinatorial process
   process (all)
   begin
+		intermediate_exmem_record <= out_exmem_record;
     if (clr = '1') then
       intermediate_exmem_record.REG_we      <= '0';
       intermediate_exmem_record.MEM_we      <= '0';
@@ -141,15 +143,6 @@ begin
 
     if (clr = '0' and en = '1') then
       intermediate_exmem_record             <= in_exmem_record;
-      intermediate_exmem_record.REG_we      <= in_exmem_record.REG_we;
-      intermediate_exmem_record.WB_src_ctrl <= in_exmem_record.WB_src_ctrl;
-      intermediate_exmem_record.REG_dst_idx <= in_exmem_record.REG_dst_idx;
-      intermediate_exmem_record.pc          <= in_exmem_record.pc;
-
-      intermediate_exmem_record.ALU_res   <= in_exmem_record.ALU_res;
-      intermediate_exmem_record.REG_src_2 <= in_exmem_record.REG_src_2;
-      intermediate_exmem_record.MEM_op    <= in_exmem_record.MEM_op;
-      intermediate_exmem_record.MEM_we    <= in_exmem_record.MEM_we;
     end if;
   end process;
 end behavioral;
@@ -174,7 +167,6 @@ architecture behavioral of reg_memwb is
   -- Intermediate signal
   signal intermediate_memwb_record : t_memwb;
 begin
-  intermediate_memwb_record <= in_memwb_record;
   -- Clock process
   process (clk)
   begin
@@ -186,9 +178,18 @@ begin
   -- Combinatorial process
   process (all)
   begin
-    -- TODO: insert what happens when we clear
+		intermediate_memwb_record <= out_memwb_record;
+		if (clr = '1') then
+				intermediate_memwb_record.REG_we <= '0';
+				intermediate_memwb_record.MEM_we <= '0';
+				intermediate_memwb_record.WB_src_ctrl <= (others => '0');
+				intermediate_memwb_record.REG_dst_idx <= (others => '0');
+				intermediate_memwb_record.pc <= (others => '0');
+				intermediate_memwb_record.ALU_res <= (others => '0');
+				intermediate_memwb_record.MEM_out <= (others => '0');
+		end if;
     if (clr = '0' and en = '1') then -- if the signal is not to clr the reg
-      out_memwb_record <= intermediate_memwb_record;
+      intermediate_memwb_record <= in_memwb_record;
     end if;
   end process;
 end behavioral;
