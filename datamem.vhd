@@ -29,7 +29,6 @@ architecture impl of data_mem is
   signal write_data : std_logic_vector(31 downto 0);
 
 begin
-  write_data <= MEM_data_in; -- default assignment
   -- Synchronous write
   process (clk) begin
     if (rising_edge(clk)) then
@@ -41,6 +40,9 @@ begin
 
   -- Asynchronous read
   process (all) begin
+    -- Initialize write_data to a default value
+    write_data <= (others => '0');
+    read_data  <= (others => '0');
     case MEM_op is
       when lw =>
         read_data <= ram(to_integer(unsigned(MEM_addr)));
@@ -52,8 +54,7 @@ begin
         else
           read_data(31 downto 16) <= (others => '0');
         end if;
-        write_data <= (others => '0');
-      when lhu              =>
+      when lhu =>
         read_data(15 downto 0)  <= ram(to_integer(unsigned(MEM_addr)))(15 downto 0);
         read_data(31 downto 16) <= (others => '0'); -- Zero-extend
       when lb                            =>
@@ -76,9 +77,9 @@ begin
         write_data(7 downto 0)    <= MEM_data_in(7 downto 0);
         write_data (31 downto 16) <= (others => '0'); -- fill up with 0's
       when others                          =>
-        read_data  <= x"00000000";
         write_data <= x"00000000";
+        read_data  <= x"00000000";
     end case;
+    MEM_data_out <= read_data;
   end process;
-  MEM_data_out <= read_data;
 end architecture;

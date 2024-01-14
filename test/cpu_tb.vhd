@@ -332,7 +332,7 @@ begin
 
     -- First instruction
     report "--------- CLOCK CYCLE ---------";
-    report "Instruction = " & to_string(fetch_stage_out.instr);
+      report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
@@ -347,7 +347,7 @@ begin
     report "--------- CLOCK CYCLE ---------";
 
       -- Second instruction
-    wait for clk_period;
+      wait for clk_period;
     report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);

@@ -1,4 +1,4 @@
-test: records cpu
+test: datamem-test
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
@@ -11,7 +11,9 @@ auxiliary: records
 	$(NVC) -a components/mux2.vhd
 	$(NVC) -a components/mux3.vhd
 	$(NVC) -a components/comparator.vhd
+	$(NVC) -a components/forwarding.vhd
 	$(NVC) -a registerfile.vhd
+
 
 fetch-test: fetch
 	$(NVC) -a test/fetch_tb.vhd -e fetcher_tb -r
@@ -21,6 +23,9 @@ decode-test: decode
 
 datamem-test: datamem
 	$(NVC) -a test/datamem_tb.vhd -e datamem_tb -r
+
+forward-test: auxiliary
+	$(NVC) -a test/forwarding_tb.vhd -e forwarding_unit_tb -r
 
 alu-test: auxiliary
 	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
