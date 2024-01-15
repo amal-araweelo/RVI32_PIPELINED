@@ -1,4 +1,4 @@
-test: reg-file-test
+test: hazard-test records
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
@@ -12,8 +12,12 @@ auxiliary: records
 	$(NVC) -a components/mux3.vhd
 	$(NVC) -a components/comparator.vhd
 	$(NVC) -a components/forwarding.vhd
+	$(NVC) -a components/hazard.vhd
 	$(NVC) -a registerfile.vhd
 
+
+hazard-test: auxiliary
+	$(NVC) -a test/hazard_tb.vhd -e hazard_unit_tb -r
 
 fetch-test: fetch
 	$(NVC) -a test/fetch_tb.vhd -e fetcher_tb -r
