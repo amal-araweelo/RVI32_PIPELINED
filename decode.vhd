@@ -74,7 +74,7 @@ begin
 
 		func3 <= instr(14 downto 12);
 		-- is DEC_I_LOAD
-		if (not(opcode(4) or opcode(5))) then
+		if (not(opcode(4) and not(opcode(5)))) then
 			decoder_out.WB_src_ctrl <= "10";		--read from mem
 			decoder_out.MEM_rd 	<= '1';	
 			report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
