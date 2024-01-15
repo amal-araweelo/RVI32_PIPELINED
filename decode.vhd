@@ -18,7 +18,7 @@ entity decoder is
   (
     instr                        : in std_logic_vector(31 downto 0);
     decoder_out                  : out t_decoder;
-    REG_src_idx_1, REG_src_idx_2 : out std_logic_vector (4 downto 0)
+    REG_src_idx_1, REG_src_idx_2 : out std_logic_vector (4 downto 0) 
   );
 end decoder;
 
@@ -62,7 +62,8 @@ begin
         decoder_out.REG_we         <= '1';
         decoder_out.ALU_src_2_ctrl <= '1'; -- imm
         REG_src_idx_1              <= instr(19 downto 15);
-
+		--report "decoder_out.REG_src_idx_1 should be: " & to_string(instr(19 downto 15)) & " FROM DECODER";
+		--report "decoder_out.REG_src_idx_1 is: " & to_string(REG_src_idx_1) & " FROM DECODER";
         decoder_out.imm(11 downto 0) <= instr(31 downto 20);
         -- Handle imm sign extension
         if (decoder_out.imm(11) = '1') then
@@ -70,10 +71,11 @@ begin
         else
           decoder_out.imm(31 downto 12) <= (others => '0');
         end if;
+		report "I-type imm made: " & to_string(decoder_out.imm);
 
 		func3 <= instr(14 downto 12);
 		-- is DEC_I_LOAD
-		if (not(opcode(4) or opcode(5))) then
+		if (not(opcode(4) and not(opcode(5)))) then
 			decoder_out.WB_src_ctrl <= "10";		--read from mem
 			decoder_out.MEM_rd 	<= '1';	
 			report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
@@ -117,6 +119,9 @@ begin
 				when "001" => 
 				decoder_out.op_ctrl <=  ALU_SL;
 				when "101" => 
+					report "[DECODE] Hello from srxi";
+					decoder_out.imm(11 downto 5) <=  (others =>  '0');
+					-- report "[DECODE] imm is now: " & to_string(decoder_out.imm);
 					if (instr(30)) then
 						-- srai
 						decoder_out.op_ctrl <=  ALU_SRA;
@@ -221,9 +226,11 @@ begin
 			decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 			decoder_out.imm(11 downto 0)  <= (others => '0');
 
+			
 			-- auipc
-			if (not(opcode(1))) then
-			decoder_out.ALU_src_1_ctrl <= '0'; -- pc
+			if (not(opcode(5))) then
+			
+				decoder_out.ALU_src_1_ctrl <= '0'; -- pc
 			-- lui
 			else
 			-- ALU src 1 is register, x0 is default. The add is set above, so there is no unique code here :)
