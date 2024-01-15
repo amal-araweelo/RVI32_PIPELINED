@@ -71,6 +71,7 @@ begin
         else
           decoder_out.imm(31 downto 12) <= (others => '0');
         end if;
+		report "I-type imm made: " & to_string(decoder_out.imm);
 
 		func3 <= instr(14 downto 12);
 		-- is DEC_I_LOAD
@@ -118,6 +119,9 @@ begin
 				when "001" => 
 				decoder_out.op_ctrl <=  ALU_SL;
 				when "101" => 
+					report "[DECODE] Hello from srxi";
+					decoder_out.imm(11 downto 5) <=  (others =>  '0');
+					-- report "[DECODE] imm is now: " & to_string(decoder_out.imm);
 					if (instr(30)) then
 						-- srai
 						decoder_out.op_ctrl <=  ALU_SRA;
@@ -222,10 +226,10 @@ begin
 			decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 			decoder_out.imm(11 downto 0)  <= (others => '0');
 
-			report "[DECODER] hello from U-type";
+			
 			-- auipc
 			if (not(opcode(5))) then
-				report "[DECODER] Hello from auipc start";
+			
 				decoder_out.ALU_src_1_ctrl <= '0'; -- pc
 			-- lui
 			else
