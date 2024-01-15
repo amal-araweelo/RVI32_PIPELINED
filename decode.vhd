@@ -50,7 +50,7 @@ begin
     decoder_out.do_branch   <= '0'; -- Enable if is a branch instruction
     decoder_out.MEM_rd      <= '0'; -- Enable if is a load instruction (for hazard unit)
     
-	REG_src_idx_1 <= "00000";
+    REG_src_idx_1 <= "00000";
     REG_src_idx_2 <= "00000";
     -- <<< Set default values for decoder outputs >>>
 
@@ -272,12 +272,19 @@ begin
 				decoder_out.imm(4 downto 1)  <= instr(11 downto 8);
 				decoder_out.imm(11)          <= instr(7);
 				decoder_out.imm(0)           <= '0';
+
+				-- Set ALU src
+				decoder_out.ALU_src_1_ctrl <= '0'; -- pc
+				decoder_out.ALU_src_2_ctrl <= '1'; -- imm
+
 				-- Handle imm sign extension
 				if (decoder_out.imm(12) = '1') then
 				decoder_out.imm(31 downto 13) <= (others => '1');
 				else
 				decoder_out.imm(31 downto 13) <= (others => '0');
 				end if;
+
+				report "[DECODE] BRANCH imm: " & to_string(decoder_out.imm);
 
 				REG_src_idx_1 <= instr(19 downto 15);
 				REG_src_idx_2 <= instr(24 downto 20);

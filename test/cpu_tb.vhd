@@ -179,7 +179,7 @@ begin
     sel_pc => execute_stage_out_sel_pc,
     clr    => '0',
     en     => '1',
-    branch_addr => (others => '0'),
+    branch_addr => execute_stage_out.ALU_res,
     instr  => fetch_stage_out.instr,
     pc     => fetch_stage_out.pc
   );
@@ -218,6 +218,8 @@ begin
   REG_src_idx_1 => REG_src_idx_1,
   REG_src_idx_2 => REG_src_idx_2
   );
+
+  decode_stage_out.pc <= ifid_out.pc;
 
   -- Register ID/EX
   reg_idex_inst : reg_idex
@@ -328,11 +330,11 @@ begin
 
   stim_proc : process
   begin
-    wait for clk_period;
+    wait;
 
     -- First instruction
     report "--------- CLOCK CYCLE ---------";
-      report "Instruction = " & to_string(fetch_stage_out.instr);
+    report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
@@ -347,7 +349,7 @@ begin
     report "--------- CLOCK CYCLE ---------";
 
       -- Second instruction
-      wait for clk_period;
+    wait for clk_period;
     report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);

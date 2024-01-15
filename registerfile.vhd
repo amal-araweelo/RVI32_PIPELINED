@@ -41,10 +41,8 @@ begin
   begin
     if (REG_we = '1' and REG_dst_idx /= "00000") then
       write_enable <= '1';
-      --  write_data   <= REG_write_data;
     else
       write_enable <= '0';
-
     end if;
   end process;
 
@@ -53,6 +51,7 @@ begin
   begin
     if rising_edge(clk) then
       if write_enable = '1' then
+	report "[REG FILE] Reg(" & to_string(REG_dst_idx) & ") <= " & to_string(write_data);
         array_register(to_integer(unsigned(REG_dst_idx))) <= write_data;
       end if;
     end if;

@@ -22,7 +22,7 @@ begin
   process (all)
   begin
     case ctrl is
-      when alu_add =>
+      when alu_add | alu_bne => -- TODO: BUG: alu_bne and alu_add should be the same
         res <= std_logic_vector(signed(op_1) + signed(op_2)); -- sign-extension of both operands
           when alu_sub =>
         res <= std_logic_vector(signed(op_1) - signed(op_2)); -- sign-extension of both operands

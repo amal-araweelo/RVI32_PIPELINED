@@ -78,19 +78,19 @@ architecture behavorial of execute is
   end component;
 
   -- Inputs to the ALU
-  signal op_1_alu : std_logic_vector(31 downto 0) := (others => '0');
-  signal op_2_alu : std_logic_vector(31 downto 0) := (others => '0');
+  signal op_1_alu : std_logic_vector(31 downto 0);
+  signal op_2_alu : std_logic_vector(31 downto 0);
 
 
   -- Outputs of the MUX3's
-  signal op_1_br : std_logic_vector(31 downto 0) := (others => '0');
-  signal op_2_br : std_logic_vector(31 downto 0) := (others => '0');
+  signal op_1_br : std_logic_vector(31 downto 0);
+  signal op_2_br : std_logic_vector(31 downto 0);
 
   -- Branch taken signal
   signal branch_taken : std_logic := '0';
 
   -- ALU result
-  signal ALU_res : std_logic_vector(31 downto 0) := (others => '0');
+  signal ALU_res : std_logic_vector(31 downto 0);
 
 begin
 
@@ -131,9 +131,20 @@ begin
     -- Outputs
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
-    -- report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
-    -- report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
-    -- report "[ALU] ALU_src_1_ctrl = " & to_string(ALU_src_1_ctrl); -- TODO: Delete
-    -- report "[ALU] ALU_src_2_ctrl = " & to_string(ALU_src_2_ctrl); -- TODO: Delete
+    if ALU_src_1_ctrl = '0' then
+	report "[ALU] PC = " & to_string(op_1_alu); -- TODO: Delete
+	report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
+	report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
+	report "[ALU] imm = " & to_string(imm); -- TODO: Delete
+	report "[ALU] op_ctrl = " & to_string(op_ctrl); -- TODO: Delete
+	report "[ALU] ALU_src_1_ctrl = " & to_string(ALU_src_1_ctrl); -- TODO: Delete
+	report "[ALU] ALU_src_2_ctrl = " & to_string(ALU_src_2_ctrl); -- TODO: Delete
+	report "[ALU] ALU_res = " & to_string(ALU_res); -- TODO: Delete
+	report "[ALU] ALU_res_out = " & to_string(ALU_res_out); -- TODO: Delete
+	report "[ALU] sel_pc = " & to_string(sel_pc); -- TODO: Delete
+	report "[ALU] branch_taken = " & to_string(branch_taken); -- TODO: Delete
+	report "[ALU] do_branch = " & to_string(do_branch); -- TODO: Delete
+	report "[ALU] do_jmp = " & to_string(do_jmp); -- TODO: Delete
+    end if;
   end process;
 end behavorial;
