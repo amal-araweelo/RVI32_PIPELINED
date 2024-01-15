@@ -13,10 +13,10 @@ architecture behavior of cpu_tb is
   component fetcher is
     port
     (
-      clk, sel_pc, clr, en : in std_logic;
-      branch_addr          : in std_logic_vector (31 downto 0);
-      instr                : out std_logic_vector (31 downto 0);
-      pc                   : out std_logic_vector (31 downto 0)
+      clk, sel_pc, reset, en : in std_logic;
+      branch_addr            : in std_logic_vector (31 downto 0);
+      instr                  : out std_logic_vector (31 downto 0);
+      pc                     : out std_logic_vector (31 downto 0)
     );
   end component;
 
@@ -139,6 +139,10 @@ architecture behavior of cpu_tb is
       REG_write_data : out std_logic_vector(31 downto 0) -- data to be written to the register file
     );
   end component;
+
+  -- Reset signal
+  signal reset : std_logic := '0';
+
   -- Clock signal
   signal clk          : std_logic := '0';
   constant clk_period : time      := 10 ns;
@@ -175,13 +179,13 @@ begin
   -- Fetcher
   fetcher_inst : fetcher port map
   (
-    clk    => clk,
-    sel_pc => execute_stage_out_sel_pc,
-    clr    => '0',
-    en     => '1',
+    clk         => clk,
+    sel_pc      => execute_stage_out_sel_pc,
+    reset       => reset,
+    en          => '1',
     branch_addr => execute_stage_out.ALU_res,
-    instr  => fetch_stage_out.instr,
-    pc     => fetch_stage_out.pc
+    instr       => fetch_stage_out.instr,
+    pc          => fetch_stage_out.pc
   );
 
   -- Register IF/ID
@@ -330,11 +334,13 @@ begin
 
   stim_proc : process
   begin
-    wait;
+    reset <= '1';
+    wait for 1 ns;
+    reset <= '0';
 
     -- First instruction
     report "--------- CLOCK CYCLE ---------";
-    report "Instruction = " & to_string(fetch_stage_out.instr);
+      report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
     report "decode_stage_out.decoder_out.REG_dst_idx = " & to_string(decode_stage_out.decoder_out.REG_dst_idx);
@@ -349,7 +355,7 @@ begin
     report "--------- CLOCK CYCLE ---------";
 
       -- Second instruction
-    wait for clk_period;
+      wait for clk_period;
     report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
