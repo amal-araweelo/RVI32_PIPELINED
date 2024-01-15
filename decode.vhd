@@ -18,7 +18,7 @@ entity decoder is
   (
     instr                        : in std_logic_vector(31 downto 0);
     decoder_out                  : out t_decoder;
-    REG_src_idx_1, REG_src_idx_2 : out std_logic_vector (4 downto 0)
+    REG_src_idx_1, REG_src_idx_2 : out std_logic_vector (4 downto 0) 
   );
 end decoder;
 
@@ -62,7 +62,8 @@ begin
         decoder_out.REG_we         <= '1';
         decoder_out.ALU_src_2_ctrl <= '1'; -- imm
         REG_src_idx_1              <= instr(19 downto 15);
-
+		--report "decoder_out.REG_src_idx_1 should be: " & to_string(instr(19 downto 15)) & " FROM DECODER";
+		--report "decoder_out.REG_src_idx_1 is: " & to_string(REG_src_idx_1) & " FROM DECODER";
         decoder_out.imm(11 downto 0) <= instr(31 downto 20);
         -- Handle imm sign extension
         if (decoder_out.imm(11) = '1') then
@@ -221,9 +222,11 @@ begin
 			decoder_out.imm(31 downto 12) <= instr(31 downto 12);
 			decoder_out.imm(11 downto 0)  <= (others => '0');
 
+			report "[DECODER] hello from U-type";
 			-- auipc
-			if (not(opcode(1))) then
-			decoder_out.ALU_src_1_ctrl <= '0'; -- pc
+			if (not(opcode(5))) then
+				report "[DECODER] Hello from auipc start";
+				decoder_out.ALU_src_1_ctrl <= '0'; -- pc
 			-- lui
 			else
 			-- ALU src 1 is register, x0 is default. The add is set above, so there is no unique code here :)
