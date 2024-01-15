@@ -10,10 +10,10 @@ use ieee.numeric_std.all;
 entity fetcher is
   port
   (
-    clk, sel_pc, clr, en : in std_logic;
-    branch_addr          : in std_logic_vector (31 downto 0);
-    pc                   : out std_logic_vector (31 downto 0);
-    instr                : out std_logic_vector (31 downto 0)
+    clk, sel_pc, reset, en : in std_logic;
+    branch_addr            : in std_logic_vector (31 downto 0);
+    pc                     : out std_logic_vector (31 downto 0);
+    instr                  : out std_logic_vector (31 downto 0)
   );
 end fetcher;
 
@@ -45,17 +45,17 @@ begin
   );
 
   process (all) begin
-    pc_next <= pc;
+    pc_next <= pc_current;
     if (en = '1') then
       if (sel_pc = '1') then
-	report "[FETCH] BRANCHING to: " & to_string(branch_addr);
+        --report "[FETCH] BRANCHING to: " & to_string(branch_addr);
         pc_next <= branch_addr;
       else
         pc_next <= std_logic_vector(unsigned(pc_current) + unsigned(length));
       end if;
     end if;
 
-    if (clr = '1') then
+    if (reset = '1') then
       pc_next <= (others => '0');
     end if;
   end process;
@@ -64,7 +64,7 @@ begin
   begin
     if (rising_edge(clk)) then
       pc_current <= pc_next;
-      report "[FETCH] PC: " & to_string(unsigned(pc_next));
+      -- report "[FETCH] PC: " & to_string(unsigned(pc_next));
     end if;
   end process;
   pc <= pc_current;

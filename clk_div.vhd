@@ -9,8 +9,8 @@ use ieee.numeric_std.all;
 entity clk_div is
   port
   (
-    clk_in, reset : in std_logic;
-    clk_out       : out std_logic);
+    clk_in  : in std_logic;
+    clk_out : out std_logic);
 end clk_div;
 
 architecture behavorial of clk_div is
@@ -26,7 +26,7 @@ begin
       tmp   <= '0';
     elsif (rising_edge(clk_in)) then
       count <= count + 1;
-      if (count = 125000000 - 1) then 
+      if (count = 125000000 - 1) then
         tmp   <= not(tmp);
         count <= 0;
       end if;

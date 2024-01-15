@@ -9,8 +9,9 @@ entity cpu is
   port
   (
     --    clk: in std_logic
-    clk_in     : in std_logic;
-    led_status : out std_logic
+    clk        : in std_logic;
+    led_status : out std_logic;
+    reset      : in std_logic
   );
 end cpu;
 
@@ -18,22 +19,22 @@ architecture behavioral of cpu is
 
   -- Clock divider
 
-  component clk_div is
-    port
-    (
-      clk_in  : in std_logic; -- Connect to board clk
-      clk_out : out std_logic
-    );
-  end component;
+  --component clk_div is
+  --port
+  --(
+  -- clk_in  : in std_logic; -- Connect to board clk
+  -- clk_out : out std_logic
+  --);
+  --end component;
 
   -- Fetcher
   component fetcher is
     port
     (
-      clk, sel_pc, clr, en : in std_logic;
-      branch_addr          : in std_logic_vector (31 downto 0);
-      pc                   : out std_logic_vector (31 downto 0);
-      instr                : out std_logic_vector (31 downto 0)
+      clk, sel_pc, reset, en : in std_logic;
+      branch_addr            : in std_logic_vector (31 downto 0);
+      pc                     : out std_logic_vector (31 downto 0);
+      instr                  : out std_logic_vector (31 downto 0)
     );
   end component;
 
@@ -188,27 +189,26 @@ architecture behavioral of cpu is
   signal write_back_out : std_logic_vector(31 downto 0);
 
   -- Clock signal
-  signal clk : std_logic;
+  -- signal clk : std_logic;
 
 begin
 
   -- Clock divider
-  inst_clk_div : clk_div port map
-  (
-    clk_in, clk
-  );
+  -- inst_clk_div : clk_div port map
+  --(
+  -- clk_in, clk
+  --);
 
   -- Fetcher
-  fetcher_inst : fetcher port
-  map
+  fetcher_inst : fetcher port map
   (
-  clk         => clk,
-  sel_pc      => execute_stage_out_sel_pc,
-  clr         => '0',
-  en          => '1',
-  branch_addr => execute_stage_out.ALU_res,
-  pc          => fetch_stage_out.pc,
-  instr       => fetch_stage_out.instr
+    clk         => clk,
+    sel_pc      => execute_stage_out_sel_pc,
+    reset       => reset,
+    en          => '1',
+    branch_addr => execute_stage_out.ALU_res,
+    pc          => fetch_stage_out.pc,
+    instr       => fetch_stage_out.instr
   );
 
   -- Register IF/ID

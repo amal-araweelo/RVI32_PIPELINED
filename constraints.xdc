@@ -10,8 +10,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports *]
 
 ## Clock signal
 # 10 ns clk_period
-set_property PACKAGE_PIN W5 [get_ports clk_in]
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk_in] 
+set_property PACKAGE_PIN W5 [get_ports clk]
+create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk] 
  
 ## Switches
 #set_property PACKAGE_PIN V17 [get_ports {io_sw[0]}]					
@@ -56,7 +56,7 @@ set_property PACKAGE_PIN U16 [get_ports {led_status}]
 #set_property PACKAGE_PIN T18 [get_ports btnU]						
 #set_property PACKAGE_PIN W19 [get_ports {clk}]						
 # btnR proposed as reset
-#set_property PACKAGE_PIN T17 [get_ports btnR]						
+set_property PACKAGE_PIN T17 [get_ports reset]						
 #set_property PACKAGE_PIN T17 [get_ports reset]						
 #set_property PACKAGE_PIN U17 [get_ports btnD]						
 
