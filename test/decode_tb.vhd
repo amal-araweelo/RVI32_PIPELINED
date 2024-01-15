@@ -91,7 +91,7 @@ begin
     assert decoder_out.do_jmp = '0' report "T1 do_jmp is not correct" severity failure;
     assert decoder_out.do_branch = '0' report "T1 do_branch is not correct" severity failure;
     assert decoder_out.MEM_rd = '0' report "T1 MEM_rd is not correct" severity failure;
-    report "Test 1 [PASSED]" severity note;
+    report "Test 1 [PASSED] (addi)" severity note;
 
     -- Instruction test: add x1, x5, x3
     instr <= x"003280b3";
@@ -216,7 +216,7 @@ report "Test 7 [PASSED] (sub)" severity note;
 -- Instruction test srai x7 x22 4
 instr <= x"404b5393";
 wait for clk_period;
-report lf & "Instrucbits is : 10987654321098765432109876543210" & lf & "Instruction is : " & to_string(instr);
+--report lf & "Instrucbits is : 10987654321098765432109876543210" & lf & "Instruction is : " & to_string(instr);
 assert decoder_out.REG_dst_idx    = "00111" report "REG_dst_idx not correct" severity failure;
 assert REG_src_idx_1              = "10110" report "REG_src_idx_1 not correct" severity failure;
 assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
@@ -316,6 +316,46 @@ report "Test 9 [PASSED] (bgeu)" severity note;
   report "Test 12 [PASSED] (slli)" severity note;
   
 
+  -- Instruction test: jal x4 4
+  instr <= x"0040026f";
+  wait for clk_period;
+
+  assert decoder_out.REG_dst_idx    = "00100" report "REG_dst_idx not correct" severity failure;
+  assert REG_src_idx_1              = "00000" report "REG_src_idx_1 not correct" severity failure;
+  assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
+  assert decoder_out.ALU_src_1_ctrl = '0'     report "ALU_src_1_ctrl not correct" severity failure;
+  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
+  assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
+  assert decoder_out.imm            = x"00000004" report "imm not correct" severity failure;
+  assert decoder_out.WB_src_ctrl    = "00"    report "WB_src_ctrl not correct" severity failure;
+  assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+  assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+  assert decoder_out.do_jmp         = '1'     report "do_jmp not correct" severity failure;
+  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  report "Test 13 [PASSED] (jal)" severity note;
+
+  
+  -- Instruction test: jalr x1 x3 5
+  instr <= x"005180e7";
+  wait for clk_period;
+  --report lf & "Instrucbits is : 10987654321098765432109876543210" & lf & "Instruction is : " & to_string(instr);
+  assert decoder_out.REG_dst_idx    = "00001" report "REG_dst_idx not correct" severity failure;
+  assert REG_src_idx_1              = "00011" report "REG_src_idx_1 not correct" severity failure;
+  assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
+  assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
+  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
+  assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
+  assert decoder_out.imm            = x"00000005" report "imm not correct" severity failure;
+  assert decoder_out.WB_src_ctrl    = "00"    report "WB_src_ctrl not correct" severity failure;
+  assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+  assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+  assert decoder_out.do_jmp         = '1'     report "do_jmp not correct" severity failure;
+  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  report "Test 14 [PASSED] (jalr)" severity note;
 
     std.env.stop(0);
   end process;
