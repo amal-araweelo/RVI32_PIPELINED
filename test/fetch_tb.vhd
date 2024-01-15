@@ -13,17 +13,17 @@ architecture behavior of fetcher_tb is
   component fetcher
     port
     (
-      clk, sel_pc, clr, en : in std_logic;
-      pc                   : out std_logic_vector (31 downto 0);
-      branch_addr          : in std_logic_vector (31 downto 0);
-      instr                : out std_logic_vector (31 downto 0)
+      clk, sel_pc, reset, en : in std_logic;
+      pc                     : out std_logic_vector (31 downto 0);
+      branch_addr            : in std_logic_vector (31 downto 0);
+      instr                  : out std_logic_vector (31 downto 0)
     );
   end component;
 
   -- Inputs
   signal clk         : std_logic                     := '0';
   signal sel_pc      : std_logic                     := '0';
-  signal clr         : std_logic                     := '1';
+  signal reset       : std_logic                     := '1';
   signal en          : std_logic                     := '0';
   signal branch_addr : std_logic_vector(31 downto 0) := (others => '0');
 
@@ -39,7 +39,7 @@ begin
   -- Instantiate the Unit Under Test (UUT)
   uut : fetcher port map
   (
-    clk, sel_pc, clr,
+    clk, sel_pc, reset,
     en,
     pc_out,
     branch_addr,
@@ -58,12 +58,12 @@ begin
   -- Stimulus process
   stim_proc : process
   begin
-    clr    <= '1';
+    reset  <= '1';
     sel_pc <= '0';
     en     <= '1';
     wait for 1 ns;
 
-    clr <= '0';
+    reset <= '0';
     -- Test 1
 
     if pc_out = x"00000000" then
@@ -75,10 +75,10 @@ begin
 
     -- Test 2
 
-    clr <= '0';
+    reset <= '0';
     wait for clk_period;
 
-    if pc_out = x"00000001" then
+    if pc_out = x"00000004" then
       report "Test 2 [PASSED]";
     else
       report "Test 2 [FAILED]";
@@ -89,7 +89,7 @@ begin
 
     wait for clk_period;
 
-    if pc_out = x"00000002" then
+    if pc_out = x"00000008" then
       report "Test 3 [PASSED]";
     else
       report "Test 3 [FAILED]";
@@ -100,7 +100,7 @@ begin
 
     wait for clk_period;
 
-    if pc_out = x"00000003" then
+    if pc_out = x"0000000c" then
       report "Test 4 [PASSED]";
     else
       report "Test 4 [FAILED]";
@@ -109,10 +109,10 @@ begin
 
     -- Test 5
     sel_pc      <= '1';
-    branch_addr <= x"00000123";
+    branch_addr <= x"00000124";
     wait for clk_period;
 
-    if pc_out = x"00000123" then
+    if pc_out = x"00000124" then
       report "Test 5 [PASSED]";
     else
       report "Test 5 [FAILED]";
@@ -124,10 +124,10 @@ begin
     wait for clk_period;
 
     sel_pc      <= '0';
-    branch_addr <= x"00000123";
+    branch_addr <= x"00000128";
     wait for clk_period;
 
-    if pc_out = x"00000124" then
+    if pc_out = x"00000128" then
       report "Test 6 [PASSED]";
     else
       report "Test 6 [FAILED]";
