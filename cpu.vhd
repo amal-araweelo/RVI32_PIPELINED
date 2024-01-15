@@ -17,16 +17,6 @@ end cpu;
 
 architecture behavioral of cpu is
 
-  -- Clock divider
-
-  --component clk_div is
-  --port
-  --(
-  -- clk_in  : in std_logic; -- Connect to board clk
-  -- clk_out : out std_logic
-  --);
-  --end component;
-
   -- Fetcher
   component fetcher is
     port
