@@ -9,9 +9,9 @@ entity cpu is
   port
   (
     --    clk: in std_logic
-    clk        : in std_logic;
-    led_status : out std_logic;
-    reset      : in std_logic
+    clk   : in std_logic;
+    led   : out std_logic_vector(15 downto 0);
+    reset : in std_logic
   );
 end cpu;
 
@@ -120,10 +120,8 @@ architecture behavioral of cpu is
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
 
       -- Outputs
-      MEM_data_out : out std_logic_vector(31 downto 0)
-
-      -- Changes
-      --blinky: out std_logic
+      MEM_data_out : out std_logic_vector(31 downto 0);
+      MEM_IO_out   : out std_logic_vector(31 downto 0)
     );
   end component;
 
@@ -178,8 +176,8 @@ architecture behavioral of cpu is
   -- Writeback signals
   signal write_back_out : std_logic_vector(31 downto 0);
 
-  -- Clock signal
-  -- signal clk : std_logic;
+  -- LED signal
+  signal MEM_IO_out : std_logic_vector(31 downto 0);
 
 begin
 
@@ -224,7 +222,6 @@ begin
   REG_write_data => write_back_out,
   REG_src_1      => decode_stage_out.REG_src_1,
   REG_src_2      => decode_stage_out.REG_src_2
-  --blinky         => led_status
   );
 
   decode_stage_out.pc <= ifid_out.pc;
@@ -311,9 +308,11 @@ begin
   MEM_op       => exmem_out.MEM_op,
   MEM_data_in  => exmem_out.REG_src_2,
   MEM_addr     => exmem_out.ALU_res,
-  MEM_data_out => memory_stage_out.MEM_out
+  MEM_data_out => memory_stage_out.MEM_out,
+  MEM_IO_out   => MEM_IO_out
 
   );
+  led <= MEM_IO_out(15 downto 0);
 
   -- Register MEM/WB
   reg_memwb_inst : reg_memwb
@@ -341,8 +340,6 @@ begin
 
   process (all)
   begin
-    report "led_status" & to_string(led_status);
-    led_status <= execute_stage_out_sel_pc;
 
   end process;
 end behavioral;

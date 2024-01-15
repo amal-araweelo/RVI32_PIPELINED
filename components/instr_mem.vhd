@@ -22,17 +22,19 @@ architecture impl of instr_mem is
   of std_logic_vector (31 downto 0);
 
   signal rom : rom_type := (
-  0      => x"00000093", -- li	ra,0
-  1      => x"00500113", -- li	sp,5
-  2      => x"00108093", -- addi	ra,ra,1
+  0      => x"55500113", -- li sp,1365
+  1      => x"00000013", -- nop
+  2      => x"00000013", -- nop
   3      => x"00000013", -- nop
   4      => x"00000013", -- nop
-  5      => x"00000013", -- nop
-  6      => x"fe2098e3", -- bne	ra,sp,8 <loop>
+  5      => x"00202023", -- sw sp,0(zero) # 0x0
+  6      => x"00000013", -- nop
+  7      => x"00000013", -- nop
+  8      => x"00000013", -- nop
   others => (x"00000000")
   );
-  attribute rom_style        : string;
-  attribute rom_style of ROM : signal is "block";
+  --attribute rom_style        : string;
+  --attribute rom_style of ROM : signal is "block";
 
 begin
   process (all) begin

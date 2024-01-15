@@ -10,30 +10,38 @@ entity data_mem is
   port
   (
     -- Inputs
-    clk         : in std_logic                     := '0'; -- clock
-    MEM_we      : in std_logic                     := '0'; -- write enable
-    MEM_op      : in std_logic_vector(2 downto 0)  := (others => '0'); -- memory operation
-    MEM_data_in : in std_logic_vector(31 downto 0) := (others => '0');
-    MEM_addr    : in std_logic_vector(31 downto 0) := (others => '0'); -- address (it is the value stored in register 2)
+    clk         : in std_logic; -- clock
+    MEM_we      : in std_logic; -- write enable
+    MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
+    MEM_data_in : in std_logic_vector(31 downto 0);
+    MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
 
     -- Outputs
-    MEM_data_out : out std_logic_vector(31 downto 0) := (others => '0')
+    MEM_data_out : out std_logic_vector(31 downto 0);
+    MEM_IO_out   : out std_logic_vector(31 downto 0)
+
   );
 end data_mem;
 
 architecture impl of data_mem is
-  type ram_type is array(2 ** 10 downto 0) -- 1 KiB
+  type ram_type is array(2 ** 8 downto 0) -- 1 KiB
   of std_logic_vector (31 downto 0);
   signal ram        : ram_type;
   signal read_data  : std_logic_vector(31 downto 0);
   signal write_data : std_logic_vector(31 downto 0);
+  signal MEM_IO     : std_logic_vector(31 downto 0);
+  --alias MEM_sel     : std_logic is MEM_addr(31);
 
 begin
   -- Synchronous write
   process (clk) begin
     if (rising_edge(clk)) then
       if (MEM_we = '1') then
-        ram(to_integer(unsigned(MEM_addr))) <= write_data;
+        if (MEM_addr = x"00000000") then
+          MEM_IO <= write_data;
+        else
+          ram(to_integer(unsigned(MEM_addr))) <= write_data;
+        end if;
       end if;
     end if;
   end process;
@@ -81,5 +89,6 @@ begin
         read_data  <= x"00000000";
     end case;
     MEM_data_out <= read_data;
+    MEM_IO_out   <= MEM_IO;
   end process;
 end architecture;

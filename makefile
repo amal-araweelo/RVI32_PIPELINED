@@ -1,4 +1,4 @@
-test: datamem-test
+test: reg-file-test
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008

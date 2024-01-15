@@ -17,9 +17,9 @@ entity hazard_unit is
     WB_REG_we        : in std_logic;
 
     -- Outputs
-    hazard_exmem_clr   : out std_logic;
-    hazard_idex_en     : out std_logic;
-    hazard_fetch_en    : out std_logic -- hazard fetch enable (PC)
+    hazard_exmem_clr : out std_logic;
+    hazard_idex_en   : out std_logic;
+    hazard_fetch_en  : out std_logic -- hazard fetch enable (PC)
   );
 end hazard_unit;
 
@@ -28,28 +28,23 @@ begin
   process (all)
   begin
     hazard_exmem_clr <= '0';
-    hazard_idex_en <= '1';
-    hazard_fetch_en <= '1';
-
-    if ID_REG_src_idx_1 = "00000" then
-	null;
-    else
-	-- Load-Use Hazard
-        if EX_MEM_rd = '1' and (EX_REG_dst_idx = ID_REG_src_idx_1 or EX_REG_dst_idx = ID_REG_src_idx_2) then
-            hazard_exmem_clr <= '1';  -- Stall pipeline
-            hazard_idex_en <= '0';
-            hazard_fetch_en    <= '0';
-        -- EX/MEM Hazard
-        elsif MEM_REG_we = '1' and (EX_REG_dst_idx = ID_REG_src_idx_1 or EX_REG_dst_idx = ID_REG_src_idx_2) then
-            hazard_exmem_clr <= '1';
-            hazard_idex_en <= '0';
-            hazard_fetch_en    <= '0';
-        -- MEM/WB Hazard
-        elsif WB_REG_we = '1' and (EX_REG_dst_idx = ID_REG_src_idx_1 or EX_REG_dst_idx = ID_REG_src_idx_2) then
-            hazard_exmem_clr <= '1';
-            hazard_idex_en <= '0';
-            hazard_fetch_en    <= '0';
-        end if;
+    hazard_idex_en   <= '1';
+    hazard_fetch_en  <= '1';
+    -- Load-Use Hazard
+    if EX_MEM_rd = '1' and ((EX_REG_dst_idx = ID_REG_src_idx_1) or (EX_REG_dst_idx = ID_REG_src_idx_2)) then
+      hazard_exmem_clr <= '1'; -- Stall pipeline
+      hazard_idex_en   <= '0';
+      hazard_fetch_en  <= '0';
+      -- EX/MEM Hazard
+    elsif MEM_REG_we = '1' and ((EX_REG_dst_idx = ID_REG_src_idx_1) or (EX_REG_dst_idx = ID_REG_src_idx_2)) then
+      hazard_exmem_clr <= '1';
+      hazard_idex_en   <= '0';
+      hazard_fetch_en  <= '0';
+      -- MEM/WB Hazard
+    elsif WB_REG_we = '1' and ((EX_REG_dst_idx = ID_REG_src_idx_1) or (EX_REG_dst_idx = ID_REG_src_idx_2)) then
+      hazard_exmem_clr <= '1';
+      hazard_idex_en   <= '0';
+      hazard_fetch_en  <= '0';
     end if;
   end process;
 end behavorial;

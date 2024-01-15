@@ -69,12 +69,12 @@ begin
     MEM_op      <= sw; -- Store word operation
     MEM_we      <= '1';
     MEM_data_in <= x"12345678"; -- Example data for store word
-    MEM_addr    <= x"00000000";
+    MEM_addr    <= x"00000001";
     wait for clk_period;
 
     MEM_we   <= '0';
     MEM_op   <= lw; -- Load word operation
-    MEM_addr <= x"00000000";
+    MEM_addr <= x"00000001";
     wait for clk_period;
 
     assert MEM_data_out = x"12345678" report "Test for store word and load word failed" severity error;
