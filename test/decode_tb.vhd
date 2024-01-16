@@ -234,6 +234,89 @@ assert decoder_out.do_branch      = '0'     report "do_branch not correct" sever
 assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
 report "Test 8 [PASSED] (srai)" severity note;
 
+-- Instruction test bgeu x19 x6 8
+instr <= x"0069f463";
+wait for clk_period;
+
+assert decoder_out.REG_dst_idx    = "00000" report "REG_dst_idx not correct" severity failure;
+assert REG_src_idx_1              = "10011" report "REG_src_idx_1 not correct" severity failure;
+assert REG_src_idx_2              = "00110" report "REG_src_idx_2 not correct" severity failure;
+assert decoder_out.ALU_src_1_ctrl = '0'     report "ALU_src_1_ctrl not correct" severity failure;
+assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+assert decoder_out.op_ctrl        = ALU_BGE_U report "op_ctrl not correct" severity failure;
+assert decoder_out.REG_we         = '0'     report "REG_we not correct" severity failure;
+assert decoder_out.imm            = x"00000008" report "imm not correct" severity failure;
+assert decoder_out.WB_src_ctrl    = "00"    report "WB_src_ctrl not correct" severity failure;
+assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+assert decoder_out.do_jmp         = '0'     report "do_jmp not correct" severity failure;
+assert decoder_out.do_branch      = '1'     report "do_branch not correct" severity failure;
+assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+report "Test 9 [PASSED] (bgeu)" severity note;
+
+  -- Instruction test: lui x3 0x500
+  instr <= x"005001b7";
+  wait for clk_period;
+
+  assert decoder_out.REG_dst_idx    = "00011" report "REG_dst_idx not correct" severity failure;
+  assert REG_src_idx_1              = "00000" report "REG_src_idx_1 not correct" severity failure;
+  assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
+  assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
+  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
+  assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
+  assert decoder_out.imm            = x"00500000" report "imm not correct" severity failure;
+  assert decoder_out.WB_src_ctrl    = "01"    report "WB_src_ctrl not correct" severity failure;
+  assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+  assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+  assert decoder_out.do_jmp         = '0'     report "do_jmp not correct" severity failure;
+  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  report "Test 10 [PASSED] (lui)" severity note;
+
+  -- Instruction test: sh x8 0x87 x16
+  instr <= x"088813a3";
+  wait for clk_period;
+
+  assert decoder_out.REG_dst_idx    = "00000" report "REG_dst_idx not correct" severity failure;
+  assert REG_src_idx_1              = "10000" report "REG_src_idx_1 not correct" severity failure;
+  assert REG_src_idx_2              = "01000" report "REG_src_idx_2 not correct" severity failure;
+  assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
+  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
+  assert decoder_out.REG_we         = '0'     report "REG_we not correct" severity failure;
+  assert decoder_out.imm            = x"00000087" report "imm not correct" severity failure;
+  assert decoder_out.WB_src_ctrl    = "01"    report "WB_src_ctrl not correct" severity failure;
+  assert decoder_out.MEM_op         = "001"   report "MEM_op not correct" severity failure;
+  assert decoder_out.MEM_we         = '1'     report "MEM_we not correct" severity failure;
+  assert decoder_out.do_jmp         = '0'     report "do_jmp not correct" severity failure;
+  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  report "Test 11 [PASSED] (sh)" severity note;
+
+
+  -- Instruction test: slli x6 x7 8
+  instr <= x"00839313";
+  wait for clk_period;
+
+  assert decoder_out.REG_dst_idx    = "00110" report "REG_dst_idx not correct" severity failure;
+  assert REG_src_idx_1              = "00111" report "REG_src_idx_1 not correct" severity failure;
+  assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
+  assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
+  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  assert decoder_out.op_ctrl        = ALU_sl report "op_ctrl not correct" severity failure;
+  assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
+  assert decoder_out.imm            = x"00000008" report "imm not correct" severity failure;
+  assert decoder_out.WB_src_ctrl    = "01"    report "WB_src_ctrl not correct" severity failure;
+  assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+  assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+  assert decoder_out.do_jmp         = '0'     report "do_jmp not correct" severity failure;
+  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  report "Test 12 [PASSED] (slli)" severity note;
+  
+
+
     std.env.stop(0);
   end process;
 

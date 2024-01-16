@@ -119,7 +119,7 @@ begin
 				when "001" => 
 				decoder_out.op_ctrl <=  ALU_SL;
 				when "101" => 
-					report "[DECODE] Hello from srxi";
+					
 					decoder_out.imm(11 downto 5) <=  (others =>  '0');
 					-- report "[DECODE] imm is now: " & to_string(decoder_out.imm);
 					if (instr(30)) then
