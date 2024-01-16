@@ -29,6 +29,9 @@ architecture behavorial of forwarding_unit is
 begin
   process (all)
   begin
+    forward_reg_src_1 <= "01";
+    forward_reg_src_2 <= "01";
+
     -- Forwarding from data memory stage
     if (((MEM_REG_we = '1') and (MEM_dst_idx /= 0) and (MEM_dst_idx = REG_src_idx_1))) then
       forward_reg_src_1 <= "10";
