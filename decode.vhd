@@ -58,6 +58,7 @@ begin
     case opcode is
 	-- I-type
       when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_JALR =>
+		
         decoder_out.REG_dst_idx    <= instr(11 downto 7);
         decoder_out.REG_we         <= '1';
         decoder_out.ALU_src_2_ctrl <= '1'; -- imm
@@ -71,11 +72,10 @@ begin
         else
           decoder_out.imm(31 downto 12) <= (others => '0');
         end if;
-		report "I-type imm made: " & to_string(decoder_out.imm);
 
 		func3 <= instr(14 downto 12);
 		-- is DEC_I_LOAD
-		if (not(opcode(4) and not(opcode(5)))) then
+		if ((not(opcode(4)) and (not(opcode(5))))) then
 			decoder_out.WB_src_ctrl <= "10";		--read from mem
 			decoder_out.MEM_rd 	<= '1';	
 			report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
@@ -142,7 +142,13 @@ begin
 
 			end case;
 		-- DEC_I_JALR
-		elsif (opcode(6) and (opcode(5))) then 
+			
+		
+		elsif (opcode(5) and opcode(6)) then 
+			
+			decoder_out.WB_src_ctrl <=  "00";
+			decoder_out.do_jmp <=  '1';
+			
 			decoder_out.op_ctrl <=  ALU_ADD;
 			-- TODO how to set lsb of result to 0? Add XOR with JAL on that bits signal?
 		
@@ -318,10 +324,13 @@ begin
 		when DEC_UJ =>
 			decoder_out.REG_dst_idx <= instr(11 downto 7);
 			decoder_out.reg_WE <=  '1';
+			decoder_out.ALU_src_1_ctrl <=  '0';					 -- pc
 			decoder_out.ALU_src_2_ctrl <=  '1';					 -- imm
 			-- ALU_ADD is default op_ctrl
+			decoder_out.WB_src_ctrl <=  "00";
 			decoder_out.do_jmp <=  '1';
 			
+
 			--construct imm
 			decoder_out.imm(20)           <= instr(31);
 			decoder_out.imm(10 downto 1)  <= instr(30 downto 21);
