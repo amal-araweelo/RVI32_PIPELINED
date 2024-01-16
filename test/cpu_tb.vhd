@@ -89,6 +89,52 @@ architecture behavior of cpu_tb is
     );
   end component;
 
+  -- Hazard Unit
+component hazard_unit is
+  port
+  (
+
+    -------------------- Inputs ---------------------------
+    sel_pc           : in std_logic;
+    ID_REG_src_idx_1 : in std_logic_vector(4 downto 0);
+    ID_REG_src_idx_2 : in std_logic_vector(4 downto 0);
+    EX_REG_dst_idx   : in std_logic_vector(4 downto 0);
+    MEM_rd           : in std_logic;
+    -------------------- Outputs ---------------------------
+
+    -- ID/EX register
+    hazard_idex_en  : out std_logic;
+    hazard_idex_clr : out std_logic;
+
+    -- IF/ID register
+    hazard_ifid_en  : out std_logic;
+    hazard_ifid_clr : out std_logic;
+
+    -- PC
+    hazard_fetch_en : out std_logic -- hazard fetch enable (PC)
+  );
+end component;
+
+  -- Forwarding Unit
+
+component forwarding_unit is
+  port
+  (
+    -- Inputs
+    REG_src_idx_1 : in std_logic_vector(4 downto 0); -- rs2 ID
+    REG_src_idx_2 : in std_logic_vector(4 downto 0); -- rs1 ID
+    WB_REG_we     : in std_logic; -- REG_we from the write back stage
+    MEM_REG_we    : in std_logic; -- REG_we from the memory stage
+
+    WB_dst_idx  : in std_logic_vector(4 downto 0);
+    MEM_dst_idx : in std_logic_vector(4 downto 0);
+
+    -- Outputs
+    forward_reg_src_1 : out std_logic_vector(1 downto 0);
+    forward_reg_src_2 : out std_logic_vector(1 downto 0)
+  );
+end component;
+
   -- Register EX/MEM
 
   component reg_exmem is
@@ -163,6 +209,14 @@ architecture behavior of cpu_tb is
   -- Execute signals
   signal execute_stage_out_sel_pc : std_logic;
 
+  -- Hazard Unit signals
+  signal hazard_idex_en, hazard_idex_clr : std_logic;
+  signal hazard_ifid_en, hazard_ifid_clr : std_logic;
+  signal hazard_fetch_en                : std_logic;
+
+  -- Forwarding Unit signals
+  signal forward_reg_src_1, forward_reg_src_2 : std_logic_vector(1 downto 0);
+
   -- Register EX/MEM signals
   signal execute_stage_out : t_exmem;
   signal exmem_out         : t_exmem;
@@ -182,7 +236,7 @@ begin
     clk         => clk,
     sel_pc      => execute_stage_out_sel_pc,
     reset       => reset,
-    en          => '1',
+    en          => hazard_fetch_en,
     branch_addr => execute_stage_out.ALU_res,
     instr       => fetch_stage_out.instr,
     pc          => fetch_stage_out.pc
@@ -193,8 +247,8 @@ begin
   map
   (
   clk             => clk,
-  clr             => '0',
-  en              => '1',
+  clr             => hazard_ifid_clr,
+  en              => hazard_ifid_en,
   in_ifid_record  => fetch_stage_out,
   out_ifid_record => ifid_out
   );
@@ -231,8 +285,8 @@ begin
   map
   (
   clk             => clk,
-  clr             => '0',
-  en              => '1',
+  clr             => hazard_idex_clr,
+  en              => hazard_fetch_en,
   in_idex_record  => decode_stage_out,
   out_idex_record => idex_out
   );
@@ -251,13 +305,46 @@ begin
   imm            => idex_out.decoder_out.imm,
   op_ctrl        => idex_out.decoder_out.op_ctrl,
   pc             => idex_out.pc,
-  forward_1      => "01",
-  forward_2      => "01",
-  WB_reg         => x"00000000",
-  MEM_reg        => x"00000000",
+  forward_1      => forward_reg_src_1,
+  forward_2      => forward_reg_src_2,
+  WB_reg         => write_back_out,
+  MEM_reg        => exmem_out.ALU_res,
 
   sel_pc      => execute_stage_out_sel_pc,
   ALU_res_out => execute_stage_out.ALU_res
+  );
+
+  hazard_unit_inst : hazard_unit
+  port 
+  map
+  (
+	sel_pc => execute_stage_out_sel_pc,
+	ID_REG_src_idx_1 => REG_src_idx_1,
+	ID_REG_src_idx_2 => REG_src_idx_2,
+	EX_REG_dst_idx => idex_out.decoder_out.REG_dst_idx,
+	MEM_rd => exmem_out.MEM_we,
+
+	hazard_idex_en => hazard_idex_en,
+	hazard_idex_clr => hazard_idex_clr,
+	hazard_ifid_en => hazard_ifid_en,
+	hazard_ifid_clr => hazard_ifid_clr,
+	hazard_fetch_en => hazard_fetch_en
+  );
+
+
+  forwarding_unit_inst : forwarding_unit
+  port
+  map
+  (
+    REG_src_idx_1 => REG_src_idx_1,
+    REG_src_idx_2 => REG_src_idx_2,
+    WB_REG_we => memwb_out.REG_we,
+    MEM_REG_we => exmem_out.REG_we,
+    WB_dst_idx => memwb_out.REG_dst_idx,
+    MEM_dst_idx => exmem_out.REG_dst_idx,
+
+    forward_reg_src_1 => forward_reg_src_1,
+    forward_reg_src_2 => forward_reg_src_2
   );
 
   execute_stage_out.REG_we      <= idex_out.decoder_out.REG_we;
@@ -338,6 +425,8 @@ begin
     wait for 1 ns;
     reset <= '0';
 
+    wait for 100*clk_period;
+
     -- First instruction
     report "--------- CLOCK CYCLE ---------";
       report "Instruction = " & to_string(fetch_stage_out.instr);
@@ -355,7 +444,7 @@ begin
     report "--------- CLOCK CYCLE ---------";
 
       -- Second instruction
-      wait for clk_period;
+    wait for clk_period;
     report "Instruction = " & to_string(fetch_stage_out.instr);
     report "IFID.instr = " & to_string(ifid_out.instr);
     report "IFID.pc = " & to_string(ifid_out.pc);
