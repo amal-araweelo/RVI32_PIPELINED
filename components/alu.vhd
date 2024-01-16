@@ -15,43 +15,43 @@ end alu;
 
 architecture behavorial of alu is
   -- Temporary result signal
-  signal op_1_temp: std_logic_vector(32 downto 0) := (others => '0');
-  signal op_2_temp: std_logic_vector(32 downto 0) := (others => '0');
+  signal op_1_temp : std_logic_vector(32 downto 0) := (others => '0');
+  signal op_2_temp : std_logic_vector(32 downto 0) := (others => '0');
 
 begin
   process (all)
   begin
     case ctrl is
-      when alu_add | alu_bne => -- TODO: BUG: alu_bne and alu_add should be the same
+      when alu_add | alu_bne | alu_beq | alu_bge | alu_bge_u | alu_blt | alu_blt_u => -- TODO: BUG: alu_bne and alu_add should be the same
         res <= std_logic_vector(signed(op_1) + signed(op_2)); -- sign-extension of both operands
-          when alu_sub =>
+      when alu_sub =>
         res <= std_logic_vector(signed(op_1) - signed(op_2)); -- sign-extension of both operands
-          when alu_sl =>
+      when alu_sl =>
         res <= std_logic_vector(shift_left(unsigned(op_1), to_integer(unsigned(op_2))));
-              when alu_slt_s =>
-        if (signed(op_1)<signed(op_2)) then -- if the result of the signed subtraction is negative
+      when alu_slt_s =>
+        if (signed(op_1) < signed(op_2)) then -- if the result of the signed subtraction is negative
           res <= x"00000001"; -- result is set to 1, since op_1 < op_2
         else
           res <= x"00000000";-- result is set to 0, since op_2 < op_1
         end if;
-              when alu_slt_u =>
-        if (unsigned(op_1)<unsigned(op_2)) then 
+      when alu_slt_u =>
+        if (unsigned(op_1) < unsigned(op_2)) then
           res <= x"00000001"; -- result is set to 1, since op_1 < op_2
         else
           res <= x"00000000"; -- result is set to 0, since op_2 < op_2
         end if;
-              when alu_xor =>
+      when alu_xor =>
         res <= op_1 xor op_2;
-              when alu_sr =>
+      when alu_sr =>
         res <= std_logic_vector(shift_right(unsigned(op_1), to_integer(unsigned(op_2))));
       when alu_sra =>
         res <= std_logic_vector(shift_right(signed(op_1), to_integer(unsigned(op_2))));
-              when alu_or =>
+      when alu_or =>
         res <= op_1 or op_2;
-              when alu_and =>
+      when alu_and =>
         res <= op_1 and op_2;
-      when others =>
-        res                   <= (others => '0');
+      when others    =>
+        res <= (others => '0');
     end case;
   end process;
 end behavorial;
