@@ -1,4 +1,4 @@
-test: hazard-test records
+test: hazard-test records datamem-test fetch-test forward-test decode-test alu-test reg-file-test comparator-test execute-test
 # Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
@@ -34,9 +34,6 @@ forward-test: auxiliary
 alu-test: auxiliary
 	$(NVC) -a components/alu.vhd test/alu_tb.vhd -e alu_tb -r
 
-clk_div: 
-	$(NVC) -a clk_div.vhd test/clk_div_tb.vhd -e clk_div_tb -r
-
 reg-file-test: auxiliary
 	$(NVC) -a registerfile.vhd test/registerfile_tb.vhd -e reg_file_tb -r
 	
@@ -47,7 +44,7 @@ comparator-test:
 fetch: memory auxiliary records
 	$(NVC) -a fetch.vhd
 
-execute:
+execute-test:
 	$(NVC) -a execute.vhd test/execute_tb.vhd -e execute_tb -r 
 
 decode:
