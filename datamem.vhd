@@ -180,6 +180,7 @@ begin
         null;
     end case;
     MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory
+    write_data   <= store_at_3 & store_at_2 & store_at_1 & store_at_0;
     MEM_IO_out   <= MEM_IO;
   end process;
 end architecture;
