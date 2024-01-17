@@ -10,6 +10,8 @@
 #define def_led_addr  0x00000000 //TODO cmnt IN
 //#define def_sw_addr   0x00000001
 
+asm("li sp, 0x100000"); // SP set to 1 MB
+asm("jal main");        // call main
 
 void busywait();                        //change number in for-loop to change length.
 void simpleblink(uint32_t* led_addr);   //simple program: blink one LED
