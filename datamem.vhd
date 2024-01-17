@@ -80,7 +80,7 @@ begin
       end if;
     end if;
     -- switch mapping experimental vv
-    ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
+    -- ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
     -- switch mapping experimental ^^
 
   end process;
