@@ -1,7 +1,7 @@
 test: hazard-test records datamem-test fetch-test forward-test decode-test alu-test reg-file-test comparator-test execute-test
-# Use this to generate a wave file: --format=fst --gtkw=wave.fst --wave
 
 NVC := nvc --std=2008
+WAVE := --format=fst --gtkw=wave.fst --wave
 
 records:
 	$(NVC) -a constants.vhd
@@ -59,7 +59,7 @@ cpu: records auxiliary fetch state-regs
 	$(NVC) -a datamem.vhd
 	$(NVC) -a write-back.vhd
 	$(NVC) -a cpu.vhd
-	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r
+	$(NVC) -a test/cpu_tb.vhd -e cpu_tb -r $(WAVE)
 
 datamem: auxiliary
 	$(NVC) -a datamem.vhd 
