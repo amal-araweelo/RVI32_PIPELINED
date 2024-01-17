@@ -78,6 +78,7 @@ begin
         ram(to_integer(unsigned(SW_ADDR_3))) <= switch_3;
       elsif (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
+	    report "[MEMORY] Writing to MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
           MEM_IO <= write_data;
         end if;
         if (we_0 = '1') then
