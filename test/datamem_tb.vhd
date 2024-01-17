@@ -61,7 +61,7 @@ begin
     MEM_we      <= '1';
     MEM_data_in <= x"12345678";
     MEM_op      <= sw;
-    MEM_addr    <= x"00000001";
+    MEM_addr    <= x"00000008";
 
     wait for 5 * CLK_PERIOD;
 
@@ -72,7 +72,7 @@ begin
 
     if MEM_data_out = x"12345678" then
       report "Test 1 [PASSED]";
-      else
+    else
       report "Test 1 [FAILED]:  MEM_data_out = " & to_string(MEM_data_out);
       std.env.stop(1);
     end if;
@@ -84,7 +84,7 @@ begin
     wait for CLK_PERIOD;
     if MEM_data_out = x"00005678" then
       report "Test 2 [PASSED]";
-      else
+    else
       report "Test 2 [FAILED]: MEM_data_out =" & to_string(MEM_data_out);
       std.env.stop(1);
     end if;
@@ -102,7 +102,7 @@ begin
     wait for CLK_PERIOD;
     if MEM_data_out = x"FFFFD6F8" then
       report "Test 3 [PASSED]";
-      else
+    else
       report "Test 3 [FAILED]: MEM_data_out =" & to_string(MEM_data_out);
       std.env.stop(1);
     end if;
@@ -114,7 +114,7 @@ begin
     wait for CLK_PERIOD;
     if MEM_data_out = x"FFFFFFF8" then
       report "Test 4 [PASSED]";
-      else
+    else
       report "Test 4 [FAILED]: MEM_data_out =" & to_string(MEM_data_out);
       std.env.stop(1);
     end if;
@@ -124,7 +124,7 @@ begin
     wait for CLK_PERIOD;
     if MEM_data_out = x"000000F8" then
       report "Test 5 [PASSED]";
-      else
+    else
       report "Test 5 [FAILED]: MEM_data_out =" & to_string(MEM_data_out);
       std.env.stop(1);
     end if;

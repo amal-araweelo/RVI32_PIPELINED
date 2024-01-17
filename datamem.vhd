@@ -16,8 +16,6 @@ entity data_mem is
     MEM_data_in : in std_logic_vector(31 downto 0);
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
     MEM_SW_in   : in std_logic_vector(31 downto 0); -- in-signal for switch values
-
-
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
     MEM_IO_out   : out std_logic_vector(31 downto 0)
@@ -57,11 +55,28 @@ architecture impl of data_mem is
   signal MEM_addr_2 : std_logic_vector(31 downto 0);
   signal MEM_addr_3 : std_logic_vector(31 downto 0);
 
+  -- Signals for switches
+  signal switch_0 : std_logic_vector(7 downto 0); -- LSB
+  signal switch_1 : std_logic_vector(7 downto 0);
+  signal switch_2 : std_logic_vector(7 downto 0);
+  signal switch_3 : std_logic_vector(7 downto 0); -- MSB
+
+  signal SW_ADDR_0 : std_logic_vector(31 downto 0);
+  signal SW_ADDR_1 : std_logic_vector(31 downto 0);
+  signal SW_ADDR_2 : std_logic_vector(31 downto 0);
+  signal SW_ADDR_3 : std_logic_vector(31 downto 0);
+
 begin
   -- Synchronous write
   process (clk) begin
     if (rising_edge(clk)) then
-      if (MEM_we = '1') then
+      -- Always write the state of the switches into memory when we are not storing
+      if (MEM_we = '0') then
+        -- ram(to_integer(unsigned(SW_ADDR_0))) <= switch_0;
+        -- ram(to_integer(unsigned(SW_ADDR_1))) <= switch_1;
+        --ram(to_integer(unsigned(SW_ADDR_2))) <= switch_2;
+        --ram(to_integer(unsigned(SW_ADDR_3))) <= switch_3;
+      elsif (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
           MEM_IO <= write_data;
         end if;
@@ -80,7 +95,7 @@ begin
       end if;
     end if;
     -- switch mapping experimental vv
-    ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
+    --ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
     -- switch mapping experimental ^^
 
   end process;
@@ -110,6 +125,13 @@ begin
     MEM_addr_1 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(1, 31)); -- offset with 1 byte
     MEM_addr_2 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(2, 31)); -- offset with 2 bytes
     MEM_addr_3 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(3, 31)); -- offset with 3 bytes
+
+    -- Initialization of switch address
+    --SW_ADDR_0 <= x"00000004";
+    --SW_ADDR_1 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(1, 31)); -- offset with 1 byte
+    --SW_ADDR_2 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(2, 31)); -- offset with 2 bytes
+    --SW_ADDR_3 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(3, 31)); -- offset with 3 bytes
+
     case MEM_op is
       when lw => -- Load word
 
@@ -186,9 +208,15 @@ begin
       when others =>
         null;
     end case;
+
+    --switch_3 <= MEM_SW_in(31 downto 24);
+    --switch_2 <= MEM_SW_in(23 downto 16);
+    --switch_1 <= MEM_SW_in(15 downto 8);
+    --switch_0 <= MEM_SW_in(7 downto 0);
+
+    --MEM_SW       <= MEM_SW_in;
     MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory
     write_data   <= store_at_3 & store_at_2 & store_at_1 & store_at_0;
     MEM_IO_out   <= MEM_IO;
-    MEM_SW       <= MEM_SW_in;
   end process;
 end architecture;
