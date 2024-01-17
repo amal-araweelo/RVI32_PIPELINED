@@ -26,7 +26,7 @@ decode-test: decode
 	$(NVC) -a test/decode_tb.vhd -e decode_tb -r 
 
 datamem-test: datamem
-	$(NVC) -a test/datamem_tb.vhd -e datamem_tb -r
+	$(NVC) -a test/datamem_tb.vhd -e data_mem_tb -r
 
 forward-test: auxiliary
 	$(NVC) -a test/forwarding_tb.vhd -e forwarding_unit_tb -r

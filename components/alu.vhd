@@ -14,10 +14,6 @@ entity alu is
 end alu;
 
 architecture behavorial of alu is
-  -- Temporary result signal
-  signal op_1_temp : std_logic_vector(32 downto 0) := (others => '0');
-  signal op_2_temp : std_logic_vector(32 downto 0) := (others => '0');
-
 begin
   process (all)
   begin
@@ -32,7 +28,7 @@ begin
         if (signed(op_1) < signed(op_2)) then -- if the result of the signed subtraction is negative
           res <= x"00000001"; -- result is set to 1, since op_1 < op_2
         else
-          res <= x"00000000";-- result is set to 0, since op_2 < op_1
+          res <= x"00000000"; -- result is set to 0, since op_2 < op_1
         end if;
       when alu_slt_u =>
         if (unsigned(op_1) < unsigned(op_2)) then
@@ -53,5 +49,7 @@ begin
       when others    =>
         res <= (others => '0');
     end case;
+
+    report "[ALU] res: " & to_string(res);
   end process;
 end behavorial;
