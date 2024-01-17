@@ -10,8 +10,8 @@ entity cpu is
   (
     --    clk: in std_logic
     clk   : in std_logic;
-    led   : out std_logic_vector(15 downto 0);
-    reset : in std_logic
+    reset : in std_logic;
+    led   : out std_logic_vector(15 downto 0)
   );
 end cpu;
 
@@ -163,6 +163,7 @@ end component;
       MEM_op      : in std_logic_vector(3 downto 0); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
+      MEM_IO_out  : in std_logic_vector(31 downto 0);
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0)
@@ -227,6 +228,9 @@ end component;
 
   -- Writeback signals
   signal write_back_out : std_logic_vector(31 downto 0);
+
+  -- Datamem signals
+  signal MEM_IO_out : std_logic_vector(31 downto 0);
 
 begin
 
@@ -386,8 +390,11 @@ begin
   MEM_op       => exmem_out.MEM_op,
   MEM_data_in  => exmem_out.REG_src_2,
   MEM_addr     => exmem_out.ALU_res,
-  MEM_data_out => memory_stage_out.MEM_out
+  MEM_data_out => memory_stage_out.MEM_out,
+  MEM_IO_out => MEM_IO_out
   );
+  
+  led <= MEM_IO_out(15 downto 0);
 
   -- Register MEM/WB
   reg_memwb_inst : reg_memwb
@@ -415,6 +422,6 @@ begin
 
   process (all)
   begin
-
   end process;
+
 end behavior;
