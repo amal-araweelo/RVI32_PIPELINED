@@ -179,16 +179,16 @@ begin
   -- Combinatorial process
   process (all)
   begin
-		intermediate_memwb_record <= out_memwb_record;
-		if (clr = '1') then
-				intermediate_memwb_record.REG_we <= '0';
-				intermediate_memwb_record.MEM_we <= '0';
-				intermediate_memwb_record.WB_src_ctrl <= (others => '0');
-				intermediate_memwb_record.REG_dst_idx <= (others => '0');
-				intermediate_memwb_record.pc <= (others => '0');
-				intermediate_memwb_record.ALU_res <= (others => '0');
-				intermediate_memwb_record.MEM_out <= (others => '0');
-		end if;
+    intermediate_memwb_record <= out_memwb_record;
+    if (clr = '1') then
+	intermediate_memwb_record.REG_we <= '0';
+	intermediate_memwb_record.MEM_we <= '0';
+	intermediate_memwb_record.WB_src_ctrl <= (others => '0');
+	intermediate_memwb_record.REG_dst_idx <= (others => '0');
+	intermediate_memwb_record.pc <= (others => '0');
+	intermediate_memwb_record.ALU_res <= (others => '0');
+	intermediate_memwb_record.MEM_out <= (others => '0');
+    end if;
     if (clr = '0' and en = '1') then -- if the signal is not to clr the reg
       intermediate_memwb_record <= in_memwb_record;
     end if;
