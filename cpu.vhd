@@ -11,6 +11,7 @@ entity cpu is
     --    clk: in std_logic
     clk   : in std_logic;
     led   : out std_logic_vector(15 downto 0);
+    sw    : in std_logic_vector(15 downto 0);
     reset : in std_logic
   );
 end cpu;
@@ -118,6 +119,8 @@ architecture behavioral of cpu is
       MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
+      MEM_SW_in   : in std_logic_vector(31 downto 0); -- signal for switch values
+
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0);
@@ -178,6 +181,8 @@ architecture behavioral of cpu is
 
   -- LED signal
   signal MEM_IO_out : std_logic_vector(31 downto 0);
+  -- Swithc signal 
+  signal MEM_SW_in  : std_logic_vector(31 downto 0);
 
 begin
 
@@ -303,16 +308,18 @@ begin
   port
   map
   (
-  clk          => clk,
-  MEM_we       => exmem_out.MEM_we,
-  MEM_op       => exmem_out.MEM_op,
-  MEM_data_in  => exmem_out.REG_src_2,
-  MEM_addr     => exmem_out.ALU_res,
-  MEM_data_out => memory_stage_out.MEM_out,
-  MEM_IO_out   => MEM_IO_out
+  clk           => clk,
+  MEM_we        => exmem_out.MEM_we,
+  MEM_op        => exmem_out.MEM_op,
+  MEM_data_in   => exmem_out.REG_src_2,
+  MEM_addr      => exmem_out.ALU_res,
+  MEM_data_out  => memory_stage_out.MEM_out,
+  MEM_IO_out    => MEM_IO_out,
+  MEM_SW_in     => MEM_SW_in
 
   );
   led <= MEM_IO_out(15 downto 0);
+  MEM_SW_in(15 downto 0) <= sw;
 
   -- Register MEM/WB
   reg_memwb_inst : reg_memwb

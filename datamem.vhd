@@ -15,6 +15,8 @@ entity data_mem is
     MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
     MEM_data_in : in std_logic_vector(31 downto 0);
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
+    MEM_SW_in   : in std_logic_vector(31 downto 0); -- in-signal for switch values
+
 
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
@@ -30,6 +32,7 @@ architecture impl of data_mem is
   signal read_data  : std_logic_vector(31 downto 0);
   signal write_data : std_logic_vector(31 downto 0);
   signal MEM_IO     : std_logic_vector(31 downto 0);
+  signal MEM_SW     : std_logic_vector(31 downto 0);
 
   -- To be loaded from or stored at different bytes
   signal load_from_0 : std_logic_vector(7 downto 0); -- LSB
@@ -76,6 +79,10 @@ begin
         end if;
       end if;
     end if;
+    -- switch mapping experimental vv
+    ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
+    -- switch mapping experimental ^^
+
   end process;
 
   -- Asynchronous read
@@ -182,5 +189,6 @@ begin
     MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory
     write_data   <= store_at_3 & store_at_2 & store_at_1 & store_at_0;
     MEM_IO_out   <= MEM_IO;
+    MEM_SW       <= MEM_SW_in;
   end process;
 end architecture;
