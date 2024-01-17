@@ -36,6 +36,7 @@ begin
     if (((MEM_REG_we = '1') and (MEM_dst_idx /= 0) and (MEM_dst_idx = REG_src_idx_1))) then
       forward_reg_src_1 <= "10";
     end if;
+
     if (((MEM_REG_we = '1') and (MEM_dst_idx /= 0) and (MEM_dst_idx = REG_src_idx_2))) then
       forward_reg_src_2 <= "10";
     end if;
@@ -44,6 +45,7 @@ begin
     if (((WB_REG_we = '1') and (WB_dst_idx /= 0) and (WB_dst_idx = REG_src_idx_1))) then
       forward_reg_src_1 <= "00";
     end if;
+
     if (((WB_REG_we = '1') and (WB_dst_idx /= 0) and (WB_dst_idx = REG_src_idx_2))) then
       forward_reg_src_2 <= "00";
     end if;
