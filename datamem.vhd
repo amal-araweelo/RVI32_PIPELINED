@@ -72,10 +72,10 @@ begin
     if (rising_edge(clk)) then
       -- Always write the state of the switches into memory when we are not storing
       if (MEM_we = '0') then
-        -- ram(to_integer(unsigned(SW_ADDR_0))) <= switch_0;
-        -- ram(to_integer(unsigned(SW_ADDR_1))) <= switch_1;
-        --ram(to_integer(unsigned(SW_ADDR_2))) <= switch_2;
-        --ram(to_integer(unsigned(SW_ADDR_3))) <= switch_3;
+        ram(to_integer(unsigned(SW_ADDR_0))) <= switch_0;
+        ram(to_integer(unsigned(SW_ADDR_1))) <= switch_1;
+        ram(to_integer(unsigned(SW_ADDR_2))) <= switch_2;
+        ram(to_integer(unsigned(SW_ADDR_3))) <= switch_3;
       elsif (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
           MEM_IO <= write_data;
@@ -94,10 +94,6 @@ begin
         end if;
       end if;
     end if;
-    -- switch mapping experimental vv
-    --ram(to_integer(unsigned(x"00000004"))) <= MEM_SW;
-    -- switch mapping experimental ^^
-
   end process;
 
   -- Asynchronous read
@@ -127,10 +123,10 @@ begin
     MEM_addr_3 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(3, 31)); -- offset with 3 bytes
 
     -- Initialization of switch address
-    --SW_ADDR_0 <= x"00000004";
-    --SW_ADDR_1 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(1, 31)); -- offset with 1 byte
-    --SW_ADDR_2 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(2, 31)); -- offset with 2 bytes
-    --SW_ADDR_3 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(3, 31)); -- offset with 3 bytes
+    SW_ADDR_0 <= x"00000004";
+    SW_ADDR_1 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(1, 31)); -- offset with 1 byte
+    SW_ADDR_2 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(2, 31)); -- offset with 2 bytes
+    SW_ADDR_3 <= std_logic_vector(unsigned(SW_ADDR_0) + to_unsigned(3, 31)); -- offset with 3 bytes
 
     case MEM_op is
       when lw => -- Load word
@@ -209,10 +205,10 @@ begin
         null;
     end case;
 
-    --switch_3 <= MEM_SW_in(31 downto 24);
-    --switch_2 <= MEM_SW_in(23 downto 16);
-    --switch_1 <= MEM_SW_in(15 downto 8);
-    --switch_0 <= MEM_SW_in(7 downto 0);
+    switch_3 <= MEM_SW_in(31 downto 24);
+    switch_2 <= MEM_SW_in(23 downto 16);
+    switch_1 <= MEM_SW_in(15 downto 8);
+    switch_0 <= MEM_SW_in(7 downto 0);
 
     --MEM_SW       <= MEM_SW_in;
     MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory

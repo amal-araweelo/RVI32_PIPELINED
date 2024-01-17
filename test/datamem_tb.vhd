@@ -128,6 +128,7 @@ begin
       report "Test 5 [FAILED]: MEM_data_out =" & to_string(MEM_data_out);
       std.env.stop(1);
     end if;
-    wait;
+
+    std.env.stop(0);
   end process;
 end tb_arch;

@@ -8,23 +8,23 @@ entity execute is
   port
   (
     -- Inputs
-    ALU_src_1_ctrl                                     : in std_logic                      := '0'; -- select signal for operand 1
-    ALU_src_2_ctrl                                     : in std_logic                      := '0'; -- select signal for operand 2
-    REG_src_1                                          : in std_logic_vector(31 downto 0)  := (others => '0');
-    REG_src_2                                          : in std_logic_vector(31 downto 0)  := (others => '0');
-    do_branch                                          : in std_logic                      := '0';
-    do_jmp                                             : in std_logic                      := '0';
-    imm                                                : in std_logic_vector(31 downto 0)  := (others => '0');
-    op_ctrl                                            : in std_logic_vector(3 downto 0)   := (others => '0');
-    pc                                                 : in std_logic_vector(31 downto 0)  := (others => '0');
+    ALU_src_1_ctrl                                     : in std_logic; -- select signal for operand 1
+    ALU_src_2_ctrl                                     : in std_logic; -- select signal for operand 2
+    REG_src_1                                          : in std_logic_vector(31 downto 0);
+    REG_src_2                                          : in std_logic_vector(31 downto 0);
+    do_branch                                          : in std_logic;
+    do_jmp                                             : in std_logic;
+    imm                                                : in std_logic_vector(31 downto 0);
+    op_ctrl                                            : in std_logic_vector(3 downto 0);
+    pc                                                 : in std_logic_vector(31 downto 0);
     forward_1                                          : in std_logic_vector(1 downto 0);
     forward_2                                          : in std_logic_vector(1 downto 0);
-    WB_reg                                             : in std_logic_vector(31 downto 0)  := (others => '0'); -- to be forwarded from WB stage
-    MEM_reg                                            : in std_logic_vector(31 downto 0)  := (others => '0'); -- to be forwarded from MEM stage
+    WB_reg                                             : in std_logic_vector(31 downto 0); -- to be forwarded from WB stage
+    MEM_reg                                            : in std_logic_vector(31 downto 0); -- to be forwarded from MEM stage
 
     -- Ouputs
-    sel_pc                                             : out std_logic                     := '0'; -- select signal for pc
-    ALU_res_out                                        : out std_logic_vector(31 downto 0) := (others => '0')
+    sel_pc                                             : out std_logic; -- select signal for pc
+    ALU_res_out                                        : out std_logic_vector(31 downto 0)
   );
 end execute;
 

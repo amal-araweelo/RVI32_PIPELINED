@@ -278,6 +278,8 @@ begin
   );
 
   decode_stage_out.pc <= ifid_out.pc;
+  decode_stage_out.REG_src_idx_1 <= REG_src_idx_1;
+  decode_stage_out.REG_src_idx_2 <= REG_src_idx_2;
 
   -- Register ID/EX
   reg_idex_inst : reg_idex
@@ -336,8 +338,8 @@ begin
   port
   map
   (
-    REG_src_idx_1 => REG_src_idx_1,
-    REG_src_idx_2 => REG_src_idx_2,
+    REG_src_idx_1 => idex_out.REG_src_idx_1,
+    REG_src_idx_2 => idex_out.REG_src_idx_2,
     WB_REG_we => memwb_out.REG_we,
     MEM_REG_we => exmem_out.REG_we,
     WB_dst_idx => memwb_out.REG_dst_idx,
@@ -425,7 +427,8 @@ begin
     wait for 1 ns;
     reset <= '0';
 
-    wait for 100*clk_period;
+    wait;
+    -- wait for 100*clk_period;
 
     -- First instruction
     report "--------- CLOCK CYCLE ---------";

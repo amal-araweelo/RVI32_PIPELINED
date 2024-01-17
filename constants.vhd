@@ -97,6 +97,7 @@ package records_pkg is
   type t_idex is record
     decoder_out              : t_decoder;
     pc, REG_src_1, REG_src_2 : std_logic_vector(31 downto 0);
+    REG_src_idx_1, REG_src_idx_2 : std_logic_vector(4 downto 0);
   end record t_idex;
 
   type t_exmem is record

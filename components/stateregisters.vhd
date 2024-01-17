@@ -84,11 +84,12 @@ begin
       intermediate_idex_record.decoder_out.MEM_we         <= '0';
       intermediate_idex_record.decoder_out.do_jmp         <= '0';
       intermediate_idex_record.decoder_out.do_branch      <= '0';
-      -- out_idex_record.decoder_out.opcode        <= (others => '0');
       intermediate_idex_record.decoder_out.MEM_rd <= '0';
-			intermediate_idex_record.pc <= (others => '0');
-			intermediate_idex_record.REG_src_1 <= (others => '0');
-			intermediate_idex_record.REG_src_2 <= (others => '0');
+      intermediate_idex_record.pc <= (others => '0');
+      intermediate_idex_record.REG_src_1 <= (others => '0');
+      intermediate_idex_record.REG_src_2 <= (others => '0');
+      intermediate_idex_record.REG_src_idx_1 <= (others => '0');
+      intermediate_idex_record.REG_src_idx_2 <= (others => '0');
     end if;
 
     if (clr = '0' and en = '1') then
@@ -129,7 +130,7 @@ begin
   -- Combinatorial process
   process (all)
   begin
-		intermediate_exmem_record <= out_exmem_record;
+    intermediate_exmem_record <= out_exmem_record;
     if (clr = '1') then
       intermediate_exmem_record.REG_we      <= '0';
       intermediate_exmem_record.MEM_we      <= '0';
@@ -142,7 +143,7 @@ begin
     end if;
 
     if (clr = '0' and en = '1') then
-      intermediate_exmem_record             <= in_exmem_record;
+      intermediate_exmem_record <= in_exmem_record;
     end if;
   end process;
 end behavioral;
