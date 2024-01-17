@@ -97,50 +97,50 @@ architecture behavior of cpu is
   end component;
 
   -- Hazard Unit
-component hazard_unit is
-  port
-  (
+  component hazard_unit is
+    port
+    (
 
-    -------------------- Inputs ---------------------------
-    sel_pc           : in std_logic;
-    ID_REG_src_idx_1 : in std_logic_vector(4 downto 0);
-    ID_REG_src_idx_2 : in std_logic_vector(4 downto 0);
-    EX_REG_dst_idx   : in std_logic_vector(4 downto 0);
-    MEM_rd           : in std_logic;
-    -------------------- Outputs ---------------------------
+      -------------------- Inputs ---------------------------
+      sel_pc           : in std_logic;
+      ID_REG_src_idx_1 : in std_logic_vector(4 downto 0);
+      ID_REG_src_idx_2 : in std_logic_vector(4 downto 0);
+      EX_REG_dst_idx   : in std_logic_vector(4 downto 0);
+      MEM_rd           : in std_logic;
+      -------------------- Outputs ---------------------------
 
-    -- ID/EX register
-    hazard_idex_en  : out std_logic;
-    hazard_idex_clr : out std_logic;
+      -- ID/EX register
+      hazard_idex_en  : out std_logic;
+      hazard_idex_clr : out std_logic;
 
-    -- IF/ID register
-    hazard_ifid_en  : out std_logic;
-    hazard_ifid_clr : out std_logic;
+      -- IF/ID register
+      hazard_ifid_en  : out std_logic;
+      hazard_ifid_clr : out std_logic;
 
-    -- PC
-    hazard_fetch_en : out std_logic -- hazard fetch enable (PC)
-  );
-end component;
+      -- PC
+      hazard_fetch_en : out std_logic -- hazard fetch enable (PC)
+    );
+  end component;
 
   -- Forwarding Unit
 
-component forwarding_unit is
-  port
-  (
-    -- Inputs
-    REG_src_idx_1 : in std_logic_vector(4 downto 0); -- rs2 ID
-    REG_src_idx_2 : in std_logic_vector(4 downto 0); -- rs1 ID
-    WB_REG_we     : in std_logic; -- REG_we from the write back stage
-    MEM_REG_we    : in std_logic; -- REG_we from the memory stage
+  component forwarding_unit is
+    port
+    (
+      -- Inputs
+      REG_src_idx_1 : in std_logic_vector(4 downto 0); -- rs2 ID
+      REG_src_idx_2 : in std_logic_vector(4 downto 0); -- rs1 ID
+      WB_REG_we     : in std_logic; -- REG_we from the write back stage
+      MEM_REG_we    : in std_logic; -- REG_we from the memory stage
 
-    WB_dst_idx  : in std_logic_vector(4 downto 0);
-    MEM_dst_idx : in std_logic_vector(4 downto 0);
+      WB_dst_idx  : in std_logic_vector(4 downto 0);
+      MEM_dst_idx : in std_logic_vector(4 downto 0);
 
-    -- Outputs
-    forward_reg_src_1 : out std_logic_vector(1 downto 0);
-    forward_reg_src_2 : out std_logic_vector(1 downto 0)
-  );
-end component;
+      -- Outputs
+      forward_reg_src_1 : out std_logic_vector(1 downto 0);
+      forward_reg_src_2 : out std_logic_vector(1 downto 0)
+    );
+  end component;
 
   -- Register EX/MEM
 
@@ -160,10 +160,10 @@ end component;
       -- Inputs
       clk         : in std_logic; -- clock
       MEM_we      : in std_logic; -- write enable
-      MEM_op      : in std_logic_vector(3 downto 0); -- memory operation
+      MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
-      MEM_IO_out  : in std_logic_vector(31 downto 0);
+      MEM_IO_out  : out std_logic_vector(31 downto 0);
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0)
@@ -213,7 +213,7 @@ end component;
   -- Hazard Unit signals
   signal hazard_idex_en, hazard_idex_clr : std_logic;
   signal hazard_ifid_en, hazard_ifid_clr : std_logic;
-  signal hazard_fetch_en                : std_logic;
+  signal hazard_fetch_en                 : std_logic;
 
   -- Forwarding Unit signals
   signal forward_reg_src_1, forward_reg_src_2 : std_logic_vector(1 downto 0);
@@ -281,7 +281,7 @@ begin
   REG_src_idx_2 => REG_src_idx_2
   );
 
-  decode_stage_out.pc <= ifid_out.pc;
+  decode_stage_out.pc            <= ifid_out.pc;
   decode_stage_out.REG_src_idx_1 <= REG_src_idx_1;
   decode_stage_out.REG_src_idx_2 <= REG_src_idx_2;
 
@@ -321,36 +321,34 @@ begin
   );
 
   hazard_unit_inst : hazard_unit
-  port 
+  port
   map
   (
-	sel_pc => execute_stage_out_sel_pc,
-	ID_REG_src_idx_1 => REG_src_idx_1,
-	ID_REG_src_idx_2 => REG_src_idx_2,
-	EX_REG_dst_idx => idex_out.decoder_out.REG_dst_idx,
-	MEM_rd => exmem_out.MEM_we,
+  sel_pc           => execute_stage_out_sel_pc,
+  ID_REG_src_idx_1 => REG_src_idx_1,
+  ID_REG_src_idx_2 => REG_src_idx_2,
+  EX_REG_dst_idx   => idex_out.decoder_out.REG_dst_idx,
+  MEM_rd           => exmem_out.MEM_we,
 
-	hazard_idex_en => hazard_idex_en,
-	hazard_idex_clr => hazard_idex_clr,
-	hazard_ifid_en => hazard_ifid_en,
-	hazard_ifid_clr => hazard_ifid_clr,
-	hazard_fetch_en => hazard_fetch_en
+  hazard_idex_en  => hazard_idex_en,
+  hazard_idex_clr => hazard_idex_clr,
+  hazard_ifid_en  => hazard_ifid_en,
+  hazard_ifid_clr => hazard_ifid_clr,
+  hazard_fetch_en => hazard_fetch_en
   );
-
-
   forwarding_unit_inst : forwarding_unit
   port
   map
   (
-    REG_src_idx_1 => idex_out.REG_src_idx_1,
-    REG_src_idx_2 => idex_out.REG_src_idx_2,
-    WB_REG_we => memwb_out.REG_we,
-    MEM_REG_we => exmem_out.REG_we,
-    WB_dst_idx => memwb_out.REG_dst_idx,
-    MEM_dst_idx => exmem_out.REG_dst_idx,
+  REG_src_idx_1 => idex_out.REG_src_idx_1,
+  REG_src_idx_2 => idex_out.REG_src_idx_2,
+  WB_REG_we     => memwb_out.REG_we,
+  MEM_REG_we    => exmem_out.REG_we,
+  WB_dst_idx    => memwb_out.REG_dst_idx,
+  MEM_dst_idx   => exmem_out.REG_dst_idx,
 
-    forward_reg_src_1 => forward_reg_src_1,
-    forward_reg_src_2 => forward_reg_src_2
+  forward_reg_src_1 => forward_reg_src_1,
+  forward_reg_src_2 => forward_reg_src_2
   );
 
   execute_stage_out.REG_we      <= idex_out.decoder_out.REG_we;
@@ -391,9 +389,9 @@ begin
   MEM_data_in  => exmem_out.REG_src_2,
   MEM_addr     => exmem_out.ALU_res,
   MEM_data_out => memory_stage_out.MEM_out,
-  MEM_IO_out => MEM_IO_out
+  MEM_IO_out   => MEM_IO_out
   );
-  
+
   led <= MEM_IO_out(15 downto 0);
 
   -- Register MEM/WB
