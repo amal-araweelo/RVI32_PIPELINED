@@ -60,6 +60,8 @@ package mem_op_const is
   constant lw  : std_logic_vector(2 downto 0) := "101";
   constant lbu : std_logic_vector(2 downto 0) := "110";
   constant lhu : std_logic_vector(2 downto 0) := "111";
+
+  constant sw_addr : std_logic_vector(31 downto 0) := x"00000004";
 end mem_op_const;
 
 library ieee;
