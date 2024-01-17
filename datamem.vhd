@@ -24,7 +24,7 @@ entity data_mem is
 end data_mem;
 
 architecture impl of data_mem is
-  type ram_type is array(2 ** 10 downto 0) -- 1 KiB
+  type ram_type is array(2 ** 20 downto 0) -- 1 KiB
   of std_logic_vector (7 downto 0);
   signal ram        : ram_type := (others => (others => '0'));
   signal read_data  : std_logic_vector(31 downto 0);
@@ -71,14 +71,10 @@ begin
   process (clk) begin
     if (rising_edge(clk)) then
       -- Always write the state of the switches into memory when we are not storing
-      if (MEM_we = '0') then
-        ram(to_integer(unsigned(SW_ADDR_0))) <= switch_0;
-        ram(to_integer(unsigned(SW_ADDR_1))) <= switch_1;
-        ram(to_integer(unsigned(SW_ADDR_2))) <= switch_2;
-        ram(to_integer(unsigned(SW_ADDR_3))) <= switch_3;
-      elsif (MEM_we = '1') then
+
+    if (MEM_we = '1') then
+	report "[MEMORY] Writing to MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
         if (MEM_addr = x"00000000") then
-	    report "[MEMORY] Writing to MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
           MEM_IO <= write_data;
         end if;
         if (we_0 = '1') then
