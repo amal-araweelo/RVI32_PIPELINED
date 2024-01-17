@@ -64,20 +64,20 @@ begin
     MEM_dst_idx   <= "00000";
 
     -- Apply stimulus
-    wait for 10 ns;
     REG_src_idx_1 <= "00001";
     MEM_reg_we    <= '1';
-    assert (forward_reg_src_1 = "00" and forward_reg_src_2 = "00") report "Test failed for MEM forwarding" severity failure;
-
     wait for 10 ns;
+    assert (forward_reg_src_1 = "01" and forward_reg_src_2 = "01") report "Test 1 failed for MEM forwarding" severity failure;
+
     REG_src_idx_1 <= "00010";
     WB_reg_we     <= '1';
-    assert (forward_reg_src_1 = "00" and forward_reg_src_2 = "00") report "Test failed for WB forwarding" severity failure;
-
     wait for 10 ns;
+    assert (forward_reg_src_1 = "01" and forward_reg_src_2 = "01") report "Test 2 failed for WB forwarding" severity failure;
+
     REG_src_idx_2 <= "00010";
     WB_reg_we     <= '1';
-    assert (forward_reg_src_1 = "00" and forward_reg_src_2 = "00") report "Test failed for WB forwarding" severity failure;
+    wait for 10 ns;
+    assert (forward_reg_src_1 = "01" and forward_reg_src_2 = "01") report "Test 3 failed for WB forwarding" severity failure;
 
     wait;
   end process;
