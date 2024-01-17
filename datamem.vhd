@@ -103,12 +103,6 @@ begin
     MEM_addr_1 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(1, 31)); -- offset with 1 byte
     MEM_addr_2 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(2, 31)); -- offset with 2 bytes
     MEM_addr_3 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(3, 31)); -- offset with 3 bytes
-
-    report "MEM_ADDR0: " & to_String(MEM_addr_0);
-    report "MEM_ADDR1: " & to_String(MEM_addr_1);
-    report "MEM_ADDR2: " & to_String(MEM_addr_2);
-    report "MEM_ADDR3: " & to_String(MEM_addr_3);
-
     case MEM_op is
       when lw => -- Load word
 
@@ -116,12 +110,6 @@ begin
         load_from_1 <= ram(to_integer(unsigned(MEM_addr_1)));
         load_from_2 <= ram(to_integer(unsigned(MEM_addr_2)));
         load_from_3 <= ram(to_integer(unsigned(MEM_addr_3)));
-
-        report "load0: " & to_string(load_from_0);
-        report "load1: " & to_string(load_from_1);
-        report "load2: " & to_string(load_from_2);
-        report "load3: " & to_string(load_from_3);
-
       when lh => -- Load half word (signed)
 
         load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
@@ -193,11 +181,5 @@ begin
     end case;
     MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory
     MEM_IO_out   <= MEM_IO;
-    -- debugging
-    report "MEM_data_out: " & to_string(MEM_data_out);
-    report "LOAD 0: " & to_string(load_from_0);
-    report "LOAD 1: " & to_string(load_from_1);
-    report "LOAD 2: " & to_string(load_from_2);
-    report "LOAD 3: " & to_string(load_from_3);
   end process;
 end architecture;
