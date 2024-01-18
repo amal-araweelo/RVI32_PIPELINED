@@ -1,4 +1,4 @@
--- Data memory (only supports words right now)
+-- Data memory (supports different instruction types)
 
 library ieee;
 library work;
@@ -18,29 +18,30 @@ entity data_mem is
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
     MEM_IO_out   : out std_logic_vector(31 downto 0)
-
   );
 end data_mem;
 
 architecture impl of data_mem is
-  type ram_type is array(2 ** 20 downto 0) -- 1 KiB
+  type ram_type is array(2 ** 4 downto 0) -- 1 KiB
   of std_logic_vector (7 downto 0);
-  signal ram        : ram_type := (others => (others => '0'));
-  signal read_data  : std_logic_vector(31 downto 0);
-  signal write_data : std_logic_vector(31 downto 0);
-  signal MEM_IO     : std_logic_vector(31 downto 0);
-  signal MEM_SW     : std_logic_vector(31 downto 0);
 
-  -- To be loaded from or stored at different bytes
-  signal load_from_0 : std_logic_vector(7 downto 0); -- LSB
-  signal load_from_1 : std_logic_vector(7 downto 0);
-  signal load_from_2 : std_logic_vector(7 downto 0);
-  signal load_from_3 : std_logic_vector(7 downto 0); -- MSB
+  -- Four banks for the datamemory
+  signal bank0 : ram_type;
+  signal bank1 : ram_type;
+  signal bank2 : ram_type;
+  signal bank3 : ram_type;
 
-  signal store_at_0 : std_logic_vector(7 downto 0); -- LSB
-  signal store_at_1 : std_logic_vector(7 downto 0);
-  signal store_at_2 : std_logic_vector(7 downto 0);
-  signal store_at_3 : std_logic_vector(7 downto 0); -- MSB
+  -- Signals to store read data from each bank
+  signal read_data_0 : std_logic_vector(7 downto 0);
+  signal read_data_1 : std_logic_vector(7 downto 0);
+  signal read_data_2 : std_logic_vector(7 downto 0);
+  signal read_data_3 : std_logic_vector(7 downto 0);
+
+  -- Signals to write data to each bank
+  signal write_data_0 : std_logic_vector(7 downto 0);
+  signal write_data_1 : std_logic_vector(7 downto 0);
+  signal write_data_2 : std_logic_vector(7 downto 0);
+  signal write_data_3 : std_logic_vector(7 downto 0);
 
   -- Write enable for the 4 bytes to be stored
   signal we_0 : std_logic;
@@ -54,46 +55,50 @@ architecture impl of data_mem is
   signal MEM_addr_2 : std_logic_vector(31 downto 0);
   signal MEM_addr_3 : std_logic_vector(31 downto 0);
 
-begin
-  -- Synchronous write
-  process (clk) begin
-    if (rising_edge(clk)) then
-      -- Always write the state of the switches into memory when we are not storing
+  -- Internal signal for the MEM_IO data
+  signal MEM_IO : std_logic_vector(31 downto 0);
 
-    if (MEM_we = '1') then
-	report "[MEMORY] Writing to MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
+  -- LED data
+  signal write_data : std_logic_vector(31 downto 0);
+
+begin
+  -- Synchronous write process
+  process (clk)
+  begin
+    if rising_edge(clk) then
+      if (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
           MEM_IO <= write_data;
         end if;
-        if (we_0 = '1') then
-          ram(to_integer(unsigned(MEM_addr_0))) <= store_at_0;
+        if (we_0) then
+          bank0(to_integer(unsigned(MEM_addr_0))) <= write_data_0; -- writing byte 0 to bank 0
         end if;
-        if (we_1 = '1') then
-          ram(to_integer(unsigned(MEM_addr_1))) <= store_at_1;
+        if (we_1) then
+          bank1(to_integer(unsigned(MEM_addr_1))) <= write_data_1; -- writing byte 1 to bank 1
         end if;
-        if (we_2 = '1') then
-          ram(to_integer(unsigned(MEM_addr_2))) <= store_at_2;
+        if (we_2) then
+          bank2(to_integer(unsigned(MEM_addr_2))) <= write_data_2; -- writing byte 2 to bank 2
         end if;
-        if (we_3 = '1') then
-          ram(to_integer(unsigned(MEM_addr_3))) <= store_at_3;
+        if (we_3) then
+          bank3(to_integer(unsigned(MEM_addr_3))) <= write_data_3; -- writing byte 3 to bank 3
         end if;
       end if;
     end if;
   end process;
 
-  -- Asynchronous read
+  -- Asynchronous read process
   process (all)
   begin
-    -- Intialization of bytes to be loaded from or stored in memory
-    load_from_0 <= x"00";
-    load_from_1 <= x"00";
-    load_from_2 <= x"00";
-    load_from_3 <= x"00";
+    -- Intialization of read data bytes
+    read_data_0 <= (others => '0');
+    read_data_1 <= (others => '0');
+    read_data_2 <= (others => '0');
+    read_data_3 <= (others => '0');
 
-    store_at_0 <= x"00";
-    store_at_1 <= x"00";
-    store_at_2 <= x"00";
-    store_at_3 <= x"00";
+    write_data_0 <= (others => '0');
+    write_data_1 <= (others => '0');
+    write_data_2 <= (others => '0');
+    write_data_3 <= (others => '0');
 
     -- Initialization of write-enables
     we_0 <= '0';
@@ -103,55 +108,57 @@ begin
 
     -- Initialization of the memory adress of the 4 bytes
     MEM_addr_0 <= MEM_addr;
-    MEM_addr_1 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(1, 31)); -- offset with 1 byte
-    MEM_addr_2 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(2, 31)); -- offset with 2 bytes
-    MEM_addr_3 <= std_logic_vector(unsigned(MEM_addr) + to_unsigned(3, 31)); -- offset with 3 bytes
+    MEM_addr_1 <= std_logic_vector(unsigned(MEM_addr_0) + to_unsigned(1, 31)); -- offset with 1 byte
+    MEM_addr_2 <= std_logic_vector(unsigned(MEM_addr_0) + to_unsigned(2, 31)); -- offset with 2 bytes
+    MEM_addr_3 <= std_logic_vector(unsigned(MEM_addr_0) + to_unsigned(3, 31)); -- offset with 3 bytes
 
+    -- Intiaalize memory i/o
+    --MEM_IO <= x"00000000";
+    --write_data <= x"00000000";
     case MEM_op is
       when lw => -- Load word
-
-        load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
-        load_from_1 <= ram(to_integer(unsigned(MEM_addr_1)));
-        load_from_2 <= ram(to_integer(unsigned(MEM_addr_2)));
-        load_from_3 <= ram(to_integer(unsigned(MEM_addr_3)));
+        read_data_0 <= bank0(to_integer(unsigned(MEM_addr_0)));
+        read_data_1 <= bank1(to_integer(unsigned(MEM_addr_1)));
+        read_data_2 <= bank2(to_integer(unsigned(MEM_addr_2)));
+        read_data_3 <= bank3(to_integer(unsigned(MEM_addr_3)));
       when lh => -- Load half word (signed)
 
-        load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
-        load_from_1 <= ram(to_integer(unsigned(MEM_addr_1)));
+        read_data_0 <= bank0(to_integer(unsigned(MEM_addr_0)));
+        read_data_1 <= bank1(to_integer(unsigned(MEM_addr_1)));
 
-        if load_from_1(7) = '1' then -- Sign-extension for negative value
-          load_from_2 <= (others => '1');
-          load_from_3 <= (others => '1');
+        if read_data_1(7) = '1' then -- Sign-extension for negative value
+          read_data_2 <= (others => '1');
+          read_data_3 <= (others => '1');
         else
-          load_from_2 <= (others => '0');-- Sign-extension for positive value
-          load_from_3 <= (others => '0');
+          read_data_2 <= (others => '0');
+          read_data_3 <= (others => '0');
         end if;
 
       when lhu => -- Load half word (unsigned)
 
-        load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
-        load_from_1 <= ram(to_integer(unsigned(MEM_addr_1)));
-        load_from_2 <= (others => '0');
-        load_from_3 <= (others => '0');
+        read_data_0 <= bank0(to_integer(unsigned(MEM_addr_0)));
+        read_data_1 <= bank1(to_integer(unsigned(MEM_addr_1)));
+        read_data_2 <= (others => '0');
+        read_data_3 <= (others => '0');
 
       when lb => -- Load byte (signed)
-        load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
+        read_data_0 <= bank0(to_integer(unsigned(MEM_addr_0)));
 
-        if load_from_0(7) = '1' then
-          load_from_1 <= (others => '1'); -- Sign extension for negative value
-          load_from_2 <= (others => '1');
-          load_from_3 <= (others => '1');
+        if read_data_0(7) = '1' then
+          read_data_1 <= (others => '1'); -- Sign extension for negative value
+          read_data_2 <= (others => '1');
+          read_data_3 <= (others => '1');
         else
-          load_from_1 <= (others => '0'); -- Sign extension for positive value
-          load_from_2 <= (others => '0');
-          load_from_3 <= (others => '0');
+          read_data_1 <= (others => '0');
+          read_data_2 <= (others => '0');
+          read_data_3 <= (others => '0');
         end if;
 
       when lbu => -- Load byte (unsigned)
-        load_from_0 <= ram(to_integer(unsigned(MEM_addr_0)));
-        load_from_1 <= (others => '0');
-        load_from_2 <= (others => '0');
-        load_from_3 <= (others => '0');
+        read_data_0 <= bank0(to_integer(unsigned(MEM_addr_0)));
+        read_data_1 <= (others => '0');
+        read_data_2 <= (others => '0');
+        read_data_3 <= (others => '0');
 
       when sw => -- Store word
         we_0 <= '1'; -- enable write to all bytes
@@ -159,18 +166,18 @@ begin
         we_2 <= '1';
         we_3 <= '1';
 
-        store_at_3 <= MEM_data_in(31 downto 24);
-        store_at_2 <= MEM_data_in(23 downto 16);
-        store_at_1 <= MEM_data_in(15 downto 8);
-        store_at_0 <= MEM_data_in(7 downto 0);
+        write_data_3 <= MEM_data_in(31 downto 24);
+        write_data_2 <= MEM_data_in(23 downto 16);
+        write_data_1 <= MEM_data_in(15 downto 8);
+        write_data_0 <= MEM_data_in(7 downto 0);
       when sh => -- Store half word
         we_0 <= '1'; -- only enable write to byte 0 and byte 1
         we_1 <= '1';
         we_2 <= '0';
         we_3 <= '0';
 
-        store_at_1 <= MEM_data_in(15 downto 8);
-        store_at_0 <= MEM_data_in(7 downto 0);
+        write_data_1 <= MEM_data_in(15 downto 8);
+        write_data_0 <= MEM_data_in(7 downto 0);
 
       when sb => -- Store byte
         we_0 <= '1'; -- only enable write to byte 0
@@ -178,15 +185,15 @@ begin
         we_2 <= '0';
         we_3 <= '0';
 
-        store_at_0 <= MEM_data_in(7 downto 0);
-
+        write_data_0 <= MEM_data_in(7 downto 0);
       when others =>
         null;
     end case;
 
-    --MEM_SW       <= MEM_SW_in;
-    MEM_data_out <= load_from_3 & load_from_2 & load_from_1 & load_from_0; -- concatenate the four bytes read from memory
-    write_data   <= store_at_3 & store_at_2 & store_at_1 & store_at_0;
+    -- Concatenate read data from all banks based on the memory operation type
+    MEM_data_out <= read_data_3 & read_data_2 & read_data_1 & read_data_0;
+    write_data   <= write_data_3 & write_data_2 & write_data_1 & write_data_0;
     MEM_IO_out   <= MEM_IO;
+
   end process;
 end architecture;
