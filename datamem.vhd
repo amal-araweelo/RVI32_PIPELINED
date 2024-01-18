@@ -59,7 +59,7 @@ architecture impl of data_mem is
   signal MEM_IO : std_logic_vector(15 downto 0);    -- LED was 31 down
 
   -- LED data
-  signal write_data : std_logic_vector(31 downto 0);
+  signal write_data : std_logic_vector(15 downto 0);      -- LED was 31 down
 
 begin
   -- Synchronous write
