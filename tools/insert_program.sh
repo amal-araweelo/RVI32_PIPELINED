@@ -9,7 +9,9 @@ if [ "$FILENAME" = "r" ]; then
 fi
 
 PROGRAM=$(./asm2vhdl.sh "$1")
-echo "$PROGRAM"
+echo """==PROGRAM: $FILENAME==" >> log
+echo "$PROGRAM" >> log
+echo "======================" >> log
  
 echo "Checking $INSTR_MEM"
 grep -q -F "INSERT PROGRAM" $INSTR_MEM || echo "Error: $INSTR_MEM does not contain \"INSERT PROGRAM\""

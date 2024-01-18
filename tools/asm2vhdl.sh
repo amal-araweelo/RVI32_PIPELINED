@@ -4,10 +4,10 @@ N_LINE=0
 
 ASM_FILE=$1
 
-riscv64-unknown-elf-as -o output.o $ASM_FILE
+riscv32-unknown-elf-as -o output.o $ASM_FILE
 
 # Replace 'output.o' with your object file name
-riscv64-unknown-elf-objdump -d output.o | grep -E '^[[:space:]]+[0-9a-f]+:' | while read -r line; do
+riscv32-unknown-elf-objdump -d output.o | grep -E '^[[:space:]]+[0-9a-f]+:' | while read -r line; do
     # Extract the hex value and the assembly code
     hex_value=$(echo "$line" | awk '{print $2}')
     asm_code=$(echo "$line" | cut -d$'\t' -f3-)
