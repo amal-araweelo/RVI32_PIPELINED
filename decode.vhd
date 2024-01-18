@@ -10,6 +10,7 @@ use work.records_pkg.all;
 use work.alu_ctrl_const.all;
 use work.const_decoder.all;
 use work.mem_op_const.all;
+use std.env.all;
 
 ----- Entity declarations -----
 
@@ -56,7 +57,9 @@ begin
 
     
     case opcode is
+
 	-- I-type
+      when DEC_I_ECALL => std.env.stop(0);
       when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_JALR =>
 		
         decoder_out.REG_dst_idx    <= instr(11 downto 7);
