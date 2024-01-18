@@ -59,7 +59,7 @@ architecture impl of data_mem is
   signal MEM_IO : std_logic_vector(15 downto 0);    -- LED was 31 down
 
   -- LED data
-  signal write_data : std_logic_vector(15 downto 0);      -- LED was 31 down
+  signal write_data : std_logic_vector(31 downto 0);      -- LED was 31 down
 
 begin
   -- Synchronous write
@@ -69,7 +69,7 @@ begin
 
       if (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
-          MEM_IO <= write_data;
+          MEM_IO <= write_data(15 downto 0);
         end if;
         if (we_0) then
           bank0(to_integer(unsigned(MEM_addr_0))) <= write_data_0; -- writing byte 0 to bank 0
