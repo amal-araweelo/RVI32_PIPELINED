@@ -14,16 +14,19 @@ entity alu is
 end alu;
 
 architecture behavorial of alu is
+    signal res_tmp : std_logic_vector(32 downto 0);
 begin
   process (all)
   begin
+
     case ctrl is
-      when alu_add | alu_bne | alu_beq | alu_bge | alu_bge_u | alu_blt | alu_blt_u => -- TODO: BUG: alu_bne and alu_add should be the same
-        res <= std_logic_vector(signed(op_1) + signed(op_2)); -- sign-extension of both operands
+      when alu_add | alu_bne | alu_beq | alu_bge | alu_bge_u | alu_blt | alu_blt_u =>
+        res_tmp <= std_logic_vector(signed('0' & op_1) + signed('0' & op_2)); -- sign-extension of both operands
+	res <= res_tmp(31 downto 0);
       when alu_sub =>
         res <= std_logic_vector(signed(op_1) - signed(op_2)); -- sign-extension of both operands
       when alu_sl =>
-        res <= std_logic_vector(shift_left(unsigned(op_1), to_integer(unsigned(op_2))));
+        res <= std_logic_vector(shift_left(unsigned(op_1), to_integer(unsigned(op_2(4 downto 0)))));
       when alu_slt_s =>
         if (signed(op_1) < signed(op_2)) then -- if the result of the signed subtraction is negative
           res <= x"00000001"; -- result is set to 1, since op_1 < op_2
@@ -39,9 +42,9 @@ begin
       when alu_xor =>
         res <= op_1 xor op_2;
       when alu_sr =>
-        res <= std_logic_vector(shift_right(unsigned(op_1), to_integer(unsigned(op_2))));
+        res <= std_logic_vector(shift_right(unsigned(op_1), to_integer(unsigned(op_2(4 downto 0)))));
       when alu_sra =>
-        res <= std_logic_vector(shift_right(signed(op_1), to_integer(unsigned(op_2))));
+        res <= std_logic_vector(shift_right(signed(op_1), to_integer(unsigned(op_2(4 downto 0)))));
       when alu_or =>
         res <= op_1 or op_2;
       when alu_and =>

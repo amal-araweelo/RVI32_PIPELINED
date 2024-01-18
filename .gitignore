@@ -3,3 +3,4 @@ work
 *.fst
 *.o
 tags
+components/instr_mem.vhd.bak

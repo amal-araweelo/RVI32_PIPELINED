@@ -60,8 +60,8 @@ begin
   begin
     if (rising_edge(clk)) then
       pc_current <= pc_next;
-      report "[FETCH] PC <= " & to_string(unsigned(pc_current));
-      report "[FETCH] INSTR <= " & to_string(unsigned(instr));
+      -- report "[FETCH] PC <= " & to_string(unsigned(pc_current));
+      -- report "[FETCH] INSTR <= " & to_string(unsigned(instr));
     end if;
   end process;
   pc <= pc_current;

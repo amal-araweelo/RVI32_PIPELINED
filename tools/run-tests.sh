@@ -1,4 +1,5 @@
-TESTS=$(fd .res tests | sed 's/\.res//g')
+TASK=$1
+TESTS=$(fd .res tests/task$1 | sed 's/\.res//g')
 
 echo $TESTS
 

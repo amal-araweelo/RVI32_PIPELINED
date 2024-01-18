@@ -22,7 +22,7 @@ entity data_mem is
 end data_mem;
 
 architecture impl of data_mem is
-  type ram_type is array(2 ** 4 downto 0) -- 1 KiB
+  type ram_type is array(2 ** 20 downto 0)
   of std_logic_vector (7 downto 0);
 
   -- Four banks for the datamemory

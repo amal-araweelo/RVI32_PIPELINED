@@ -50,6 +50,7 @@ begin
     decoder_out.do_jmp      <= '0'; -- Enable if is a jump instruction
     decoder_out.do_branch   <= '0'; -- Enable if is a branch instruction
     decoder_out.MEM_rd      <= '0'; -- Enable if is a load instruction (for hazard unit)
+    decoder_out.ecall_en    <= '0'; -- Enable if is an ecall instruction
 
     REG_src_idx_1 <= "00000";
     REG_src_idx_2 <= "00000";
@@ -59,7 +60,8 @@ begin
     case opcode is
 
     -- I-type
-      when DEC_I_ECALL => std.env.stop(0);
+      when DEC_I_ECALL => 
+	  decoder_out.ecall_en <= '1';
       when DEC_I_LOAD | DEC_I_ADD_SHIFT_LOGICOPS | DEC_I_JALR =>
 
         decoder_out.REG_dst_idx    <= instr(11 downto 7);
@@ -163,6 +165,7 @@ begin
             decoder_out.REG_dst_idx <= instr(11 downto 7);
             -- ALU_src_ctrl_x is register as standard
             decoder_out.REG_we <= '1';
+	    decoder_out.ALU_src_2_ctrl <= '0'; -- register
 
             REG_src_idx_1 <= instr(19 downto 15);
             REG_src_idx_2 <= instr(24 downto 20);

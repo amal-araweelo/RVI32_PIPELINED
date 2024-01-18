@@ -57,6 +57,7 @@ architecture behavior of cpu is
       REG_src_idx_1, REG_src_idx_2 : in std_logic_vector(4 downto 0);
       REG_dst_idx                  : in std_logic_vector(4 downto 0);
       REG_write_data               : in std_logic_vector(B - 1 downto 0);
+      ECALL_en              	   : in std_logic;
       REG_src_1, REG_src_2         : out std_logic_vector(B - 1 downto 0)
     );
   end component;
@@ -229,6 +230,7 @@ architecture behavior of cpu is
 
   -- Writeback signals
   signal write_back_out : std_logic_vector(31 downto 0);
+  signal ecall_en : std_logic;
 
   -- Datamem signals
   signal MEM_IO_out : std_logic_vector(15 downto 0); -- LED was 31 down
@@ -268,6 +270,7 @@ begin
   REG_src_idx_2  => REG_src_idx_2,
   REG_dst_idx    => memwb_out.REG_dst_idx,
   REG_write_data => write_back_out,
+  ecall_en       => memwb_out.ecall_en,
   REG_src_1      => decode_stage_out.REG_src_1,
   REG_src_2      => decode_stage_out.REG_src_2
   );
@@ -277,6 +280,7 @@ begin
   map
   (
   instr         => ifid_out.instr,
+
   decoder_out   => decode_stage_out.decoder_out,
   REG_src_idx_1 => REG_src_idx_1,
   REG_src_idx_2 => REG_src_idx_2
@@ -293,7 +297,7 @@ begin
   (
   clk             => clk,
   clr             => hazard_idex_clr,
-  en              => hazard_fetch_en,
+  en              => hazard_idex_en,
   in_idex_record  => decode_stage_out,
   out_idex_record => idex_out
   );
@@ -364,6 +368,7 @@ begin
   execute_stage_out.MEM_op      <= idex_out.decoder_out.MEM_op;
   execute_stage_out.REG_dst_idx <= idex_out.decoder_out.REG_dst_idx;
   execute_stage_out.pc          <= idex_out.pc;
+  execute_stage_out.ECALL_en    <= idex_out.decoder_out.ECALL_en;
 
   -- Register EX/MEM
   reg_exmem_inst : reg_exmem
@@ -383,6 +388,7 @@ begin
   memory_stage_out.REG_dst_idx <= exmem_out.REG_dst_idx;
   memory_stage_out.pc          <= exmem_out.pc;
   memory_stage_out.ALU_res     <= exmem_out.ALU_res;
+  memory_stage_out.ecall_en    <= exmem_out.ecall_en;
 
   -- Memory
   memory_inst : data_mem

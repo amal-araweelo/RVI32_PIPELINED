@@ -62,6 +62,8 @@ package mem_op_const is
   constant lhu : std_logic_vector(2 downto 0) := "111";
 
   constant sw_addr : std_logic_vector(31 downto 0) := x"00000004";
+
+  type rom_type is array(2 ** 10 downto 0) of std_logic_vector (31 downto 0);
 end mem_op_const;
 
 library ieee;
@@ -85,7 +87,7 @@ package records_pkg is
     MEM_we      : std_logic; -- Memory Write enable
     do_jmp      : std_logic; -- Enable if is a jump instruction
     do_branch   : std_logic; -- Enable if is a branch instruction
-    --opcode      : std_logic_vector(6 downto 0);   -- could be different -- Opcode for passing on if needed (unknown if needed so is outcommented for now TODO use or delete)
+    ecall_en    : std_logic; -- Enable if is a ecall instruction
     MEM_rd : std_logic; -- Enable if is a load instruction (for hazard unit)
 
   end record t_decoder;
@@ -102,6 +104,7 @@ package records_pkg is
 
   type t_exmem is record
     REG_we, MEM_we         : std_logic;
+    ecall_en               : std_logic;
     WB_src_ctrl            : std_logic_vector(1 downto 0);
     MEM_op                 : std_logic_vector(2 downto 0);
     REG_dst_idx            : std_logic_vector(4 downto 0);
@@ -113,5 +116,6 @@ package records_pkg is
     WB_src_ctrl          : std_logic_vector(1 downto 0);
     REG_dst_idx          : std_logic_vector(4 downto 0);
     pc, ALU_res, MEM_out : std_logic_vector(31 downto 0);
+    ecall_en             : std_logic;
   end record t_memwb;
 end package records_pkg;

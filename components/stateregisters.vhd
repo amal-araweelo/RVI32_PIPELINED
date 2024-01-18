@@ -61,18 +61,12 @@ architecture behavioral of reg_idex is
   -- Intermediate signal
   signal intermediate_idex_record : t_idex;
 begin
-  -- Clock process
-  process (clk)
-  begin
-    if (rising_edge(clk)) then
-      out_idex_record <= intermediate_idex_record;
-    end if;
-  end process;
 
   -- Combinatorial process
   process (all)
   begin
     intermediate_idex_record <= out_idex_record;
+
     if (clr = '1') then
       intermediate_idex_record.decoder_out.ALU_src_1_ctrl <= '0';
       intermediate_idex_record.decoder_out.ALU_src_2_ctrl <= '0';
@@ -94,6 +88,16 @@ begin
 
     if (clr = '0' and en = '1') then
       intermediate_idex_record <= in_idex_record;
+    end if;
+
+
+  end process;
+
+  -- Clock process
+  process (clk)
+  begin
+    if (rising_edge(clk)) then
+      out_idex_record <= intermediate_idex_record;
     end if;
   end process;
 end behavioral;

@@ -29,6 +29,10 @@ architecture behavorial of forwarding_unit is
 begin
   process (all)
   begin
+    -- report "[FORWARD] REG_src_idx_1: " & to_string(REG_src_idx_1);
+    -- report "[FORWARD] REG_src_idx_2: " & to_string(REG_src_idx_2);
+    -- report "[FORWARD] WB_REG_we: " & to_string(WB_REG_we);
+
     forward_reg_src_1 <= "01";
     forward_reg_src_2 <= "01";
 

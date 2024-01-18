@@ -51,9 +51,7 @@ begin
     wait for 1 ns;
     reset <= '0';
 
-    wait for 100*clk_period;
-
-    std.env.stop(0);
+    wait; 
   end process;
 
 end behavior;

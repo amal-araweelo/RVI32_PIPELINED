@@ -131,5 +131,6 @@ begin
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
     REG_src_2_out <= op_2_br;
+
   end process;
 end behavorial;

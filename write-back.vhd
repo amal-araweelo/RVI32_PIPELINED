@@ -37,4 +37,8 @@ begin
     a => pc_next, b => ALU_res, c => MEM_out, sel => WB_src_ctrl, output => REG_write_data
   );
 
+  process(all)
+  begin
+  end process;
+
 end architecture;
