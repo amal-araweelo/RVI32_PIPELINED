@@ -14,7 +14,7 @@ architecture tb_arch of data_mem_tb is
   signal MEM_data_in  : std_logic_vector(31 downto 0) := (others => '0');
   signal MEM_addr     : std_logic_vector(31 downto 0) := (others => '0');
   signal MEM_data_out : std_logic_vector(31 downto 0);
-  signal MEM_IO_out   : std_logic_vector(31 downto 0);
+  signal MEM_IO_out   : std_logic_vector(15 downto 0); -- LED was 31 donwto
 
   constant CLK_PERIOD : time := 10 ns;
 
