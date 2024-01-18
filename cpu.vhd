@@ -164,7 +164,7 @@ architecture behavior of cpu is
       MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
-      MEM_IO_out  : out std_logic_vector(31 downto 0);
+      MEM_IO_out  : out std_logic_vector(15 downto 0);    -- LED was 31 down
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0)
@@ -231,7 +231,7 @@ architecture behavior of cpu is
   signal write_back_out : std_logic_vector(31 downto 0);
 
   -- Datamem signals
-  signal MEM_IO_out : std_logic_vector(31 downto 0);
+  signal MEM_IO_out : std_logic_vector(15 downto 0); -- LED was 31 down
 
 begin
 
