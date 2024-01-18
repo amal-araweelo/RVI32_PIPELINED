@@ -92,7 +92,8 @@ architecture behavior of cpu is
 
       -- Ouputs
       sel_pc      : out std_logic;
-      ALU_res_out : out std_logic_vector(31 downto 0)
+      ALU_res_out : out std_logic_vector(31 downto 0);
+      REG_src_2_out : out std_logic_vector(31 downto 0)
     );
   end component;
 
@@ -317,8 +318,11 @@ begin
   MEM_reg        => exmem_out.ALU_res,
 
   sel_pc      => execute_stage_out_sel_pc,
-  ALU_res_out => execute_stage_out.ALU_res
+  ALU_res_out => execute_stage_out.ALU_res,
+  REG_src_2_out  => execute_stage_out.REG_src_2
   );
+
+  -- Hazard Unit
 
   hazard_unit_inst : hazard_unit
   port
@@ -336,6 +340,9 @@ begin
   hazard_ifid_clr => hazard_ifid_clr,
   hazard_fetch_en => hazard_fetch_en
   );
+
+  -- Forwarding Unit
+
   forwarding_unit_inst : forwarding_unit
   port
   map
@@ -357,7 +364,6 @@ begin
   execute_stage_out.MEM_op      <= idex_out.decoder_out.MEM_op;
   execute_stage_out.REG_dst_idx <= idex_out.decoder_out.REG_dst_idx;
   execute_stage_out.pc          <= idex_out.pc;
-  execute_stage_out.REG_src_2   <= idex_out.REG_src_2;
 
   -- Register EX/MEM
   reg_exmem_inst : reg_exmem

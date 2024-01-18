@@ -24,7 +24,8 @@ entity execute is
 
     -- Ouputs
     sel_pc                                             : out std_logic; -- select signal for pc
-    ALU_res_out                                        : out std_logic_vector(31 downto 0)
+    ALU_res_out                                        : out std_logic_vector(31 downto 0);
+    REG_src_2_out                                          : out std_logic_vector(31 downto 0)
   );
 end execute;
 
@@ -129,6 +130,7 @@ begin
     -- Outputs
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
+    REG_src_2_out <= op_2_br;
 	report "[ALU] PC = " & to_string(pc); -- TODO: Delete
 	report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
 	report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
