@@ -61,7 +61,7 @@ begin
       -- Always write the state of the switches into memory when we are not storing
 
     if (MEM_we = '1') then
-	report "[MEMORY] Writing to MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
+	report "[MEMORY] MEM(" & to_string(MEM_addr) & ") <= " & to_string(MEM_data_in);
         if (MEM_addr = x"00000000") then
           MEM_IO <= write_data;
         end if;

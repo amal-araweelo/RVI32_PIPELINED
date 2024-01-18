@@ -66,8 +66,6 @@ begin
         decoder_out.REG_we         <= '1';
         decoder_out.ALU_src_2_ctrl <= '1'; -- imm
         REG_src_idx_1              <= instr(19 downto 15);
-		--report "decoder_out.REG_src_idx_1 should be: " & to_string(instr(19 downto 15)) & " FROM DECODER";
-		--report "decoder_out.REG_src_idx_1 is: " & to_string(REG_src_idx_1) & " FROM DECODER";
         decoder_out.imm(11 downto 0) <= instr(31 downto 20);
         -- Handle imm sign extension
         if (decoder_out.imm(11) = '1') then
@@ -81,7 +79,6 @@ begin
 		if ((not(opcode(4)) and (not(opcode(5))))) then
 			decoder_out.WB_src_ctrl <= "10";		--read from mem
 			decoder_out.MEM_rd 	<= '1';	
-			report "[DECODE] WB_src_ctrl " & to_string(decoder_out.WB_src_ctrl);
 			case func3 is
 				-- lb
 				when "000" => 
@@ -100,6 +97,7 @@ begin
 				decoder_out.MEM_op 	<= lhu;
 				when others => 
 					report "Undefined func3: I-type, DEC_I_LOAD";
+					null;
 			end case;
 		
 		-- is DEC_I_ADD_SHIFT_LOGICOPS
@@ -124,7 +122,6 @@ begin
 				when "101" => 
 					
 					decoder_out.imm(11 downto 5) <=  (others =>  '0');
-					-- report "[DECODE] imm is now: " & to_string(decoder_out.imm);
 					if (instr(30)) then
 						-- srai
 						decoder_out.op_ctrl <=  ALU_SRA;
@@ -142,6 +139,7 @@ begin
 				
 				when others =>
 					report "Undefined func3: I-type, ADD_SHIFT_LOGICOPS";
+					null;
 
 			end case;
 		-- DEC_I_JALR
@@ -157,6 +155,7 @@ begin
 		
 		else 
 			report "undefined opcode - I-type";
+			null;
 		end if; -- End I-type
 				
 	-- R-type
@@ -184,6 +183,7 @@ begin
 						decoder_out.op_ctrl <=  ALU_SUB; 
 						
 						else report "undefined func7: R-type, func3=000";
+						null;
 						end if;
 					
 					-- xor
@@ -299,8 +299,6 @@ begin
 				else
 				decoder_out.imm(31 downto 13) <= (others => '0');
 				end if;
-
-				report "[DECODE] BRANCH imm: " & to_string(decoder_out.imm);
 
 				REG_src_idx_1 <= instr(19 downto 15);
 				REG_src_idx_2 <= instr(24 downto 20);

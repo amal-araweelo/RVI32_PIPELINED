@@ -23,14 +23,25 @@ architecture impl of instr_mem is
 
   signal rom : rom_type := (
 
-0 => x"00000093", -- li	ra,0
-1 => x"00108093", -- addi	ra,ra,1
-2 => x"00108093", -- addi	ra,ra,1
+0 => x"00100137", -- lui	sp,0x100
+1 => x"008000ef", -- jal	ra,c <main>
+2 => x"ff9ff0ef", -- jal	ra,0 <main-0xc>
+3 => x"fe010113", -- addi	sp,sp,-32 # fffe0 <main+0xfffd4>
+4 => x"00812e23", -- sw	s0,28(sp)
+5 => x"02010413", -- addi	s0,sp,32
+6 => x"00100793", -- li	a5,1
+7 => x"fef42623", -- sw	a5,-20(s0)
+8 => x"fec42783", -- lw	a5,-20(s0)
+9 => x"00178793", -- addi	a5,a5,1
+10 => x"fef42623", -- sw	a5,-20(s0)
+11 => x"00000793", -- li	a5,0
+12 => x"00078513", -- mv	a0,a5
+13 => x"01c12403", -- lw	s0,28(sp)
+14 => x"02010113", -- addi	sp,sp,32
+15 => x"00008067", -- ret
   
   others => (x"00000000")
   );
-  --attribute rom_style        : string;
-  --attribute rom_style of ROM : signal is "block";
 
 begin
   process (all) begin

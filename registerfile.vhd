@@ -38,7 +38,7 @@ begin
     if rising_edge(clk) then
       if (REG_we = '1') then
 	if (REG_dst_idx /= "00000") then
-	    report "[REG FILE] Reg(" & to_string(REG_dst_idx) & ") <= " & to_string(REG_write_data);
+	    report "[REG FILE] REG(" & to_string(REG_dst_idx) & ") <= " & to_string(REG_write_data);
 	end if;
         array_register(to_integer(unsigned(REG_dst_idx))) <= REG_write_data;
       end if;
