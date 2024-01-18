@@ -17,7 +17,7 @@ entity data_mem is
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
-    MEM_IO_out   : out std_logic_vector(31 downto 0)
+    MEM_IO_out   : out std_logic_vector(15 downto 0)  -- LED was 31 down
   );
 end data_mem;
 
@@ -56,7 +56,7 @@ architecture impl of data_mem is
   signal MEM_addr_3 : std_logic_vector(31 downto 0);
 
   -- Internal signal for the MEM_IO data
-  signal MEM_IO : std_logic_vector(31 downto 0);
+  signal MEM_IO : std_logic_vector(15 downto 0);    -- LED was 31 down
 
   -- LED data
   signal write_data : std_logic_vector(31 downto 0);
