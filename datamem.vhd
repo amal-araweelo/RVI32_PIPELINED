@@ -62,10 +62,11 @@ architecture impl of data_mem is
   signal write_data : std_logic_vector(31 downto 0);
 
 begin
-  -- Synchronous write process
-  process (clk)
-  begin
-    if rising_edge(clk) then
+  -- Synchronous write
+  process (clk) begin
+    if (rising_edge(clk)) then
+      -- Always write the state of the switches into memory when we are not storing
+
       if (MEM_we = '1') then
         if (MEM_addr = x"00000000") then
           MEM_IO <= write_data;

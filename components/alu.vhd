@@ -49,7 +49,5 @@ begin
       when others    =>
         res <= (others => '0');
     end case;
-
-    report "[ALU] res: " & to_string(res);
   end process;
 end behavorial;

@@ -24,7 +24,8 @@ entity execute is
 
     -- Ouputs
     sel_pc                                             : out std_logic; -- select signal for pc
-    ALU_res_out                                        : out std_logic_vector(31 downto 0)
+    ALU_res_out                                        : out std_logic_vector(31 downto 0);
+    REG_src_2_out                                          : out std_logic_vector(31 downto 0)
   );
 end execute;
 
@@ -129,20 +130,6 @@ begin
     -- Outputs
     sel_pc <= std_logic((branch_taken and do_branch) or do_jmp);
     ALU_res_out <= ALU_res;
-	report "[ALU] PC = " & to_string(pc); -- TODO: Delete
-	report "[ALU] op_1 = " & to_string(op_1_alu); -- TODO: Delete
-	report "[ALU] op_2 = " & to_string(op_2_alu); -- TODO: Delete
-	report "[ALU] imm = " & to_string(imm); -- TODO: Delete
-	report "[ALU] op_ctrl = " & to_string(op_ctrl); -- TODO: Delete
-	report "[ALU] ALU_src_1_ctrl = " & to_string(ALU_src_1_ctrl); -- TODO: Delete
-	report "[ALU] ALU_src_2_ctrl = " & to_string(ALU_src_2_ctrl); -- TODO: Delete
-	report "[ALU] ALU_res = " & to_string(ALU_res); -- TODO: Delete
-	report "[ALU] ALU_res_out = " & to_string(ALU_res_out); -- TODO: Delete
-	report "[ALU] sel_pc = " & to_string(sel_pc); -- TODO: Delete
-	report "[ALU] branch_taken = " & to_string(branch_taken); -- TODO: Delete
-	report "[ALU] do_branch = " & to_string(do_branch); -- TODO: Delete
-	report "[ALU] do_jmp = " & to_string(do_jmp); -- TODO: Delete
-	report "[ALU] forward_1 = " & to_string(forward_1); -- TODO: Delete
-	report "[ALU] forward_2 = " & to_string(forward_2); -- TODO: Delete
+    REG_src_2_out <= op_2_br;
   end process;
 end behavorial;

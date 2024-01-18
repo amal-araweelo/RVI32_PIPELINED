@@ -4,9 +4,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
--- read binary file
--- Hardcode an addi instruction
-
 entity fetcher is
   port
   (
@@ -48,7 +45,6 @@ begin
     pc_next <= pc_current;
     if (en = '1') then
       if (sel_pc = '1') then
-        --report "[FETCH] BRANCHING to: " & to_string(branch_addr);
         pc_next <= branch_addr;
       else
         pc_next <= std_logic_vector(unsigned(pc_current) + unsigned(length));
@@ -64,7 +60,8 @@ begin
   begin
     if (rising_edge(clk)) then
       pc_current <= pc_next;
-      -- report "[FETCH] PC: " & to_string(unsigned(pc_next));
+      report "[FETCH] PC <= " & to_string(unsigned(pc_current));
+      report "[FETCH] INSTR <= " & to_string(unsigned(instr));
     end if;
   end process;
   pc <= pc_current;
