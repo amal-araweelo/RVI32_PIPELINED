@@ -1,5 +1,5 @@
 TASK=$1
-TESTS=$(fd .res tests/task$1 | sed 's/\.res//g')
+TESTS=$(find . -name "tests/task$1")
 
 echo $TESTS
 
@@ -9,6 +9,8 @@ echo $TESTS
 echo "" > log
 
 for TEST in $TESTS; do
+	# remove the .s form the TEST
+	TEST=$(echo $TEST | cut -d'.' -f1)
 	echo "Running test $TEST"
 	TEST_SRC="$TEST.s"
 
