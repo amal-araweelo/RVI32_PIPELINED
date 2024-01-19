@@ -27,6 +27,9 @@ architecture behavior of cpu_tb is
   -- Switch signal
   signal sw : std_logic_vector(15 downto 0);
 
+  -- LED signal
+  signal led : std_logic_vector(15 downto 0);
+
   -- Clock signal
   signal clk          : std_logic := '0';
   constant clk_period : time      := 10 ns;
@@ -38,7 +41,7 @@ begin
   uut: cpu port map (
 	clk   => clk,
 	reset => reset,
-	led   => open,
+	led   => led,
 	sw => sw
   );
 
@@ -56,10 +59,10 @@ begin
     wait for 1 ns;
     reset <= '0';
 
-    sw <= x"0001";
-    wait for 1 ns;
+    wait;
 
-    wait; 
+    std.env.stop(0);
+
   end process;
 
 end behavior;
