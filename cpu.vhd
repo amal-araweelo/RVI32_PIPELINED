@@ -238,6 +238,10 @@ architecture behavior of cpu is
   signal MEM_IO_out : std_logic_vector(15 downto 0); -- LED was 31 down
   signal MEM_SW_in  : std_logic_vector(15 downto 0); -- SWCHG made this
 
+  -- Sync reset signal
+  signal sync_reset   : std_logic;
+  signal sync_reset_2 : std_logic;
+
 begin
 
   -- Fetcher
@@ -245,7 +249,7 @@ begin
   (
     clk         => clk,
     sel_pc      => execute_stage_out_sel_pc,
-    reset       => reset,
+    reset       => sync_reset_2,
     en          => hazard_fetch_en,
     branch_addr => execute_stage_out.ALU_res,
     instr       => fetch_stage_out.instr,
@@ -435,8 +439,15 @@ begin
   REG_write_data => write_back_out
   );
 
-  process (all)
+  -- Input synchronizer for reset signal
+  process (clk)
   begin
-  end process;
+    if rising_edge(clk) then
+      -- First stage of synchronizer
+      sync_reset <= reset;
 
+      -- Second stage of synchronizer
+      sync_reset_2 <= sync_reset;
+    end if;
+  end process;
 end behavior;

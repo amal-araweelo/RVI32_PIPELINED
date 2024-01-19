@@ -14,15 +14,13 @@ entity alu is
 end alu;
 
 architecture behavorial of alu is
-    signal res_tmp : std_logic_vector(32 downto 0);
 begin
   process (all)
   begin
 
     case ctrl is
       when alu_add | alu_bne | alu_beq | alu_bge | alu_bge_u | alu_blt | alu_blt_u =>
-        res_tmp <= std_logic_vector(signed('0' & op_1) + signed('0' & op_2)); -- sign-extension of both operands
-	res <= res_tmp(31 downto 0);
+        res <= std_logic_vector(signed(op_1) + signed(op_2));
       when alu_sub =>
         res <= std_logic_vector(signed(op_1) - signed(op_2)); -- sign-extension of both operands
       when alu_sl =>
