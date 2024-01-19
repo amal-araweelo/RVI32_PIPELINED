@@ -1,4 +1,4 @@
-TESTS=$(fd "\.s" tests/)
+TESTS=$(find tests -type f -name "*.s")
 
 echo "" > log
 
