@@ -1,10 +1,4 @@
-TASK=$1
-TESTS=$(find . -name "tests/task$1")
-
-echo $TESTS
-
-# get the first test 
-# TESTS=$(echo $TESTS | cut -d' ' -f1)
+TESTS=$(fd "\.s" tests/)
 
 echo "" > log
 
@@ -13,6 +7,7 @@ for TEST in $TESTS; do
 	TEST=$(echo $TEST | cut -d'.' -f1)
 	echo "Running test $TEST"
 	TEST_SRC="$TEST.s"
+	mkdir -p results/test
 
 	echo "Compiling $TEST_SRC" | tee -a log
 	./insert_program.sh $TEST_SRC
@@ -32,7 +27,15 @@ for TEST in $TESTS; do
 
 	DIFF=$(diff results/$TEST.res results/$TEST.reg | tee -a log)
 
-	[ -z "$DIFF" ] && echo "Test $TEST passed" || echo "Test $TEST failed"
+	if [ "$DIFF" != "" ]; then
+		echo "Test $TEST failed" | tee -a log
+		echo "======================" | tee -a log
+		echo $DIFF | tee -a log
+		echo "======================" | tee -a log
+		exit 1
+	else 
+		echo "Test $TEST passed" | tee -a log
+	fi
 
 	echo "======================" | tee -a log
 done
