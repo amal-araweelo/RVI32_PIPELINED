@@ -11,7 +11,7 @@ entity cpu is
     --    clk: in std_logic
     clk   : in std_logic;
     reset : in std_logic;
-    led   : out std_logic_vector(15 downto 0)
+    led   : out std_logic_vector(15 downto 0);
     sw   : in std_logic_vector(15 downto 0) -- SWCHG made this
   );
 end cpu;

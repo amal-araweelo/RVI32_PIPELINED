@@ -16,12 +16,16 @@ architecture behavior of cpu_tb is
 	--    clk: in std_logic
 	clk   : in std_logic;
 	reset : in std_logic;
-	led   : out std_logic_vector(15 downto 0)
+	led   : out std_logic_vector(15 downto 0);
+	sw    : in std_logic_vector(15 downto 0) -- SWCHG made this
       );
     end component;
 
   -- Reset signal
   signal reset : std_logic := '0';
+
+  -- Switch signal
+  signal sw : std_logic_vector(15 downto 0);
 
   -- Clock signal
   signal clk          : std_logic := '0';
@@ -34,7 +38,8 @@ begin
   uut: cpu port map (
 	clk   => clk,
 	reset => reset,
-	led   => open
+	led   => open,
+	sw => sw
   );
 
   clk_process : process
@@ -50,6 +55,9 @@ begin
     reset <= '1';
     wait for 1 ns;
     reset <= '0';
+
+    sw <= x"0001";
+    wait for 1 ns;
 
     wait; 
   end process;
