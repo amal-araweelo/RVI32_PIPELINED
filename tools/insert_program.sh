@@ -1,3 +1,5 @@
+#!/bin/bash
+
 FILENAME="$1"
 INSTR_MEM="../components/instr_mem.vhd"
 
