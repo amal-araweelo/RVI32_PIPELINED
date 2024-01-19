@@ -1,18 +1,20 @@
-//TODO remember to outcomment/remove all printf's!
 
-//#include <stdint.h> //fixed length integer types
+
+//TODO cmnt OUT all includes!
 //#include <stdio.h>  //printf and more
-//#include <stdlib.h> //TODO cmnt OUT, contains malloc
+//#include <stdlib.h> //
 
 //  Define busywait constants
+// ...
 
 //  Define I/O addresses
 #define def_led_addr  0x00000000 //TODO cmnt IN
-//#define def_sw_addr   0x00000001
+//#define def_sw_addr   0x00000001 //TODO cmnt IN
 
-//asm("li sp, 0x100000"); // SP set to 1 MB
-asm("jal main");        // call main
+asm("li sp, 0x100000"); // SP set to 1 MB //TODO cmnt IN
+asm("jal main");        // call main      //TODO cmnt IN
 
+//void printtestvars(int* led_addr);           //TODO outcomment before compiling
 void busywait();                        //change number in for-loop to change length.
 void simpleblink(int* led_addr);   //simple program: blink one LED
 //void fancyblink(int* led_addr);    //kinda simple program: blink LED's one at a time
@@ -20,7 +22,7 @@ void simpleblink(int* led_addr);   //simple program: blink one LED
 int main(){
 
     int* led_addr = def_led_addr;                  //TODO cmnt IN
-    //int* led_addr = malloc(sizeof(int));    //TODO cmnt OUT
+    //int* led_addr = malloc(sizeof(int));        //TODO cmnt OUT
     //printf("\nledaddr: %x \n", led_addr);
     //printf("ledstart: %x \n\n", *led_addr);
 
@@ -37,20 +39,21 @@ void busywait(){
     while (i<10){
         i++;
     }
-};
+}
 
 //simple program: blink one LED
 void simpleblink(int* led_addr){
     for (int i=0;i<5;i++){
         *led_addr = 1;
-        //printf("led: %x \n",*led_addr);
+        //printtestvars(led_addr);
         busywait();
         *led_addr = 0;
-        //printf("led: %x \n\n",*led_addr);
+        //printtestvars(led_addr);
         busywait();
     }
 }
 
+/*
 //kinda simple program: blink LED's one at a time
 void fancyblink(int* led_addr){
     *led_addr = 1;
@@ -58,8 +61,6 @@ void fancyblink(int* led_addr){
     busywait();
 
 }
-
-/*
 void fibonnaci(){
 int max = 2;
 
@@ -68,6 +69,9 @@ int max = 2;
 void factorial(){
 
 }
-
-
 */
+
+void printtestvars(int* led_addr){
+    printf("led: %x \n",*led_addr);
+
+}
