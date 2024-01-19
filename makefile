@@ -1,5 +1,8 @@
 test: hazard-test datamem-test fetch-test forward-test decode-test alu-test reg-file-test comparator-test execute-test
 
+test-integration:
+	make -C tools
+
 NVC := nvc --std=2008
 WAVE := --format=fst --gtkw=wave.fst --wave
 
