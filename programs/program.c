@@ -13,6 +13,7 @@
 
 asm("li sp, 0x100000"); // SP set to 1 MB //TODO cmnt IN
 asm("jal main");        // call main      //TODO cmnt IN
+asm("ecall");           // make ecall
 
 //void printtestvars(int* led_addr);           //TODO outcomment before compiling
 void busywait();                        //change number in for-loop to change length.
@@ -70,8 +71,9 @@ void factorial(){
 
 }
 */
-
+/*
 void printtestvars(int* led_addr){
     printf("led: %x \n",*led_addr);
 
 }
+*/
