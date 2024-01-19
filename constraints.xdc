@@ -11,7 +11,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports *]
 ## Clock signal
 # 10 ns clk_period
 set_property PACKAGE_PIN W5 [get_ports clk]
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk] 
+create_clock -add -name sys_clk_pin -period 15.00 -waveform {0 7.5} [get_ports clk] 
  
 
 --SWCHG - commented all switches in
