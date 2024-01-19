@@ -17,12 +17,12 @@ entity data_mem is
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
-    MEM_IO_out   : out std_logic_vector(15 downto 0)  -- LED was 31 down
+    MEM_IO_out   : out std_logic_vector(15 downto 0) -- LED was 31 down
   );
 end data_mem;
 
 architecture impl of data_mem is
-  type ram_type is array(2 ** 20 downto 0)
+  type ram_type is array(2 ** 8 downto 0)
   of std_logic_vector (7 downto 0);
 
   -- Four banks for the datamemory
@@ -56,10 +56,10 @@ architecture impl of data_mem is
   signal MEM_addr_3 : std_logic_vector(31 downto 0);
 
   -- Internal signal for the MEM_IO data
-  signal MEM_IO : std_logic_vector(15 downto 0);    -- LED was 31 down
+  signal MEM_IO : std_logic_vector(15 downto 0); -- LED was 31 down
 
   -- LED data
-  signal write_data : std_logic_vector(31 downto 0);      -- LED uses this, 15 down did not work
+  signal write_data : std_logic_vector(15 downto 0); -- LED uses this, 15 down did not work
 
 begin
   -- Synchronous write
@@ -193,7 +193,7 @@ begin
 
     -- Concatenate read data from all banks based on the memory operation type
     MEM_data_out <= read_data_3 & read_data_2 & read_data_1 & read_data_0;
-    write_data   <= write_data_3 & write_data_2 & write_data_1 & write_data_0;
+    write_data   <= write_data_1 & write_data_0;
     MEM_IO_out   <= MEM_IO;
 
   end process;
