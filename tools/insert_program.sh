@@ -3,7 +3,7 @@ INSTR_MEM="../components/instr_mem.vhd"
 
 # restore program
 if [ "$FILENAME" = "r" ]; then
-	echo "Restoring $INSTR_MEM"
+	# echo "Restoring $INSTR_MEM"
 	cp $INSTR_MEM.bak $INSTR_MEM
 	exit 0
 fi
@@ -13,7 +13,7 @@ echo """==PROGRAM: $FILENAME==" >> log
 echo "$PROGRAM" >> log
 echo "======================" >> log
  
-echo "Checking $INSTR_MEM"
+# echo "Checking $INSTR_MEM"
 grep -q -F "INSERT PROGRAM" $INSTR_MEM || echo "Error: $INSTR_MEM does not contain \"INSERT PROGRAM\""
 
 # backup the original file
