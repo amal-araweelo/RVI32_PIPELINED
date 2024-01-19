@@ -12,7 +12,7 @@ entity cpu is
     clk   : in std_logic;
     reset : in std_logic;
     led   : out std_logic_vector(15 downto 0);
-    sw   : in std_logic_vector(15 downto 0) -- SWCHG made this
+    sw    : in std_logic_vector(15 downto 0) -- SWCHG made this
   );
 end cpu;
 
@@ -58,7 +58,7 @@ architecture behavior of cpu is
       REG_src_idx_1, REG_src_idx_2 : in std_logic_vector(4 downto 0);
       REG_dst_idx                  : in std_logic_vector(4 downto 0);
       REG_write_data               : in std_logic_vector(B - 1 downto 0);
-      ECALL_en              	   : in std_logic;
+      ECALL_en                     : in std_logic;
       REG_src_1, REG_src_2         : out std_logic_vector(B - 1 downto 0)
     );
   end component;
@@ -93,8 +93,8 @@ architecture behavior of cpu is
       MEM_reg   : in std_logic_vector(31 downto 0);
 
       -- Ouputs
-      sel_pc      : out std_logic;
-      ALU_res_out : out std_logic_vector(31 downto 0);
+      sel_pc        : out std_logic;
+      ALU_res_out   : out std_logic_vector(31 downto 0);
       REG_src_2_out : out std_logic_vector(31 downto 0)
     );
   end component;
@@ -166,8 +166,8 @@ architecture behavior of cpu is
       MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
-      MEM_IO_out  : out std_logic_vector(15 downto 0);    -- LED was 31 down
-      MEM_SW_in  : out std_logic_vector(15 downto 0);    -- SWCHG made this
+      MEM_IO_out  : out std_logic_vector(15 downto 0); -- LED was 31 down
+      MEM_SW_in   : in std_logic_vector(15 downto 0); -- SWCHG made this
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0)
@@ -232,11 +232,11 @@ architecture behavior of cpu is
 
   -- Writeback signals
   signal write_back_out : std_logic_vector(31 downto 0);
-  signal ecall_en : std_logic;
+  signal ecall_en       : std_logic;
 
   -- Datamem signals
   signal MEM_IO_out : std_logic_vector(15 downto 0); -- LED was 31 down
-  signal MEM_SW_in : std_logic_vector(15 downto 0); -- SWCHG made this
+  signal MEM_SW_in  : std_logic_vector(15 downto 0); -- SWCHG made this
 
 begin
 
@@ -282,7 +282,7 @@ begin
   decode_inst : decoder port
   map
   (
-  instr         => ifid_out.instr,
+  instr => ifid_out.instr,
 
   decoder_out   => decode_stage_out.decoder_out,
   REG_src_idx_1 => REG_src_idx_1,
@@ -324,9 +324,9 @@ begin
   WB_reg         => write_back_out,
   MEM_reg        => exmem_out.ALU_res,
 
-  sel_pc      => execute_stage_out_sel_pc,
-  ALU_res_out => execute_stage_out.ALU_res,
-  REG_src_2_out  => execute_stage_out.REG_src_2
+  sel_pc        => execute_stage_out_sel_pc,
+  ALU_res_out   => execute_stage_out.ALU_res,
+  REG_src_2_out => execute_stage_out.REG_src_2
   );
 
   -- Hazard Unit
@@ -405,10 +405,10 @@ begin
   MEM_addr     => exmem_out.ALU_res,
   MEM_data_out => memory_stage_out.MEM_out,
   MEM_IO_out   => MEM_IO_out,
-  MEM_SW_in    => MEM_SW_in    -- SWCHG made this
+  MEM_SW_in    => MEM_SW_in -- SWCHG made this
   );
 
-  led <= MEM_IO_out(15 downto 0);
+  led                    <= MEM_IO_out(15 downto 0);
   MEM_SW_in(15 downto 0) <= sw; -- SWCHG made this
 
   -- Register MEM/WB
