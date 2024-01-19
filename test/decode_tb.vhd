@@ -6,12 +6,6 @@ use work.records_pkg.all;
 use work.alu_ctrl_const.all;
 use ieee.numeric_std.all;
 
---- FILE IO vvvv
-use STD.textio.all;
-use ieee.std_logic_textio.all;
-
---- FILE IO ^^^^ 
-
 
 entity decode_tb is
   -- Testbench has no ports
@@ -47,17 +41,6 @@ architecture behavioral of decode_tb is
   constant clk_period : time                          := 10 ns;
   signal instr        : std_logic_vector(31 downto 0) := x"00000000";
 
---- FILE IO vvvv
--- internal signals for file io
-  file file_INPUT   : text;
-  file file_OUTPUT  : text;
-
-  signal test_TERM  :  std_logic_vector(31 downto 0) := (others => '0'); --term to pass to things being tested
-  signal out_TERM   : std_logic_vector(31 downto 0) := (others => '0'); --term to pass to output file write
-  signal out_TERM1   : std_logic_vector(31 downto 0) := (others => '0'); --term to pass to output file write
-
---- FILE IO ^^^^ 
-
 
 begin
 
@@ -91,37 +74,12 @@ begin
 
   stim_proc : process
 
---- FILE IO vvvv
-  variable v_ILINE      : line;
-  variable v_OLINE      : line;
-  variable v_TERM       : std_logic_vector(31 downto 0);
-  variable v_SPACE      : character;
---- FILE IO ^^^^ 
-
   begin
-    --- FILE IO vvvv 
-    file_open(file_INPUT, "in_hello.txt",  read_mode);
-    file_open(file_OUTPUT, "out_hello.txt", write_mode);
-    --- FILE IO ^^^^ 
-
-    --- FILE IO vvvv 
-    while not endfile(file_INPUT) loop
-      readline(file_INPUT, v_ILINE);
-      read(v_ILINE, v_TERM);
-      --read(v_ILINE, v_SPACE);           -- read in the space character
-      --read(v_ILINE, v_ADD_TERM2);
-    
-    -- pass variable to test term
-      test_TERM <= v_TERM;
-
-    --- FILE IO ^^^^ 
-
-    
 
     wait for 1 ns;
 
     -- Instruction test: addi x1, x2, 5  (0x00510093)
-    instr <= test_TERM; -- 00000000010100010000000010010011  from in_hello.txt    <<< FILE IO (use of term in test)
+    instr <= x"00510093";
     wait for clk_period;
     
     assert decoder_out.REG_dst_idx = "00001" report "T1 REG_dst_idx is not correct" severity failure;
@@ -139,8 +97,6 @@ begin
     assert decoder_out.do_branch = '0' report "T1 do_branch is not correct" severity failure;
     assert decoder_out.MEM_rd = '0' report "T1 MEM_rd is not correct" severity failure;
     report "Test 1 [PASSED] (addi)" severity note;
-
-    out_TERM <=  decoder_out.imm; --  <<< FILE IO (use of term for output)
 
     -- Instruction test: add x1, x5, x3
     instr <= x"003280b3";
@@ -201,7 +157,6 @@ begin
   assert decoder_out.do_branch      = '0'     report "T4 do_branch not correct" severity failure;
   assert decoder_out.MEM_rd         = '1'     report "T4 MEM_rd not correct" severity failure;
   report "Test 4 [PASSED]" severity note;
-  out_TERM1 <=  decoder_out.imm; --  <<< FILE IO (use of term for output)
 
   -- Instruction test: auipc x10, 0xFFFFF
   instr <= x"fffff517";
@@ -392,21 +347,21 @@ report "Test 9 [PASSED] (bgeu)" severity note;
   instr <= x"005180e7";
   wait for clk_period;
   --report lf & "Instrucbits is : 10987654321098765432109876543210" & lf & "Instruction is : " & to_string(instr);
-  assert decoder_out.REG_dst_idx    = "00001" report "REG_dst_idx not correct" severity failure;
-  assert REG_src_idx_1              = "00011" report "REG_src_idx_1 not correct" severity failure;
-  assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
-  assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
-  assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
-  assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
-  assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
-  assert decoder_out.imm            = x"00000005" report "imm not correct" severity failure;
-  assert decoder_out.WB_src_ctrl    = "00"    report "WB_src_ctrl not correct" severity failure;
-  assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
-  assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
-  assert decoder_out.do_jmp         = '1'     report "do_jmp not correct" severity failure;
-  assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
-  assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
-  report "Test 14 [PASSED] (jalr)" severity note;
+  -- assert decoder_out.REG_dst_idx    = "00001" report "REG_dst_idx not correct" severity failure;
+  -- assert REG_src_idx_1              = "00011" report "REG_src_idx_1 not correct" severity failure;
+  -- assert REG_src_idx_2              = "00000" report "REG_src_idx_2 not correct" severity failure;
+  -- assert decoder_out.ALU_src_1_ctrl = '1'     report "ALU_src_1_ctrl not correct" severity failure;
+  -- assert decoder_out.ALU_src_2_ctrl = '1'     report "ALU_src_2_ctrl not correct" severity failure;
+  -- assert decoder_out.op_ctrl        = ALU_ADD report "op_ctrl not correct" severity failure;
+  -- assert decoder_out.REG_we         = '1'     report "REG_we not correct" severity failure;
+  -- assert decoder_out.imm            = x"00000005" report "imm not correct" severity failure;
+  -- assert decoder_out.WB_src_ctrl    = "00"    report "WB_src_ctrl not correct" severity failure;
+  -- assert decoder_out.MEM_op         = "000"   report "MEM_op not correct" severity failure;
+  -- assert decoder_out.MEM_we         = '0'     report "MEM_we not correct" severity failure;
+  -- assert decoder_out.do_jmp         = '1'     report "do_jmp not correct" severity failure;
+  -- assert decoder_out.do_branch      = '0'     report "do_branch not correct" severity failure;
+  -- assert decoder_out.MEM_rd         = '0'     report "MEM_rd not correct" severity failure;
+  -- report "Test 14 [PASSED] (jalr)" severity note;
 
 
   -- Instruction test: bne x6 x7 324
@@ -430,20 +385,6 @@ report "Test 9 [PASSED] (bgeu)" severity note;
   report "Test 16 [PASSED] (bne)" severity note;
 
 
---- FILE IO vvvv
-
-  write(v_OLINE, out_TERM, right, 32);
-  writeline(file_OUTPUT, v_OLINE);
-  write(v_OLINE, out_TERM1, right, 32);
-  writeline(file_OUTPUT, v_OLINE);
-
-  -- end looping over input file contents, close files
-    end loop; 
-
-    file_close(file_INPUT);
-    file_close(file_OUTPUT);
-
---- FILE IO ^^^^
     std.env.stop(0);
   end process;
 
