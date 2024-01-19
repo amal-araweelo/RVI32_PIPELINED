@@ -14,7 +14,7 @@ set_property PACKAGE_PIN W5 [get_ports clk]
 create_clock -add -name sys_clk_pin -period 15.00 -waveform {0 7.5} [get_ports clk] 
  
 
---SWCHG - commented all switches in
+##SWCHG - commented all switches in
 ## Switches
 set_property PACKAGE_PIN V17 [get_ports {sw[0]}]					
 set_property PACKAGE_PIN V16 [get_ports {sw[1]}]					
