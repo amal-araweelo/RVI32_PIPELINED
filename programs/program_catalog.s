@@ -57,7 +57,7 @@ Fibonnaci:
 addi x1, x0, 1
 addi x2, x0, 0
 li x3, 0xB520 #highest fibbonaci number below limit
-li x4 0x00000000 #address of fibbonaci storage
+li x4, 0x00000000 #address of fibbonaci storage
 addi x5, x0, 1
 
 addi x10, x0, 0     #counter for waitloop
