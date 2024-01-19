@@ -76,7 +76,7 @@ package records_pkg is
   -- Outputs from decoder
   type t_decoder is record
     REG_dst_idx    : std_logic_vector(4 downto 0); -- Destination register
-    ALU_src_1_ctrl : std_logic; -- ctrl signal for ALU input selector mux 1 (0=reg, 1=pc)
+    ALU_src_1_ctrl : std_logic; -- ctrl signal for ALU input selector mux 1 (1=reg, 0=pc)
     ALU_src_2_ctrl : std_logic; -- ctrl signal for ALU input selector mux 2 (0=reg, 1=imm)
     op_ctrl        : std_logic_vector(3 downto 0); -- operation control for ALU and Comparator (both receive same signal)
     REG_we         : std_logic; -- Register file write enable
