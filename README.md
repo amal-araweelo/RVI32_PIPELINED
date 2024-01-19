@@ -18,6 +18,5 @@ cd tools
 #### Dependencies
 
 - gnu-base-utils
-- fd
 
 To run arbitrary programs written in C or Assembly, use the `insert-program.sh` tool in the `tools` directory.
