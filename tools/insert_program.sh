@@ -3,14 +3,13 @@ INSTR_MEM="../components/instr_mem.vhd"
 
 # restore program
 if [ "$FILENAME" = "r" ]; then
-	# echo "Restoring $INSTR_MEM"
-	cp $INSTR_MEM.bak $INSTR_MEM
-	exit 0
+    cp $INSTR_MEM.bak $INSTR_MEM
+    exit 0
 fi
 
 # if the filename ends in .c use the c2vhdl.sh script
-if [ "$FILENAME" == *.c ]; then
-	PROGRAM=$(./c2vhdl.sh "$1")
+if [ "$FILENAME" = *.c ]; then
+    PROGRAM=$(./c2vhdl.sh "$1")
 else
     PROGRAM=$(./asm2vhdl.sh "$1")
 fi
