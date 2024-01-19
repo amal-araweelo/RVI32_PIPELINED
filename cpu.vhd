@@ -11,7 +11,8 @@ entity cpu is
     --    clk: in std_logic
     clk   : in std_logic;
     reset : in std_logic;
-    led   : out std_logic_vector(15 downto 0)
+    led   : out std_logic_vector(15 downto 0);
+    sw   : in std_logic_vector(15 downto 0) -- SWCHG made this
   );
 end cpu;
 
@@ -166,6 +167,7 @@ architecture behavior of cpu is
       MEM_data_in : in std_logic_vector(31 downto 0);
       MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
       MEM_IO_out  : out std_logic_vector(15 downto 0);    -- LED was 31 down
+      MEM_SW_in  : out std_logic_vector(15 downto 0);    -- SWCHG made this
 
       -- Outputs
       MEM_data_out : out std_logic_vector(31 downto 0)
@@ -234,6 +236,7 @@ architecture behavior of cpu is
 
   -- Datamem signals
   signal MEM_IO_out : std_logic_vector(15 downto 0); -- LED was 31 down
+  signal MEM_SW_in : std_logic_vector(15 downto 0); -- SWCHG made this
 
 begin
 
@@ -401,10 +404,12 @@ begin
   MEM_data_in  => exmem_out.REG_src_2,
   MEM_addr     => exmem_out.ALU_res,
   MEM_data_out => memory_stage_out.MEM_out,
-  MEM_IO_out   => MEM_IO_out
+  MEM_IO_out   => MEM_IO_out,
+  MEM_SW_in    => MEM_SW_in    -- SWCHG made this
   );
 
   led <= MEM_IO_out(15 downto 0);
+  MEM_SW_in(15 downto 0) <= sw; -- SWCHG made this
 
   -- Register MEM/WB
   reg_memwb_inst : reg_memwb

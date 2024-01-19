@@ -29,13 +29,13 @@ for TEST in $TESTS; do
 	DIFF=$(diff results/$TEST.res results/$TEST.reg | tee -a log)
 
 	if [ "$DIFF" != "" ]; then
-		echo "Test $TEST failed" | tee -a log
+		echo "Test $TEST [FAILED]" | tee -a log
 		echo "======================" | tee -a log
 		echo $DIFF | tee -a log
 		echo "======================" | tee -a log
 		exit 1
 	else 
-		echo "Test $TEST passed" | tee -a log
+		echo "Test $TEST [PASSED]" | tee -a log
 	fi
 
 	echo "======================" | tee -a log

@@ -8,7 +8,13 @@ if [ "$FILENAME" = "r" ]; then
 	exit 0
 fi
 
-PROGRAM=$(./asm2vhdl.sh "$1")
+# if the filename ends in .c use the c2vhdl.sh script
+if [[ "$FILENAME" == *.c ]]; then
+	PROGRAM=$(./c2vhdl.sh "$1")
+else
+    PROGRAM=$(./asm2vhdl.sh "$1")
+fi
+
 echo """==PROGRAM: $FILENAME==" >> log
 echo "$PROGRAM" >> log
 echo "======================" >> log

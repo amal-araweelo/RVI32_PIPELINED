@@ -15,6 +15,7 @@ entity data_mem is
     MEM_op      : in std_logic_vector(2 downto 0); -- memory operation
     MEM_data_in : in std_logic_vector(31 downto 0);
     MEM_addr    : in std_logic_vector(31 downto 0); -- address (it is the value stored in register 2)
+    MEM_SW_in   : in std_logic_vector(15 downto 0); -- SWCHG made this
     -- Outputs
     MEM_data_out : out std_logic_vector(31 downto 0);
     MEM_IO_out   : out std_logic_vector(15 downto 0) -- LED was 31 down
@@ -57,9 +58,15 @@ architecture impl of data_mem is
 
   -- Internal signal for the MEM_IO data
   signal MEM_IO : std_logic_vector(15 downto 0); -- LED was 31 down
+  signal MEM_SW : std_logic_vector(15 downto 0); -- SWCHG made this
 
   -- LED data
   signal write_data : std_logic_vector(15 downto 0); -- LED uses this, 15 down did not work
+
+  signal c_4 : std_logic_vector(31 downto 0) := x"00000004";
+  signal c_5 : std_logic_vector(31 downto 0) := x"00000005";
+  signal c_6 : std_logic_vector(31 downto 0) := x"00000006";
+  signal c_7 : std_logic_vector(31 downto 0) := x"00000007";
 
 begin
   -- Synchronous write
@@ -83,6 +90,11 @@ begin
         if (we_3) then
           bank3(to_integer(unsigned(MEM_addr_3))) <= write_data_3; -- writing byte 3 to bank 3
         end if;
+      else -- SWCHG made this else and its contents
+        bank0(to_integer(unsigned(c_4))) <= MEM_SW(7 downto 0);
+        bank1(to_integer(unsigned(c_5))) <= MEM_SW(15 downto 8);
+        bank2(to_integer(unsigned(c_6))) <= (others => '0');
+        bank3(to_integer(unsigned(c_7))) <= (others => '0');
       end if;
     end if;
   end process;
@@ -188,13 +200,13 @@ begin
 
         write_data_0 <= MEM_data_in(7 downto 0);
       when others =>
-        null;
+
     end case;
 
     -- Concatenate read data from all banks based on the memory operation type
     MEM_data_out <= read_data_3 & read_data_2 & read_data_1 & read_data_0;
     write_data   <= write_data_1 & write_data_0;
     MEM_IO_out   <= MEM_IO;
-
+    MEM_SW       <= MEM_SW_in;
   end process;
 end architecture;
